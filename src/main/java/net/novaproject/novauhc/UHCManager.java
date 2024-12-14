@@ -18,7 +18,7 @@ public class UHCManager {
 
     public void setup() {
         uhcPlayerManager = new UHCPlayerManager();
-        scenarioManager = new ScenarioManager();
+        (scenarioManager = new ScenarioManager()).setup();
         ListenerManager.setup();
         CommandManager.setup();
     }

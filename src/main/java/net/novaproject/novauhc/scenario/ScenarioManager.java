@@ -16,11 +16,10 @@ public class ScenarioManager {
 
     private final List<Scenario> scenarios = new ArrayList<>();
 
-    public ScenarioManager(){
 
+    public void setup(){
         new Cutclean();
         new HasteyBoy();
-
     }
 
 
