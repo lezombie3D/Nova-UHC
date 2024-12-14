@@ -1,7 +1,8 @@
 package net.novaproject.novauhc.scenario;
 
 import net.novaproject.novauhc.UHCManager;
-import net.novaproject.novauhc.scenario.list.Cutclean;
+import net.novaproject.novauhc.scenario.normal.Cutclean;
+import net.novaproject.novauhc.scenario.normal.HasteyBoy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +18,11 @@ public class ScenarioManager {
 
     public ScenarioManager(){
 
-        scenarios.add(new Cutclean());
+        new Cutclean();
+        new HasteyBoy();
 
     }
+
 
     public Optional<Scenario> getScenario(String name){
 
@@ -46,6 +49,10 @@ public class ScenarioManager {
         }
 
         return result;
+    }
+
+    public void addScenario(Scenario scenario){
+        scenarios.add(scenario);
     }
 
 }

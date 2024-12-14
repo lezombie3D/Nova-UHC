@@ -369,7 +369,7 @@ public class ItemCreator {
 
 
     /**
-     * @return la list des item flags
+     * @return la normal des item flags
      */
 
     public ArrayList<ItemFlag> getItemFlags() {
@@ -383,7 +383,7 @@ public class ItemCreator {
     /**
      * set l'itemflags
      *
-     * @param itemflags list d'itemflags
+     * @param itemflags normal d'itemflags
      * @return l'objet
      */
 

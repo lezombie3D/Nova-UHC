@@ -17,6 +17,8 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         uhcManager.setup();
+
+
     }
 
     public static Main get() {

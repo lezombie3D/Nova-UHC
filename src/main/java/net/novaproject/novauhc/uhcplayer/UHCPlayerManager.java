@@ -30,6 +30,22 @@ public class UHCPlayerManager {
         return result;
     }
 
+    public List<UHCPlayer> getPlayingOnlineUHCPlayers() {
+
+        List<UHCPlayer> result = new ArrayList<>();
+        for (UHCPlayer player : getOnlineUHCPlayers()) {
+
+            if (player.isPlaying()) {
+
+                result.add(player);
+
+            }
+
+        }
+
+        return result;
+    }
+
     public UHCPlayer getPlayer(Player player) {
         return players.get(player.getUniqueId());
     }
@@ -54,7 +70,7 @@ public class UHCPlayerManager {
 
         uhcPlayer.disconnect(player);
 
-        // players.remove(player.getUniqueId()); enlever de la list si status de jeu est lobby
+        // players.remove(player.getUniqueId()); enlever de la normal si status de jeu est lobby
 
     }
 

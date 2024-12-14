@@ -1,6 +1,7 @@
-package net.novaproject.novauhc.scenario.list;
+package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,7 +12,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -26,6 +26,11 @@ public class Cutclean extends Scenario {
     @Override
     public String getDescription() {
         return "Ores and animal drops are automatically smelted, no furnaces needed.\n";
+    }
+
+    @Override
+    public ItemCreator getItem() {
+        return new ItemCreator(Material.IRON_INGOT);
     }
 
     @Override
