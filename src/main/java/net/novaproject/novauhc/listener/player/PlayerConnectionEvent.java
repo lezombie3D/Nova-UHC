@@ -1,6 +1,7 @@
 package net.novaproject.novauhc.listener.player;
 
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,6 +17,7 @@ public class PlayerConnectionEvent implements Listener {
         Player player = event.getPlayer();
 
         UHCPlayerManager.get().connect(player);
+        event.setJoinMessage("§f[§2+§f] §f" + player.getName() +"§f ("+ Bukkit.getOnlinePlayers().size()+"/"+ Bukkit.getMaxPlayers() +")");
     }
 
     @EventHandler
@@ -25,6 +27,7 @@ public class PlayerConnectionEvent implements Listener {
 
         Player player = event.getPlayer();
         UHCPlayerManager.get().disconnect(player);
+        event.setQuitMessage("§f[§c-§f] §f" + player.getName() +"§f ("+ (Bukkit.getOnlinePlayers().size()-1)+"/"+ Bukkit.getMaxPlayers() +")");
 
 
     }

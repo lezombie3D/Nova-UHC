@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 public class PlayerBlockEvent implements Listener {
 
@@ -21,6 +22,17 @@ public class PlayerBlockEvent implements Listener {
            scenario.onBreak(player, block, event);
         });
 
+    }
+
+    @EventHandler
+    public void onPlayerPlaceBlock(BlockPlaceEvent event){
+        Player player = event.getPlayer();
+        Block block = event.getBlockPlaced();
+
+        //TODO VERIFIER QUE LA PARTIE EST LANCER
+        ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
+            scenario.onPlace(player, block, event);
+        });
     }
 
 }

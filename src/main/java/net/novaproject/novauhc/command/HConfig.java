@@ -8,18 +8,15 @@ import org.bukkit.entity.Player;
 
 public class HConfig implements CommandExecutor {
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-
+    public boolean onCommand(CommandSender commandSender, Command command, String label, String[] args) {
         if (!(commandSender instanceof Player)) {
-            return false;
+            commandSender.sendMessage("Cette commande est réservée aux joueurs !");
+            return true;
         }
 
         Player player = (Player) commandSender;
-
         new ScenariosUi(player).open();
 
-
-
-        return false;
+        return true;
     }
 }

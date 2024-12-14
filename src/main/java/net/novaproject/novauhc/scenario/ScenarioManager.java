@@ -1,8 +1,7 @@
 package net.novaproject.novauhc.scenario;
 
 import net.novaproject.novauhc.UHCManager;
-import net.novaproject.novauhc.scenario.normal.Cutclean;
-import net.novaproject.novauhc.scenario.normal.HasteyBoy;
+import net.novaproject.novauhc.scenario.normal.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +19,13 @@ public class ScenarioManager {
     public void setup(){
         new Cutclean();
         new HasteyBoy();
+        new Rodless();
+        new Timber();
+        new DouleOre();
     }
 
 
-    public Optional<Scenario> getScenario(String name){
+    public Optional<Scenario> getScenarioByName(String name){
 
         for(Scenario s : scenarios){
             if(s.getName().equalsIgnoreCase(name)){

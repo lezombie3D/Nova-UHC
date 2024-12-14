@@ -1,6 +1,8 @@
 package net.novaproject.novauhc.scenario.normal;
 
+import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.Random;
 
 public class Cutclean extends Scenario {
+
+    private static final String PLAYER_PLACED_TAG = "playerPlaced";
 
     @Override
     public String getName() {
@@ -35,30 +39,36 @@ public class Cutclean extends Scenario {
 
     @Override
     public void onBreak(Player player, Block block, BlockBreakEvent event) {
-
-        List<Material> types = Arrays.asList(Material.IRON_ORE, Material.GOLD_ORE);
+        if (!isActive()) return;
 
         Material type = block.getType();
+        List<Material> types = Arrays.asList(Material.IRON_ORE, Material.GOLD_ORE);
 
-        if (!types.contains(type)) {
-            return;
-        }
+        if (!types.contains(type)) return;
 
+        event.setCancelled(true);
         block.setType(Material.AIR);
 
         Location loc = block.getLocation().clone().add(0.5D, 0.5D, 0.5D);
 
-        if (type == Material.IRON_ORE){
+        boolean isDoubleOreActive = ScenarioManager.get()
+                .getScenarioByName("DoubleOre")
+                .map(Scenario::isActive)
+                .orElse(false);
 
-            loc.getWorld().dropItemNaturally(loc, new ItemStack(Material.IRON_INGOT));
-
-        }else if (type == Material.GOLD_ORE){
-
-            loc.getWorld().dropItemNaturally(loc, new ItemStack(Material.GOLD_INGOT));
-
+        // Logique combinée : CutClean avec ou sans DoubleOre
+        switch (type) {
+            case IRON_ORE:
+                loc.getWorld().dropItemNaturally(loc,
+                        new ItemStack(Material.IRON_INGOT, isDoubleOreActive ? 2 : 1));
+                break;
+            case GOLD_ORE:
+                loc.getWorld().dropItemNaturally(loc,
+                        new ItemStack(Material.GOLD_INGOT, isDoubleOreActive ? 2 : 1));
+                break;
+            default:
+                break;
         }
-
-
     }
 
     @Override

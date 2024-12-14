@@ -18,6 +18,11 @@ public class LoupGarou extends LoupGarouRole {
         return "Vous avez force la nuit";
     }
 
+    @Override
+    public String getCamps() {
+        return "loup";
+    }
+
 
     @Override
     public void onGive(UHCPlayer uhcPlayer) {

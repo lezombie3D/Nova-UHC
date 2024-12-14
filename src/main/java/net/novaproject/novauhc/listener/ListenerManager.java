@@ -2,9 +2,7 @@ package net.novaproject.novauhc.listener;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.listener.entity.EntityDeathEvent;
-import net.novaproject.novauhc.listener.player.PlayerBlockEvent;
-import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
-import net.novaproject.novauhc.listener.player.PlayerDeathEvent;
+import net.novaproject.novauhc.listener.player.*;
 import net.novaproject.novauhc.utils.ui.CustomInventoryEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.entity.EntitySpawnEvent;
@@ -21,6 +19,8 @@ public class ListenerManager {
         pm.registerEvents(new EntityDeathEvent(), Main.get());
         pm.registerEvents(new CustomInventoryEvent(), Main.get());
         pm.registerEvents(new PlayerDeathEvent(), Main.get());
+        pm.registerEvents(new PlayerCraftEvent(),Main.get());
+        pm.registerEvents(new PlayerInteractEvent(),Main.get());
     }
 
 }

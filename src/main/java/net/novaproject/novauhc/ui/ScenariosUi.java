@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 public class ScenariosUi extends CustomInventory {
 
     public ScenariosUi(Player player) {
+
         super(player);
     }
 
@@ -20,14 +21,14 @@ public class ScenariosUi extends CustomInventory {
         int slot = 0;
         int cat = 1;
 
-        for (Scenario scenario : ScenarioManager.get().getScenarios()){
+        for (Scenario scenario : ScenarioManager.get().getScenarios()) {
 
             ItemCreator item = scenario.getItem();
 
-            item.setName(scenario.getName() + ": " + scenario.isActive());
-            item.setAmount(scenario.isActive() ? 1 : 0);
+            item.setName(scenario.getName() + ": " + (scenario.isActive() ? "Activé" : "Désactivé"));
+            item.setAmount(scenario.isActive() ? 2 : 1);
 
-            addItem(new ActionItem(cat, slot, scenario.getItem()) {
+            addItem(new ActionItem(cat, slot, item) {
                 @Override
                 public void onClick(InventoryClickEvent e) {
                     scenario.toggleActive();
@@ -37,7 +38,7 @@ public class ScenariosUi extends CustomInventory {
 
             slot++;
 
-            if (slot == 45){
+            if (slot == 45) {
                 cat++;
                 slot = 0;
             }
@@ -47,6 +48,7 @@ public class ScenariosUi extends CustomInventory {
         if (cat > 1)
             addPage(49);
     }
+
 
     @Override
     public String getTitle() {

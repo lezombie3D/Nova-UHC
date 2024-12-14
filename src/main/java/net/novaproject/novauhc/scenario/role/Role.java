@@ -10,6 +10,7 @@ public abstract class Role<T extends Role<T>> {
 
     public abstract String getName();
     public abstract String getDescription();
+    public abstract String getCamps();
 
     public T duplicate() {
         try {
@@ -36,5 +37,6 @@ public abstract class Role<T extends Role<T>> {
     public void onDeath(UHCPlayer uhcPlayer, UHCPlayer killer, PlayerDeathEvent event) {
 
     }
+
 
 }
