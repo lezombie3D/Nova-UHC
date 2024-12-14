@@ -1,0 +1,16 @@
+apply plugin: 'java'
+
+group 'NovaUHC'
+version '0.1'
+compileJava.options.encoding = 'UTF-8'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+//    // https://mvnrepository.com/artifact/com.github.azbh111/spigot-1.8.8
+    implementation group: 'com.github.azbh111', name: 'spigot-1.8.8', version: 'R'
+}
