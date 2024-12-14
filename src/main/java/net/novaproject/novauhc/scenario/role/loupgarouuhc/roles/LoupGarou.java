@@ -2,6 +2,7 @@ package net.novaproject.novauhc.scenario.role.loupgarouuhc.roles;
 
 import net.novaproject.novauhc.scenario.role.loupgarouuhc.LoupGarouRole;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -23,6 +24,8 @@ public class LoupGarou extends LoupGarouRole {
         super.onGive(uhcPlayer);
 
     }
+
+
 
     @Override
     public PotionEffect[] getNightEffects() {

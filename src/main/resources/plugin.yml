@@ -1,9 +1,14 @@
 name: NovaUHC
 main: net.novaproject.novauhc.Main
 version: 1.0
-command:
+commands:
   hconfig:
     description: "ouvrir le menu"
+
+permission:
+  novauhc.host:
+    default: OP
+  
 authors:
   - Lezombie3D
   - Sithey

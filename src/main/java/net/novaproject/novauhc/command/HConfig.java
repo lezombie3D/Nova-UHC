@@ -16,11 +16,9 @@ public class HConfig implements CommandExecutor {
 
         Player player = (Player) commandSender;
 
-        if (player.hasPermission("novauhc.host")){
+        new ScenariosUi(player).open();
 
-            new ScenariosUi(player).open();
 
-        }
 
         return false;
     }

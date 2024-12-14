@@ -2,6 +2,7 @@ package net.novaproject.novauhc.scenario.role;
 
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -29,6 +30,10 @@ public abstract class Role<T extends Role<T>> {
     }
 
     public void onSec(Player player){
+
+    }
+
+    public void onDeath(UHCPlayer uhcPlayer, UHCPlayer killer, PlayerDeathEvent event) {
 
     }
 

@@ -3,9 +3,10 @@ package net.novaproject.novauhc.scenario.role;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class ScenarioRole<T extends Role<T>> extends Scenario {
 
@@ -32,6 +33,23 @@ public abstract class ScenarioRole<T extends Role<T>> extends Scenario {
             return;
         }
         default_roles.put(role, default_roles.get(role) - 1);
+    }
+
+    @Override
+    public void onSec(Player p) {
+        super.onSec(p);
+
+        players_roles.forEach((player, role) -> {
+            role.onSec(p);
+        });
+    }
+
+    @Override
+    public void onDeath(UHCPlayer uhcPlayer, UHCPlayer killer, PlayerDeathEvent event) {
+        super.onDeath(uhcPlayer, killer, event);
+        players_roles.forEach((player, role) -> {
+            role.onDeath(uhcPlayer, killer, event);
+        });
     }
 
     public void giveRoles(){
