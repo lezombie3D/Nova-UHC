@@ -7,29 +7,28 @@ import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-public class NoFall extends Scenario {
+public class FIreLess extends Scenario {
     @Override
     public String getName() {
-        return "No Fall";
+        return "FireLess";
     }
 
     @Override
     public String getDescription() {
-        return "Permet de ne pas predre de degat";
+        return "Emepeche les joeur de prendre des degat de feu";
     }
 
     @Override
     public ItemCreator getItem() {
-        return new ItemCreator(Material.FEATHER);
+        return new ItemCreator(Material.MAGMA_CREAM);
     }
     @Override
     public void onPlayerTakeDamage(Entity entity, EntityDamageEvent event) {
 
-        if (entity instanceof org.bukkit.entity.Player && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+        if (event.getCause() == EntityDamageEvent.DamageCause.FIRE
+                || event.getCause() == EntityDamageEvent.DamageCause.LAVA
+                || event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) {
             event.setCancelled(true);
         }
     }
-
-    
-    
 }

@@ -66,7 +66,7 @@ public abstract class Scenario {
     public void onPlayerInteract(Player player,PlayerInteractEvent event){
 
     }
-    public void onPlayerTakeDamage(UHCPlayer uhcplayer, EntityDamageEvent event) {
+    public void onPlayerTakeDamage(Entity entity, EntityDamageEvent event) {
 
     }
     public void onPlace(Player player, Block block, BlockPlaceEvent event){

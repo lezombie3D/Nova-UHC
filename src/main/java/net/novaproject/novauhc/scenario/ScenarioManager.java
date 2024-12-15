@@ -21,7 +21,11 @@ public class ScenarioManager {
         new HasteyBoy();
         new Rodless();
         new Timber();
-        new DouleOre();
+        new DoubleOre();
+        new FIreLess();
+        new BloodDiamonds();
+        new NoFall();
+        new PotionLess();
     }
 
 

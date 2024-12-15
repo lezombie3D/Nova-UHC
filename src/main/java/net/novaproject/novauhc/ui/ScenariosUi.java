@@ -5,6 +5,7 @@ import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
 import net.novaproject.novauhc.utils.ui.item.ActionItem;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -25,8 +26,10 @@ public class ScenariosUi extends CustomInventory {
 
             ItemCreator item = scenario.getItem();
 
-            item.setName(scenario.getName() + ": " + (scenario.isActive() ? "Activé" : "Désactivé"));
-            item.setAmount(scenario.isActive() ? 2 : 1);
+            item.setName("§7" + scenario.getName() + ": " + (scenario.isActive() ? "§2Activé" : "§cDésactivé"));
+            item.setAmount(scenario.isActive() ? 1 : 0);
+            item.setUnbreakable(true);
+
 
             addItem(new ActionItem(cat, slot, item) {
                 @Override

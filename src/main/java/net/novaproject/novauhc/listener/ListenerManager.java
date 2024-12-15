@@ -21,6 +21,7 @@ public class ListenerManager {
         pm.registerEvents(new PlayerDeathEvent(), Main.get());
         pm.registerEvents(new PlayerCraftEvent(),Main.get());
         pm.registerEvents(new PlayerInteractEvent(),Main.get());
+        pm.registerEvents(new PlayerTakeDamage(),Main.get());
     }
 
 }
