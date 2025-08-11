@@ -1,5 +1,5 @@
 world_lobby:
-  lobby_template : "lobby"
+  lobby_template: "lobby"
   lobby_target: "lob"
   location:
     spawn:

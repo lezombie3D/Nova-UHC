@@ -1,5 +1,7 @@
 package net.novaproject.novauhc.uhcplayer;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
@@ -7,6 +9,7 @@ import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
+import net.novaproject.novauhc.ui.config.Enchants;
 import net.novaproject.novauhc.utils.*;
 import net.novaproject.novauhc.utils.fastboard.FastBoard;
 import org.bukkit.*;
@@ -18,13 +21,14 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
 public class UHCPlayer {
+
+    private final EnumMap<Enchants, Integer> enchantLimits;
 
     private final UUID uuid;
     private boolean playing = false;
@@ -33,12 +37,16 @@ public class UHCPlayer {
     private Optional<UHCTeam> team = Optional.empty();
     private boolean bypassed = false;
     private final UHCManager uhcManager = UHCManager.get();
-    public UHCPlayer(Player player) {
-        this.uuid = player.getUniqueId();
-    }
     private int limite = uhcManager.getDimamondLimit();
     private int diamondArmor = uhcManager.getDiamondArmor();
     private int protectionMax = uhcManager.getProtectionMax();
+    public UHCPlayer(Player player) {
+        this.uuid = player.getUniqueId();
+        this.enchantLimits = new EnumMap<>(Enchants.class);
+        for (Enchants ench : Enchants.values()) {
+            enchantLimits.put(ench, ench.getConfigValue());
+        }
+    }
 
 
     public UUID getUniqueId() {
@@ -48,49 +56,15 @@ public class UHCPlayer {
     public Player getPlayer(){
         return Bukkit.getPlayer(uuid);
     }
-    private int protection = uhcManager.getProtection();
 
     public boolean isOnline() {
         return getPlayer() != null;
     }
 
-    public boolean isPlaying() {
-        return playing;
-    }
 
-    public void setPlaying(boolean playing) {
-        this.playing = playing;
-    }
-    private int fireProtection = uhcManager.getFireProtection();
-    private int featherFalling = uhcManager.getFeatherFalling();
-    private int blastProtection = uhcManager.getBlastProtection();
     private int minedDiamond = 0;
     private int kill = 0;
-    private int projectileProtection = uhcManager.getProjectileProtection();
-    private int respiration = uhcManager.getRespiration();
-    private int aquaAffinity = uhcManager.getAquaAffinity();
-    private int thorns = uhcManager.getThorns();
-    private int depthStrider = uhcManager.getDepthStrider();
-    private int sharpness = uhcManager.getSharpness();
-    private int smite = uhcManager.getSmite();
-    private int baneOfArthropods = uhcManager.getBaneOfArthropods();
-    private int knockback = uhcManager.getKnockback();
-    private int fireAspect = uhcManager.getFireAspect();
-    private int looting = uhcManager.getLooting();
-    private int efficiency = uhcManager.getEfficiency();
-    private int silkTouch = uhcManager.getSilkTouch();
-    private int unbreaking = uhcManager.getUnbreaking();
-    private int fortune = uhcManager.getFortune();
-    private int power = uhcManager.getPower();
-    private int punch = uhcManager.getPunch();
-    private int flame = uhcManager.getFlame();
-    private int infinity = uhcManager.getInfinity();
-    private int luckOfTheSea = uhcManager.getLuckOfTheSea();
-    private int lure = uhcManager.getLure();
 
-    public Optional<UHCTeam> getTeam() {
-        return team;
-    }
 
     public void setTeam(Optional<UHCTeam> team) {
 
@@ -213,7 +187,6 @@ public class UHCPlayer {
             for (PotionEffect effect : player.getActivePotionEffects()) {
                 player.removePotionEffect(effect.getType());
             }
-
             PermissionAttachment attachment = player.addAttachment(Main.get());
             Main.getDatabaseManager().connectPlayer(player.getUniqueId());
             if (player == PlayerConnectionEvent.getHost()) {
@@ -443,227 +416,4 @@ public class UHCPlayer {
 
     }
 
-    public int getLimite() {
-        return limite;
-    }
-
-    public void setLimite(int limite) {
-        this.limite = limite;
-    }
-
-    public int getDiamondArmor() {
-        return diamondArmor;
-    }
-
-    public int setDiamondArmor(int i) {
-        return this.diamondArmor = i;
-    }
-
-    public int getProtectionMax() {
-        return protectionMax;
-    }
-
-    public int setProtectionMax(int i) {
-        return this.protectionMax = i;
-    }
-
-    public int getProtection() {
-        return protection;
-    }
-
-    public void setProtection(int protection) {
-        this.protection = protection;
-    }
-
-    public int getFireProtection() {
-        return fireProtection;
-    }
-
-    public void setFireProtection(int fireProtection) {
-        this.fireProtection = fireProtection;
-    }
-
-    public int getFeatherFalling() {
-        return featherFalling;
-    }
-
-    public void setFeatherFalling(int featherFalling) {
-        this.featherFalling = featherFalling;
-    }
-
-    public int getBlastProtection() {
-        return blastProtection;
-    }
-
-    public void setBlastProtection(int blastProtection) {
-        this.blastProtection = blastProtection;
-    }
-
-    public int getProjectileProtection() {
-        return projectileProtection;
-    }
-
-    public void setProjectileProtection(int projectileProtection) {
-        this.projectileProtection = projectileProtection;
-    }
-
-    public int getRespiration() {
-        return respiration;
-    }
-
-    public void setRespiration(int respiration) {
-        this.respiration = respiration;
-    }
-
-    public int getAquaAffinity() {
-        return aquaAffinity;
-    }
-
-    public void setAquaAffinity(int aquaAffinity) {
-        this.aquaAffinity = aquaAffinity;
-    }
-
-    public int getThorns() {
-        return thorns;
-    }
-
-    public void setThorns(int thorns) {
-        this.thorns = thorns;
-    }
-
-    public int getDepthStrider() {
-        return depthStrider;
-    }
-
-    public void setDepthStrider(int depthStrider) {
-        this.depthStrider = depthStrider;
-    }
-
-    public int getSharpness() {
-        return sharpness;
-    }
-
-    public void setSharpness(int sharpness) {
-        this.sharpness = sharpness;
-    }
-
-    public int getSmite() {
-        return smite;
-    }
-
-    public void setSmite(int smite) {
-        this.smite = smite;
-    }
-
-    public int getBaneOfArthropods() {
-        return baneOfArthropods;
-    }
-
-    public void setBaneOfArthropods(int baneOfArthropods) {
-        this.baneOfArthropods = baneOfArthropods;
-    }
-
-    public int getKnockback() {
-        return knockback;
-    }
-
-    public void setKnockback(int knockback) {
-        this.knockback = knockback;
-    }
-
-    public int getFireAspect() {
-        return fireAspect;
-    }
-
-    public void setFireAspect(int fireAspect) {
-        this.fireAspect = fireAspect;
-    }
-
-    public int getLooting() {
-        return looting;
-    }
-
-    public void setLooting(int looting) {
-        this.looting = looting;
-    }
-
-    public int getEfficiency() {
-        return efficiency;
-    }
-
-    public void setEfficiency(int efficiency) {
-        this.efficiency = efficiency;
-    }
-
-    public int getSilkTouch() {
-        return silkTouch;
-    }
-
-    public void setSilkTouch(int silkTouch) {
-        this.silkTouch = silkTouch;
-    }
-
-    public int getUnbreaking() {
-        return unbreaking;
-    }
-
-    public void setUnbreaking(int unbreaking) {
-        this.unbreaking = unbreaking;
-    }
-
-    public int getFortune() {
-        return fortune;
-    }
-
-    public void setFortune(int fortune) {
-        this.fortune = fortune;
-    }
-
-    public int getPower() {
-        return power;
-    }
-
-    public void setPower(int power) {
-        this.power = power;
-    }
-
-    public int getPunch() {
-        return punch;
-    }
-
-    public void setPunch(int punch) {
-        this.punch = punch;
-    }
-
-    public int getFlame() {
-        return flame;
-    }
-
-    public void setFlame(int flame) {
-        this.flame = flame;
-    }
-
-    public int getInfinity() {
-        return infinity;
-    }
-
-    public void setInfinity(int infinity) {
-        this.infinity = infinity;
-    }
-
-    public int getLuckOfTheSea() {
-        return luckOfTheSea;
-    }
-
-    public void setLuckOfTheSea(int luckOfTheSea) {
-        this.luckOfTheSea = luckOfTheSea;
-    }
-
-    public int getLure() {
-        return lure;
-    }
-
-    public void setLure(int lure) {
-        this.lure = lure;
-    }
 }

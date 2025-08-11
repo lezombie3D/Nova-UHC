@@ -12,6 +12,7 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
+import net.novaproject.novauhc.ui.config.Enchants;
 import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.Titles;
 import net.novaproject.novauhc.world.utils.SimpleBorder;
@@ -45,33 +46,8 @@ public class UHCManager {
     private boolean spectator = false;
     private int timer = -1;
     private int slot = 25, team_size = 1;
-    private int diamondArmor = 4;
+    private int diamondArmor = 2;
     private int protectionMax = 2;
-    private int protection = 4;
-    private int fireProtection = 4;
-    private int featherFalling = 4;
-    private int blastProtection = 4;
-    private int projectileProtection = 4;
-    private int respiration = 3;
-    private int aquaAffinity = 1;
-    private int thorns = 4;
-    private int depthStrider = 4;
-    private int sharpness = 5;
-    private int smite = 5;
-    private int baneOfArthropods = 5;
-    private int knockback = 2;
-    private int fireAspect = 1;
-    private int looting = 3;
-    private int efficiency = 5;
-    private int silkTouch = 1;
-    private int unbreaking = 3;
-    private int fortune = 3;
-    private int power = 5;
-    private int punch = 2;
-    private int flame = 1;
-    private int infinity = 1;
-    private int luckOfTheSea = 3;
-    private int lure = 3;
     private int dimamondLimit = 22;
     private int timerpvp = 60;
     private int timerborder = 3600;
@@ -96,6 +72,7 @@ public class UHCManager {
         Bukkit.getWhitelistedPlayers().forEach(wl -> {
             wl.setWhitelisted(false);
         });
+
     }
 
     public String getTimerFormatted() {
@@ -345,13 +322,6 @@ public class UHCManager {
 
     }
 
-    public void setProtection(int protection) {
-        this.protection = protection;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setProtection(protection)
-        );
-    }
-
     private void fireWork(Player p) {
 
         Firework f = (Firework) p.getWorld().spawnEntity(p.getLocation(), EntityType.FIREWORK);
@@ -392,202 +362,13 @@ public class UHCManager {
         }
     }
 
-    public void setFireProtection(int fireProtection) {
-        this.fireProtection = fireProtection;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setFireProtection(fireProtection)
-        );
-    }
 
-    public void setFeatherFalling(int featherFalling) {
-        this.featherFalling = featherFalling;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setFeatherFalling(featherFalling)
-        );
-    }
-
-    public void setBlastProtection(int blastProtection) {
-        this.blastProtection = blastProtection;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setBlastProtection(blastProtection)
-        );
-    }
-
-    public void setProjectileProtection(int projectileProtection) {
-        this.projectileProtection = projectileProtection;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setProjectileProtection(projectileProtection)
-        );
-    }
-
-    public void setRespiration(int respiration) {
-        this.respiration = respiration;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setRespiration(respiration)
-        );
-    }
-
-    public void setAquaAffinity(int aquaAffinity) {
-        this.aquaAffinity = aquaAffinity;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setAquaAffinity(aquaAffinity)
-        );
-    }
-
-    public void setThorns(int thorns) {
-        this.thorns = thorns;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setThorns(thorns)
-        );
-    }
-
-    public void setDepthStrider(int depthStrider) {
-        this.depthStrider = depthStrider;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setDepthStrider(depthStrider)
-        );
-    }
-
-    public void setSharpness(int sharpness) {
-        this.sharpness = sharpness;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setSharpness(sharpness)
-        );
-    }
-
-    public void setSmite(int smite) {
-        this.smite = smite;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setSmite(smite)
-        );
-    }
-
-    public void setBaneOfArthropods(int baneOfArthropods) {
-        this.baneOfArthropods = baneOfArthropods;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setBaneOfArthropods(baneOfArthropods)
-        );
-    }
-
-    public void setKnockback(int knockback) {
-        this.knockback = knockback;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setKnockback(knockback)
-        );
-    }
-
-    public void setFireAspect(int fireAspect) {
-        this.fireAspect = fireAspect;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setFireAspect(fireAspect)
-        );
-    }
-
-    public void setLooting(int looting) {
-        this.looting = looting;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setLooting(looting)
-        );
-    }
-
-    public void setEfficiency(int efficiency) {
-        this.efficiency = efficiency;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setEfficiency(efficiency)
-        );
-    }
-
-    public void setSilkTouch(int silkTouch) {
-        this.silkTouch = silkTouch;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setSilkTouch(silkTouch)
-        );
-    }
-
-    public void setUnbreaking(int unbreaking) {
-        this.unbreaking = unbreaking;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setUnbreaking(unbreaking)
-        );
-    }
-
-    public void setFortune(int fortune) {
-        this.fortune = fortune;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setFortune(fortune)
-        );
-    }
-
-    public void setPower(int power) {
-        this.power = power;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setPower(power)
-        );
-    }
-
-    public void setPunch(int punch) {
-        this.punch = punch;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setPunch(punch)
-        );
-    }
-
-    public void setFlame(int flame) {
-        this.flame = flame;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setFlame(flame)
-        );
-    }
-
-    public void setInfinity(int infinity) {
-        this.infinity = infinity;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setInfinity(infinity)
-        );
-    }
-
-    public void setLuckOfTheSea(int luckOfTheSea) {
-        this.luckOfTheSea = luckOfTheSea;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setLuckOfTheSea(luckOfTheSea)
-        );
-    }
-
-    public void setLure(int lure) {
-        this.lure = lure;
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player ->
-                player.setLure(lure)
-        );
-    }
 
     public void applyLimitsFromList(List<Integer> limites) {
-        if (limites == null || limites.size() < 30) return;
-
-        setProtection(limites.get(0));
-        setFireProtection(limites.get(1));
-        setFeatherFalling(limites.get(2));
-        setBlastProtection(limites.get(3));
-        setProjectileProtection(limites.get(4));
-        setRespiration(limites.get(5));
-        setAquaAffinity(limites.get(6));
-        setThorns(limites.get(7));
-        setDepthStrider(limites.get(8));
-        setSharpness(limites.get(9));
-        setSmite(limites.get(10));
-        setBaneOfArthropods(limites.get(11));
-        setKnockback(limites.get(12));
-        setFireAspect(limites.get(13));
-        setLooting(limites.get(14));
-        setEfficiency(limites.get(15));
-        setSilkTouch(limites.get(16));
-        setUnbreaking(limites.get(17));
-        setFortune(limites.get(18));
-        setPower(limites.get(19));
-        setPunch(limites.get(20));
-        setFlame(limites.get(21));
-        setInfinity(limites.get(22));
-        setLuckOfTheSea(limites.get(23));
-        setLure(limites.get(24));
+        if (limites == null || limites.size() < Enchants.values().length) return;
+        for (int i = 0; i < Enchants.values().length; i++) {
+            Enchants.getEnchant(i).setConfigValue(limites.get(i));
+        }
     }
 
     public enum GameState {

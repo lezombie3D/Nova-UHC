@@ -61,20 +61,21 @@ public class PreconfigUi extends CustomInventory {
                                     "Êtes-vous sûr de vouloir supprimer la configuration " + configName + " ?",
                                     () -> {
                                         getPlayer().performCommand("config delete " + configName);
+                                        refresh();
                                     },
                                     () -> {
-
+                                        refresh();
                                     }, new PreconfigUi(getPlayer(), parent)).open();
-
                         } else {
                             new ConfirmMenu(getPlayer(),
                                     "Êtes-vous sûr de vouloir charger la configuration " + configName + " ?", () -> {
                                 getPlayer().performCommand("config load " + configName);
-
+                                refresh();
                             }, () -> {
+                                refresh();
                             }, new PreconfigUi(getPlayer(), parent)).open();
                         }
-                        refresh();
+
                     }
                 });
             }

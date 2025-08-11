@@ -6,6 +6,7 @@ import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.database.UHCGameConfiguration;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioManager;
+import net.novaproject.novauhc.ui.config.Enchants;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,7 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -91,33 +92,10 @@ public class ConfigCMD implements CommandExecutor {
         int bordecactivation = UHCManager.get().getTimerborder();
         int finalsize = (int) UHCManager.get().getTargetSize();
         int timereduc = (int) UHCManager.get().getReducSpeed();
-        List<Integer> limite = Arrays.asList(
-                UHCManager.get().getProtection(),
-                UHCManager.get().getFireProtection(),
-                UHCManager.get().getFeatherFalling(),
-                UHCManager.get().getBlastProtection(),
-                UHCManager.get().getProjectileProtection(),
-                UHCManager.get().getRespiration(),
-                UHCManager.get().getAquaAffinity(),
-                UHCManager.get().getThorns(),
-                UHCManager.get().getDepthStrider(),
-                UHCManager.get().getSharpness(),
-                UHCManager.get().getSmite(),
-                UHCManager.get().getBaneOfArthropods(),
-                UHCManager.get().getKnockback(),
-                UHCManager.get().getFireAspect(),
-                UHCManager.get().getLooting(),
-                UHCManager.get().getEfficiency(),
-                UHCManager.get().getSilkTouch(),
-                UHCManager.get().getUnbreaking(),
-                UHCManager.get().getFortune(),
-                UHCManager.get().getPower(),
-                UHCManager.get().getPunch(),
-                UHCManager.get().getFlame(),
-                UHCManager.get().getInfinity(),
-                UHCManager.get().getLuckOfTheSea(),
-                UHCManager.get().getLure()
-        );
+        List<Integer> limite = new ArrayList<>();
+        for (int i = 0; i < Enchants.values().length; i++) {
+            limite.add(Enchants.values()[i].getConfigValue());
+        }
         int slot = UHCManager.get().getSlot();
         int diamant = UHCManager.get().getDimamondLimit();
         int limiteD = UHCManager.get().getDiamondArmor();

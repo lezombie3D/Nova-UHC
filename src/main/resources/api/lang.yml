@@ -22,6 +22,9 @@ menu:
   whitelist:
     title: "§f(§c!§f)§c Configuration"
     color: 4
+  enchant:
+    title: "§f(§c!§f)§c Configuration"
+    color: 4
   potion:
     title: "§f(§c!§f)§c Configuration"
     color: 4
