@@ -3,10 +3,11 @@ import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.inventory.ItemStack;
 
 public class StaticItem {
-	
-	private ItemStack itemStack;
-	private int category, slot;
-	private boolean all;
+
+    private final ItemStack itemStack;
+    private final int category;
+    private final int slot;
+    private final boolean all;
 	
 	public StaticItem(int slot, ItemStack itemStack){
 		this(1, true, slot, itemStack);

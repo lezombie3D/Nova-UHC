@@ -37,18 +37,16 @@ public class DoubleOre extends Scenario {
     }
     @Override
     public void onBreak(Player player, Block block, BlockBreakEvent event) {
-        // Vérifie si DoubleOre est actif
+
         if (!isActive()) return;
 
         Material type = block.getType();
         List<Material> types = Arrays.asList(Material.IRON_ORE, Material.GOLD_ORE, Material.DIAMOND_ORE, Material.EMERALD_ORE);
 
-        // Vérifie si le bloc est un minerai valide
         if (!types.contains(type)) return;
 
-        // Si le bloc a été placé par un joueur, ne pas appliquer DoubleOre
         if (block.hasMetadata(PLAYER_PLACED_TAG)) {
-            block.removeMetadata(PLAYER_PLACED_TAG, Main.get()); // Nettoie la métadonnée
+            block.removeMetadata(PLAYER_PLACED_TAG, Main.get());
             return;
         }
 
@@ -60,7 +58,7 @@ public class DoubleOre extends Scenario {
         Optional<Scenario> cutCleanScenario = ScenarioManager.get().getScenarioByName("cutclean");
 
         if (cutCleanScenario.isPresent() && ScenarioManager.get().getActiveScenarios().contains(cutCleanScenario.get())) {
-            // Drops avec CutClean (lingots)
+
             switch (type) {
                 case IRON_ORE:
                     loc.getWorld().dropItemNaturally(loc, new ItemStack(Material.IRON_INGOT, 3));
@@ -78,7 +76,7 @@ public class DoubleOre extends Scenario {
                     break;
             }
         } else {
-            // Drops normaux (minerais bruts)
+
             switch (type) {
                 case IRON_ORE:
                     loc.getWorld().dropItemNaturally(loc, new ItemStack(Material.IRON_ORE, 2));
@@ -100,7 +98,8 @@ public class DoubleOre extends Scenario {
 
     @Override
     public void onPlace(Player player, Block block, BlockPlaceEvent event) {
-        // Ajoute une métadonnée indiquant que ce bloc a été placé par un joueur
+
         block.setMetadata(PLAYER_PLACED_TAG, new FixedMetadataValue(Main.get(), true));
+
     }
 }

@@ -1,0 +1,65 @@
+main_color: "§e§l"
+start_canceled:
+  title: "§3Nova-§fUHC"
+  subtitle: "§3Dommage :c"
+  duration: 20
+menu:
+  main:
+    title: "§f(§c!§f)§c Configuration"
+    color: 4
+  preconfig:
+    title: "§f(§c!§f)§c Configuration"
+    color: 4
+  game:
+    title: "§f(§c!§f)§c Configuration"
+    color: 4
+  teams:
+    title: "§f(§c!§f)§c Configuration"
+    color: 4
+    ingame:
+      title: "§f(§c!§f)§c Configuration"
+      color: 4
+  whitelist:
+    title: "§f(§c!§f)§c Configuration"
+    color: 4
+  potion:
+    title: "§f(§c!§f)§c Configuration"
+    color: 4
+  scenario:
+    title: "§f(§c!§f)§c Configuration"
+    color: 4
+    special:
+      title: "§f(§c!§f)§c Configuration"
+      color: 4
+  border:
+    title: "§f(§c!§f)§c Configuration"
+    color: 4
+  mumble:
+    title: "§f(§c!§f)§c Configuration"
+    color: 4
+  drop:
+    title: "§f(§c!§f)§c Configuration"
+    color: 4
+  stuff:
+    title: "§f(§c!§f)§c Configuration"
+    color: 4
+  world:
+    title: "§f(§c!§f)§c Configuration"
+    color: 4
+    oreboost:
+      title: "§f(§c!§f)§c Configuration"
+      color: 4
+      lapis_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWMwZTkxNDQ3NmUxYjE1ZGEyYTkxZjQ1Njk2ZGQyMTc2NjlkNGRhYzRmYTYyMTY1MDkyOWJhY2UwM2RlMjI1NCJ9fX0="
+      iron_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzFhNzg1OTE2ZDJkMTdjYTBlYTJhZDIzZDgwMjQ3YzdjNTAyMTQ0MzkwM2JiYWI3YjI0Yjc5MzRiNmEzNjFhYiJ9fX0="
+      gold_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDFiNWZkZWZmZmZmYTcwODM4MWU3MGYzNTAzYTI3NTc3MmI0NTI5NmNmOWYxNjI1YTg3ZWRjNmI2MjU0OWVmNiJ9fX0="
+      diams_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGJmYzdmYTRlNzRiNmU0MDFhZTA2NDE0OGFlNWU3NjhiODkzZjFkOTI5N2Y4NzQ3NTEwMWY3MjI1YTJhNWE2YSJ9fX0"
+
+message:
+  oreboost:
+    message: "Modification §a§lenregistré§r, n'oubliée pad de recrée une arena"
+  kick:
+    spec: "Vous ne pouvez pas vous connecter, car l'host a désactivé les spec"
+    full: "La partie est pleine"
+    whitelist: "Vous n'estes pas whitelist par l'host"
+
+

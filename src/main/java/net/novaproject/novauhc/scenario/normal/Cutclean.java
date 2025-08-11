@@ -1,6 +1,5 @@
 package net.novaproject.novauhc.scenario.normal;
 
-import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -9,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -50,21 +50,25 @@ public class Cutclean extends Scenario {
         block.setType(Material.AIR);
 
         Location loc = block.getLocation().clone().add(0.5D, 0.5D, 0.5D);
+        ExperienceOrb orb = block.getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
+
 
         boolean isDoubleOreActive = ScenarioManager.get()
                 .getScenarioByName("DoubleOre")
                 .map(Scenario::isActive)
                 .orElse(false);
 
-        // Logique combinée : CutClean avec ou sans DoubleOre
+
         switch (type) {
             case IRON_ORE:
                 loc.getWorld().dropItemNaturally(loc,
                         new ItemStack(Material.IRON_INGOT, isDoubleOreActive ? 2 : 1));
+                orb.setExperience(3 + (int) (Math.random() * 5));
                 break;
             case GOLD_ORE:
                 loc.getWorld().dropItemNaturally(loc,
                         new ItemStack(Material.GOLD_INGOT, isDoubleOreActive ? 2 : 1));
+                orb.setExperience(5 + (int) (Math.random() * 8));
                 break;
             default:
                 break;
@@ -78,6 +82,7 @@ public class Cutclean extends Scenario {
         if (e.getEntityType() == EntityType.PIG) {
             e.getDrops().clear();
             e.getDrops().add(new ItemStack(Material.GRILLED_PORK, 2));
+
         }
 
         if (e.getEntityType() == EntityType.COW) {

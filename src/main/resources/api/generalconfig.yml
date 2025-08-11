@@ -1,0 +1,45 @@
+message:
+  tab:
+    lobby:
+      header: "§f[§6<serveurname>§f]"
+      footer: "§7En attente de joueurs... (<players>/<max>)"
+    game:
+      header: "§f[§6<serveurname>§f] §8| §aEn Jeu"
+      footer: "§8§m⎯⎯⎯ §fKills: §a%kills% §8§m⎯⎯⎯"
+    end:
+      header: "§f[§6<serveurname>§f] §8| §cFin de partie"
+      footer: "§7Merci d'avoir joué !"
+
+  scoreboard:
+    lobby:
+      title: "§6 En attente"
+      lines:
+        - ""
+        - "§fJoueurs: §b<players>§f/§b<max>"
+        - "§fÉtat: §aLobby"
+        - ""
+        - "<ip>"
+    game:
+      title: "§a✦ En Jeu ✦"
+      lines:
+        - ""
+        - "§fJoueurs: §b<players>§f/§b<max>"
+        - "§fKill: §a%kills%"
+        - ""
+        - "§fTemps: §a<timer>"
+        - "§fDirection: §a%arrow%"
+        - ""
+        - "<ip>"
+    end:
+      title: "§c✦ Fin ✦"
+      lines:
+        - ""
+        - "§fDurée: §a<time>"
+        - "§fKill: §a%kills%"
+        - ""
+        - "<ip>"
+
+
+
+timer:
+  timer_before_start: 30

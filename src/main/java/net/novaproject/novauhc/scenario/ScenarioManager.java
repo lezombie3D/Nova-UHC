@@ -2,6 +2,20 @@ package net.novaproject.novauhc.scenario;
 
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.normal.*;
+import net.novaproject.novauhc.scenario.special.beatthesanta.BeatTheSanta;
+import net.novaproject.novauhc.scenario.special.fallenkigdom.FallenKingdom;
+import net.novaproject.novauhc.scenario.special.flowerpower.FlowerPower;
+import net.novaproject.novauhc.scenario.special.gonefish.GoneFIsh;
+import net.novaproject.novauhc.scenario.special.king.King;
+import net.novaproject.novauhc.scenario.special.legend.Legend;
+import net.novaproject.novauhc.scenario.special.netheribus.NetheriBus;
+import net.novaproject.novauhc.scenario.special.random.RandomCraft;
+import net.novaproject.novauhc.scenario.special.random.RandomDrop;
+import net.novaproject.novauhc.scenario.special.skyhigt.SkyHigh;
+import net.novaproject.novauhc.scenario.special.slavemarket.SlaveMarket;
+import net.novaproject.novauhc.scenario.special.superheros.SuperHeros;
+import net.novaproject.novauhc.scenario.special.taupegun.TaupeGun;
+import net.novaproject.novauhc.scenario.special.teamatfirstseigth.TeamAtFirstSeigth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,17 +29,79 @@ public class ScenarioManager {
 
     private final List<Scenario> scenarios = new ArrayList<>();
 
-
     public void setup(){
-        new Cutclean();
-        new HasteyBoy();
-        new Rodless();
-        new Timber();
-        new DoubleOre();
-        new FIreLess();
-        new BloodDiamonds();
-        new NoFall();
-        new PotionLess();
+
+        addScenario(new Cutclean());
+        addScenario(new HasteyBoy());
+        addScenario(new Rodless());
+        addScenario(new Timber());
+        addScenario(new DoubleOre());
+        addScenario(new FIreLess());
+        addScenario(new BloodDiamonds());
+        addScenario(new NoFall());
+        addScenario(new PotionLess());
+        addScenario(new WooltoString());
+        addScenario(new BetaZombie());
+        addScenario(new CatEye());
+        addScenario(new FIreEnchantLess());
+        addScenario(new Meetup());
+        //addScenario(new LoupGarouUHC());
+        addScenario(new StarterTools());
+        addScenario(new InfiniteEnchanter());
+
+        addScenario(new FinalHeal());
+        addScenario(new BlackArrow());
+        addScenario(new NoFood());
+        addScenario(new Vanilla_plus());
+        addScenario(new BatRoulette());
+        addScenario(new WebCage());
+        addScenario(new TimeBombe());
+
+        addScenario(new ArrowSwitch());
+        addScenario(new NoNether());
+        addScenario(new NoEnd());
+        addScenario(new LongShoot());
+        addScenario(new BloodCycle());
+        addScenario(new GapRoulette());
+        //addScenario(new SkyDef());
+        addScenario(new NoWoodenTool());
+        addScenario(new AutoRevive());
+        addScenario(new FastFurnace());
+        addScenario(new NoCleanUp());
+        addScenario(new ChatPvP());
+        addScenario(new SafeMiner());
+        addScenario(new TeamInv());
+        addScenario(new noHorse());
+        //addScenario(new CromagnonUHC());
+        addScenario(new NoNameTag());
+        addScenario(new BestPvE());
+        addScenario(new HeathCharity());
+        addScenario(new Compensation());
+        addScenario(new Cripple());
+        addScenario(new DeathEmerauld());
+        addScenario(new XpSansue());
+        addScenario(new FastMiner());
+        addScenario(new GoldenHead());
+        addScenario(new GoldenDrop());
+        addScenario(new HasteyBabie());
+        addScenario(new HasteyAlpha());
+        addScenario(new BuffKiller());
+        addScenario(new TeamArrow());
+        //addScenario(new FireForceUHC());
+        addScenario(new BeatTheSanta());
+        addScenario(new FallenKingdom());
+        addScenario(new FlowerPower());
+        addScenario(new GoneFIsh());
+        addScenario(new King());
+        addScenario(new Legend());
+        addScenario(new NetheriBus());
+        addScenario(new RandomCraft());
+        addScenario(new RandomDrop());
+        addScenario(new SkyHigh());
+        addScenario(new SlaveMarket());
+        addScenario(new SuperHeros());
+        addScenario(new TaupeGun());
+        addScenario(new TeamAtFirstSeigth());
     }
 
 
@@ -56,8 +132,51 @@ public class ScenarioManager {
         return result;
     }
 
-    public void addScenario(Scenario scenario){
-        scenarios.add(scenario);
+    public boolean isScenarioActive(String scenarioName) {
+        return getScenarioByName(scenarioName).map(Scenario::isActive).orElse(false);
     }
 
+    public List<Scenario> getSpecialScenarios() {
+        List<Scenario> result = new ArrayList<>();
+
+        for (Scenario s : scenarios) {
+            if (s.isSpecial()) {
+                result.add(s);
+            }
+        }
+
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Scenario> T getScenario(Class<T> clazz) {
+        for (Scenario scenario : scenarios) {
+            if (clazz.isInstance(scenario)) {
+                return (T) scenario;
+            }
+        }
+        return null;
+    }
+
+
+    public List<Scenario> getActiveSpecialScenarios() {
+
+        List<Scenario> result = new ArrayList<>();
+
+        for (Scenario s : getSpecialScenarios()) {
+            if (s.isActive()) {
+                result.add(s);
+            }
+        }
+
+        return result;
+
+    }
+
+    public void addScenario(Scenario scenario){
+
+        scenarios.add(scenario);
+        scenario.setup();
+
+    }
 }

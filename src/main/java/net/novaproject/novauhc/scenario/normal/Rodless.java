@@ -1,11 +1,9 @@
 package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.scenario.Scenario;
-import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +16,7 @@ public class Rodless extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Emepeche l'utilsation de certain item";
+        return "Empêche l'utilisation de certain item";
     }
 
     @Override
@@ -36,10 +34,6 @@ public class Rodless extends Scenario {
         }
     }
 
-
-    /**
-     * Empêche les joueurs de fabriquer des cannes à pêche.
-     */
     @Override
     public void onCraft(ItemStack result, CraftItemEvent event) {
         ItemStack item = event.getRecipe().getResult();

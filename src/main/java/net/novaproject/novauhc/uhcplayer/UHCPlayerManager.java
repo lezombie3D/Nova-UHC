@@ -1,6 +1,5 @@
 package net.novaproject.novauhc.uhcplayer;
 
-import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
 import org.bukkit.entity.Player;
 
@@ -9,7 +8,7 @@ import java.util.*;
 public class UHCPlayerManager {
 
     public static UHCPlayerManager get(){
-        return UHCManager.get().getUHCPlayerManager();
+        return UHCManager.get().getUhcPlayerManager();
     }
 
 
@@ -70,8 +69,11 @@ public class UHCPlayerManager {
 
         uhcPlayer.disconnect(player);
 
-        // players.remove(player.getUniqueId()); enlever de la normal si status de jeu est lobby
+        if (UHCManager.get().isLobby()) {
+            players.remove(player.getUniqueId());
+        }
 
     }
+
 
 }

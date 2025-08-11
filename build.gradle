@@ -1,18 +1,43 @@
-apply plugin: 'java'
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
 
-group 'NovaUHC'
-version '0.1'
+group = 'NovaUHC'
+version = '0.1'
+
 compileJava.options.encoding = 'UTF-8'
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+
+    maven { url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+    maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url = "https://repo.papermc.io/repository/maven-public/" }
+    maven { url = "https://maven.enginehub.org/repo/" }
+
 }
 
 
 dependencies {
-
-//    // https://mvnrepository.com/artifact/com.github.azbh111/spigot-1.8.8
-
-    implementation group: 'com.github.azbh111', name: 'spigot-1.8.8', version: 'R'
+    implementation 'fr.mrmicky:fastboard:2.1.4'
+    implementation 'org.mongodb:mongodb-driver-sync:5.3.0'
+    implementation 'org.json:json:20230618'
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:6.1.4-SNAPSHOT'
+    implementation 'com.github.azbh111:spigot-1.8.8:R'
+    compileOnly("org.projectlombok:lombok:1.18.38")
+    annotationProcessor("org.projectlombok:lombok:1.18.38")
 }
+
+
+shadowJar {
+
+    relocate 'com.mongodb', 'net.novauhc.libs.mongodb'
+    relocate 'org.bson', 'net.novauhc.libs.bson'
+    relocate 'fr.mrmicky.fastboard', 'net.novauhc.libs.fastboard'
+    archiveClassifier.set('')
+    destinationDirectory.set(file("C:\\Users\\mathy\\Desktop\\plugin\\Plugin"))
+}
+
+build.dependsOn shadowJar

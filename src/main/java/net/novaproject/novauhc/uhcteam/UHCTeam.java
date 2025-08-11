@@ -1,0 +1,146 @@
+package net.novaproject.novauhc.uhcteam;
+
+import net.novaproject.novauhc.uhcplayer.UHCPlayer;
+import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
+import net.novaproject.novauhc.utils.ItemCreator;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class UHCTeam {
+
+    private final DyeColor dyeColor;
+    private final String prefix;
+    private final String name;
+    private final Pattern[] patterns;
+    private final int teamSize;
+    private final boolean isCustom;
+
+
+    public UHCTeam(DyeColor dyeColor, String prefix, String name, Pattern[] patterns, int teamSize, boolean isCustom) {
+        this.dyeColor = dyeColor;
+        this.prefix = prefix;
+        this.name = name;
+        this.patterns = patterns;
+        this.teamSize = teamSize;
+        this.isCustom = isCustom;
+
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+
+        if (scoreboard.getTeam(name) == null) {
+            Team team = scoreboard.registerNewTeam(name);
+            team.setPrefix(prefix);
+            team.setAllowFriendlyFire(true);
+        }
+    }
+
+    public boolean isCustom() {
+        return isCustom;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public DyeColor getDyeColor() {
+        return dyeColor;
+    }
+
+    public Pattern[] getPatterns() {
+        return patterns;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public int getTeamSize() {
+        return teamSize;
+    }
+
+    public Team getTeam() {
+
+        return Bukkit.getScoreboardManager().getMainScoreboard().getTeam(name);
+
+    }
+
+    public ItemStack getItem() {
+        List<String> lore = new ArrayList<>();
+        lore.add("");
+        for (int i = 0; i < getTeamSize(); i++) {
+            lore.add("§b➤ " + (getPlayers().size() < i + 1 ? "" : getPlayers().get(i).getPlayer().getName()));
+        }
+        lore.add("");
+        lore.add(ChatColor.YELLOW + "► Clic pour " + ChatColor.GREEN + "rejoindre");
+        lore.add("");
+
+        ItemStack banner = new ItemStack(Material.BANNER);
+        BannerMeta meta = (BannerMeta) banner.getItemMeta();
+        meta.setDisplayName(getName());
+        meta.setLore(lore);
+        meta.setBaseColor(dyeColor);
+
+        List<Pattern> p = new ArrayList<>();
+        for (Pattern pattern : patterns) {
+            p.add(new Pattern(pattern.getColor() == DyeColor.BLACK ? dyeColor : pattern.getColor(), pattern.getPattern()));
+        }
+        meta.setPatterns(p);
+        banner.setItemMeta(meta);
+        return banner;
+    }
+
+
+    public ItemCreator getBanner() {
+        ItemStack banner = new ItemStack(Material.BANNER);
+        BannerMeta meta = (BannerMeta) banner.getItemMeta();
+        meta.setDisplayName(getName());
+        meta.setBaseColor(dyeColor);
+
+        List<Pattern> p = new ArrayList<>();
+        for (Pattern pattern : patterns) {
+            p.add(new Pattern(pattern.getColor() == DyeColor.BLACK ? dyeColor : pattern.getColor(), pattern.getPattern()));
+        }
+        meta.setPatterns(p);
+        banner.setItemMeta(meta);
+        return new ItemCreator(banner);
+    }
+
+
+    public List<UHCPlayer> getPlayers() {
+
+        List<UHCPlayer> result = new ArrayList<>();
+        for (UHCPlayer player : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
+
+            if (player.getTeam().isPresent() && player.getTeam().get() == this) {
+
+                result.add(player);
+
+            }
+
+        }
+
+        return result;
+    }
+
+    public boolean isAlive() {
+
+        boolean alive = false;
+        for (UHCPlayer uhcPlayer : getPlayers()) {
+            if (uhcPlayer.isPlaying()) {
+                alive = true;
+                break;
+            }
+        }
+
+        return alive;
+    }
+}

@@ -15,7 +15,7 @@ public class PotionLess extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Aucune potion est utilisable";
+        return "Aucune potion n'est utilisable";
     }
 
     @Override

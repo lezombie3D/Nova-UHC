@@ -51,7 +51,6 @@ public class HasteyBoy extends Scenario {
         if (validTools.contains(item.getType())) {
             item.addUnsafeEnchantment(Enchantment.DIG_SPEED, 3);
             item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
-
             event.getInventory().setResult(item);
         }
 

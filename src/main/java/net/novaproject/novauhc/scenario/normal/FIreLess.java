@@ -1,7 +1,6 @@
 package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.scenario.Scenario;
-import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -15,7 +14,7 @@ public class FIreLess extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Emepeche les joeur de prendre des degat de feu";
+        return "Empêche les joueurs de prendre des dégâts de feu";
     }
 
     @Override

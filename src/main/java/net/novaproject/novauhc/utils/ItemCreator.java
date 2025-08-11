@@ -23,13 +23,19 @@ import static org.apache.commons.codec.binary.Base64.encodeBase64;
 
 public class ItemCreator {
 
-    public enum BannerPreset {
-
-        barre, precedent, suivant, coeur, cercleEtoile, croix, yinYang, losange, moin, plus;
+    public ItemCreator setGlow(boolean b) {
+        return this.addEnchantment(Enchantment.DURABILITY, 1).addItemFlags(ItemFlag.HIDE_ENCHANTS);
     }
 
-    public enum ComparatorType {
-        ItemStack, Similar, Material, Amount, Durability, Name, Lores, Enchantements, ItemsFlags, Owner, BaseColor, Patterns, StoredEnchantements;
+    /**
+     * @return EnchantmentStorageMeta
+     */
+
+    public HashMap<Enchantment, Integer> getStoredEnchantments() {
+        if (this.itemstack.getType().equals(Material.ENCHANTED_BOOK)) {
+            return (HashMap<Enchantment, Integer>) this.itemstack.getItemMeta().getEnchants();
+        }
+        return null;
     }
 
     private ItemStack itemstack;
@@ -76,6 +82,10 @@ public class ItemCreator {
         return this;
     }
 
+    public enum BannerPreset {
+
+        barre, precedent, suivant, coeur, cercleEtoile, croix, yinYang, losange, moin, plus
+    }
     /**
      * @return le Material
      */
@@ -303,15 +313,8 @@ public class ItemCreator {
         return this;
     }
 
-    /**
-     * @return EnchantmentStorageMeta
-     */
-
-    public HashMap<Enchantment, Integer> getStoredEnchantments() {
-        if (this.itemstack.getType().equals(Material.ENCHANTED_BOOK)) {
-            return (HashMap<Enchantment, Integer>) ((EnchantmentStorageMeta) this.itemstack.getItemMeta()).getEnchants();
-        }
-        return null;
+    public enum ComparatorType {
+        ItemStack, Similar, Material, Amount, Durability, Name, Lores, Enchantements, ItemsFlags, Owner, BaseColor, Patterns, StoredEnchantements
     }
 
     public ItemCreator setStoredEnchantments(HashMap<Enchantment, Integer> storedenchantments) {

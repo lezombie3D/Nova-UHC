@@ -1,62 +1,107 @@
 package net.novaproject.novauhc.scenario.role;
 
+import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
+import net.novaproject.novauhc.utils.ui.CustomInventory;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public abstract class ScenarioRole<T extends Role<T>> extends Scenario {
+public abstract class ScenarioRole<T extends Role> extends Scenario {
 
-    private final Map<T, Integer> default_roles = new HashMap<>();
+    private final Map<Class<? extends T>, Integer> default_roles = new HashMap<>();
+    private final Map<UHCPlayer, T> players_roles = new HashMap<>();
+    public boolean isgived = false;
 
     private final List<T> roles = new ArrayList<>();
 
-    private Map<UHCPlayer, T> players_roles = new HashMap<>();
+    public Map<T, Integer> getDefault_roles() {
 
-    public void addRole(T role) {
-        default_roles.put(role, 0);
+        Map<T, Integer> roles = new TreeMap<>(Comparator.comparing(Role::getName));
+
+        for (Map.Entry<Class<? extends T>, Integer> entry : default_roles.entrySet()) {
+            roles.put(createRoleInstance(entry.getKey()), entry.getValue());
+        }
+
+        return roles;
+
     }
 
-    public int getRoleAmount(T role) {
-        return default_roles.get(role);
+    @Override
+    public boolean isSpecial() {
+        return true;
     }
 
-    public void incrementRole(T role) {
-        default_roles.put(role, default_roles.get(role) + 1);
+    @Override
+    public CustomInventory getMenu(Player player) {
+        return new ScenarioRoleUi<>(player, this);
     }
 
-    public void decrementRole(T role) {
-        if (getRoleAmount(role) == 0) {
+    public void addRole(Class<? extends T> roleClass) {
+        default_roles.put(roleClass, 0);
+    }
+
+    public int getRoleAmount(Class<? extends T> roleClass) {
+        return default_roles.getOrDefault(roleClass, 0);
+    }
+
+    public void incrementRole(Class<? extends T> roleClass) {
+        default_roles.put(roleClass, getRoleAmount(roleClass) + 1);
+    }
+
+    public void decrementRole(Class<? extends T> roleClass) {
+        if (getRoleAmount(roleClass) == 0) {
             return;
         }
-        default_roles.put(role, default_roles.get(role) - 1);
+        default_roles.put(roleClass, getRoleAmount(roleClass) - 1);
     }
+
+    public T createRoleInstance(Class<? extends T> roleClass) {
+        try {
+            return roleClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
+            throw new RuntimeException("Failed to create instance of role: " + roleClass.getName(), e);
+        }
+    }
+
 
     @Override
     public void onSec(Player p) {
-        super.onSec(p);
-
+        int timer = UHCManager.get().getTimer();
         players_roles.forEach((player, role) -> {
             role.onSec(p);
         });
+        if (!isgived) {
+            if (timer == UHCManager.get().getTimerpvp()) {
+                giveRoles();
+                isgived = true;
+            }
+        }
     }
 
     @Override
-    public void onDeath(UHCPlayer uhcPlayer, UHCPlayer killer, PlayerDeathEvent event) {
-        super.onDeath(uhcPlayer, killer, event);
+    public void setup() {
         players_roles.forEach((player, role) -> {
-            role.onDeath(uhcPlayer, killer, event);
+            role.onSetup();
         });
     }
 
     public void giveRoles(){
 
+        Bukkit.broadcastMessage(ChatColor.RED + " Attribution des roles...");
         default_roles.forEach((role, amount) -> {
             for (int i = 0; i < amount; i++) {
-                roles.add(role.duplicate());
+                roles.add(createRoleInstance(role));
             }
         });
 
@@ -78,24 +123,51 @@ public abstract class ScenarioRole<T extends Role<T>> extends Scenario {
 
     }
 
-    public Role getRoleByUHCPlayer(UHCPlayer player) {
+    public T getRoleByUHCPlayer(UHCPlayer player) {
         return players_roles.get(player);
     }
 
-    public List<UHCPlayer> getPlayersByRoleName(String name){
-
+    public List<UHCPlayer> getPlayersByRoleName(String name) {
         List<UHCPlayer> players = new ArrayList<>(players_roles.keySet());
 
-        for (UHCPlayer player : players) {
+        List<UHCPlayer> validPlayers = new ArrayList<>();
 
-            Role role = getRoleByUHCPlayer(player);
-
-            if (role == null || !role.getName().equals(name)) {
-                players.remove(player);
+        for (int i = 0; i < players.size(); i++) {
+            UHCPlayer player = players.get(i);
+            T role = getRoleByUHCPlayer(player);
+            if (role != null && role.getName().equals(name)) {
+                validPlayers.add(player);
             }
-
         }
 
-        return players;
+        return validPlayers;
+    }
+
+    @Override
+    public void onConsume(Player player1, ItemStack item, PlayerItemConsumeEvent event) {
+        players_roles.forEach((player, role) -> {
+            role.onConsume(player1, item, event);
+        });
+    }
+
+    @Override
+    public void onPlayerInteract(Player player1, PlayerInteractEvent event) {
+        players_roles.forEach((player, role) -> {
+            role.onIteract(player1, event);
+        });
+    }
+
+    @Override
+    public void onMove(Player player, PlayerMoveEvent event) {
+        players_roles.forEach((player1, role) -> {
+            role.onMove(player1, event);
+        });
+    }
+
+    @Override
+    public void onFfCMD(Player player, String subCommand, String[] args) {
+        players_roles.forEach((player1, role) -> {
+            role.onFfCMD(player1, subCommand, args);
+        });
     }
 }

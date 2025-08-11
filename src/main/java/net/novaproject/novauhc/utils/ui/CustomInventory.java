@@ -1,17 +1,17 @@
 package net.novaproject.novauhc.utils.ui;
 
-import net.minecraft.server.v1_8_R3.UserCache;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
+import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ui.item.ActionItem;
 import net.novaproject.novauhc.utils.ui.item.StaticItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -32,12 +32,16 @@ public abstract class CustomInventory {
     private Inventory inventory = null;
     private BukkitTask task = null;
 
-    private UHCPlayer uhcPlayer;
+    private final UHCPlayer uhcPlayer;
     public CustomInventory(Player player){
         this.player = player;
         this.uhcPlayer = UHCPlayerManager.get().getPlayer(player);
     }
 
+
+    public FileConfiguration getConfig() {
+        return ConfigUtils.getLangConfig();
+    }
     public abstract void setup();
 
     public abstract String getTitle();
@@ -89,7 +93,7 @@ public abstract class CustomInventory {
                     }
                     refreshMenu();
                 }
-            }.runTaskTimer(Main.get(), 60, 60);
+            }.runTaskTimer(Main.get(), 20, 20);
         }
     }
 
@@ -138,15 +142,18 @@ public abstract class CustomInventory {
 
     public void addPage(int slot){
         ItemCreator page = new ItemCreator(Material.MAP).setName(ChatColor.YELLOW + "Page: " + ChatColor.LIGHT_PURPLE + actual_category + ChatColor.GOLD + "/" + ChatColor.LIGHT_PURPLE + getCategories());
-        page.setLores(Arrays.asList("", "Suivant", "Precedent"));
+        page.setLores(Arrays.asList("", ChatColor.GREEN + "Suivant", ChatColor.RED + "Precedent"));
         page.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
         addItem(new ActionItem(slot, page.addItemFlags(ItemFlag.HIDE_ATTRIBUTES).getItemstack()){
             @Override
             public void onClick(InventoryClickEvent e) {
-                if(e.getClick() == ClickType.RIGHT)
-                    nextCategory();
-                if(e.getClick() == ClickType.LEFT)
+                if (e.isRightClick()) {
                     previousCategory();
+
+                }
+                if (e.isLeftClick()) {
+                    nextCategory();
+                }
                 open();
             }
         });
@@ -209,11 +216,11 @@ public abstract class CustomInventory {
     }
 
     public void addReturn(int slot, CustomInventory customInventory){
-        addMenu(slot, new ItemCreator(Material.ARROW).setName("Retour"), customInventory);
+        addMenu(slot, new ItemCreator(Material.ARROW).setName(ChatColor.GRAY + "Retour"), customInventory);
     }
 
     public void addClose(int slot){
-        addClose(slot, new ItemCreator(Material.BARRIER).setName("Fermer"));
+        addClose(slot, new ItemCreator(Material.BARRIER).setName(ChatColor.RED + "Fermer"));
     }
 
     public void addClose(int slot, ItemCreator itemCreator){
@@ -227,12 +234,12 @@ public abstract class CustomInventory {
 
     public void fillLine(int line, int durability){
         for(int i = (9*(line-1)); i < line*9; i++){
-            addItem(new StaticItem(i, new ItemCreator(Material.STAINED_GLASS_PANE).setDurability((short) durability).setName("")));
+            addItem(new StaticItem(i, new ItemCreator(Material.STAINED_GLASS_PANE).setDurability((short) durability).setName(" ")));
         }
     }
 
     public void fillCorner(int durability) {
-        ItemCreator item = new ItemCreator(Material.STAINED_GLASS_PANE).setDurability((short) durability).setName("");
+        ItemCreator item = new ItemCreator(Material.STAINED_GLASS_PANE).setDurability((short) durability).setName(" ");
         Arrays.asList(0, 1, 7, 8, 9, 17).forEach(i -> {
             if(i < getLines()*9) addItem(new StaticItem(i, item));
         });
@@ -245,14 +252,14 @@ public abstract class CustomInventory {
 
     public void fillCadre(int durability){
         fillLine(1, durability); fillLine(getLines(), durability);
-        ItemCreator item = new ItemCreator(Material.STAINED_GLASS_PANE).setDurability((short) durability).setName("");
+        ItemCreator item = new ItemCreator(Material.STAINED_GLASS_PANE).setDurability((short) durability).setName(" ");
         Arrays.asList(9, 17, 18, 26, 27, 35, 36, 44).forEach(i -> {
             if(i < getLines()*9) addItem(new StaticItem(i, item));
         });
     }
 
     public void fillDesign(int durability){
-        ItemCreator item = new ItemCreator(Material.STAINED_GLASS_PANE).setDurability((short) durability).setName("");
+        ItemCreator item = new ItemCreator(Material.STAINED_GLASS_PANE).setDurability((short) durability).setName(" ");
         Arrays.asList(0, 1, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 53, (getLines()-1)*9+1, getLines()*9-2).forEach(i -> {
             if(i < getLines()*9) addItem(new StaticItem(i, item));
         });

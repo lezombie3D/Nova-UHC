@@ -4,10 +4,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class ActionItem {
-	
-	private ItemStack itemStack;
-	private int category, slot;
-	private boolean all;
+
+    private final ItemStack itemStack;
+    private final int category;
+    private final int slot;
+    private final boolean all;
 	
 	public ActionItem(int slot, ItemStack itemStack){
 		this(1, true, slot, itemStack);

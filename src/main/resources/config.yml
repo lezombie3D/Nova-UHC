@@ -1,0 +1,16 @@
+mongodb:
+  connectionString: "mongodb://uhcnova:UNPmuIhCl8F2ybZy@minecraft-shard-00-00.ljf2r.mongodb.net:27017,minecraft-shard-00-01.ljf2r.mongodb.net:27017,minecraft-shard-00-02.ljf2r.mongodb.net:27017/?ssl=true&replicaSet=atlas-tt3bwt-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Minecraft"
+
+  name: "uhc"
+serverinfo:
+  servertag:
+    "§f[§6SERV§f] "
+  info:
+    "§f[§6INFO§f] "
+  ip:
+    "1234"
+  servername:
+    "§cSERVER"
+mumble:
+  port: ""
+  ip: ""

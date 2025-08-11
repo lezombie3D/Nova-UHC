@@ -25,7 +25,7 @@ public class TeamsTagsManager {
         }
         scoreboard = current;
         this.team.setCanSeeFriendlyInvisibles(false);
-        this.team.setAllowFriendlyFire(false);
+        this.team.setAllowFriendlyFire(true);
 
         /* VERIFICATION */
         int prefixLength = 0;

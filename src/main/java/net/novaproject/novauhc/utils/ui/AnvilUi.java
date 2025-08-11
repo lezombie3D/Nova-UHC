@@ -23,15 +23,32 @@ import java.util.HashMap;
 @SuppressWarnings("unused")
 public class AnvilUi {
 
-	private class AnvilContainer extends ContainerAnvil {
-		public AnvilContainer(EntityHuman entity){
-			super(entity.inventory, entity.world,new BlockPosition(0, 0, 0), entity);
+	public void open(){
+		EntityPlayer p = ((CraftPlayer) player).getHandle();
+
+		AnvilContainer container = new AnvilContainer(p);
+
+		//Set the items to the items from the inventory given
+		inv = container.getBukkitView().getTopInventory();
+
+		for(AnvilSlot slot : items.keySet()){
+			inv.setItem(slot.getSlot(), items.get(slot));
 		}
 
-		@Override
-		public boolean a(EntityHuman entityhuman){
-			return true;
-		}
+		//Counter stuff that the game uses to keep track of inventories
+		int c = p.nextContainerCounter();
+
+		//Send the packet
+        p.playerConnection.sendPacket(new PacketPlayOutOpenWindow(c, "minecraft:anvil", new ChatMessage("Repairing"), 0));
+
+		//Set their active container to the container
+		p.activeContainer = container;
+
+		//Set their active container window id to that counter stuff
+		p.activeContainer.windowId = c;
+
+		//Add the slot listener
+		p.activeContainer.addSlotListener(p);
 	}
 
 	public enum AnvilSlot {
@@ -39,9 +56,9 @@ public class AnvilUi {
 		INPUT_RIGHT(1),
 		OUTPUT(2);
 
-		private int slot;
+        private final int slot;
 
-		private AnvilSlot(int slot){
+        AnvilSlot(int slot) {
 			this.slot = slot;
 		}
 
@@ -60,46 +77,20 @@ public class AnvilUi {
 		}
 	}
 
-	public class AnvilClickEvent {
-		private AnvilSlot slot;
-
-		private String name;
-
-		private boolean close = true;
-		private boolean destroy = true;
-
-		public AnvilClickEvent(AnvilSlot slot, String name){
-			this.slot = slot;
-			this.name = name;
-		}
-
-		public AnvilSlot getSlot(){
-			return slot;
-		}
-
-		public String getName(){
-			return name;
-		}
-
-		public boolean getWillClose(){
-			return close;
-		}
-
-		public void setWillClose(boolean close){
-			this.close = close;
-		}
-
-		public boolean getWillDestroy(){
-			return destroy;
-		}
-
-		public void setWillDestroy(boolean destroy){
-			this.destroy = destroy;
-		}
+	public interface AnvilClickEventHandler {
+        void onAnvilClick(AnvilClickEvent event);
 	}
 
-	public interface AnvilClickEventHandler {
-		public void onAnvilClick(AnvilClickEvent event);
+	private class AnvilContainer extends ContainerAnvil {
+
+		public AnvilContainer(EntityHuman entity){
+			super(entity.inventory, entity.world,new BlockPosition(0, 0, 0), entity);
+		}
+
+		@Override
+		public boolean a(EntityHuman entityhuman){
+			return true;
+		}
 	}
 
 	private Player player;
@@ -187,32 +178,42 @@ public class AnvilUi {
 		return this;
 	}
 
-	public void open(){
-		EntityPlayer p = ((CraftPlayer) player).getHandle();
+	public class AnvilClickEvent {
+        private final AnvilSlot slot;
 
-		AnvilContainer container = new AnvilContainer(p);
+        private final String name;
 
-		//Set the items to the items from the inventory given
-		inv = container.getBukkitView().getTopInventory();
+		private boolean close = true;
+		private boolean destroy = true;
 
-		for(AnvilSlot slot : items.keySet()){
-			inv.setItem(slot.getSlot(), items.get(slot));
+		public AnvilClickEvent(AnvilSlot slot, String name){
+			this.slot = slot;
+			this.name = name;
 		}
 
-		//Counter stuff that the game uses to keep track of inventories
-		int c = p.nextContainerCounter();
+		public AnvilSlot getSlot(){
+			return slot;
+		}
 
-		//Send the packet
-		p.playerConnection.sendPacket(new PacketPlayOutOpenWindow(c, "minecraft:anvil", new ChatMessage("Repairing", new Object[]{}), 0));
+		public String getName(){
+			return name;
+		}
 
-		//Set their active container to the container
-		p.activeContainer = container;
+		public boolean getWillClose(){
+			return close;
+		}
 
-		//Set their active container window id to that counter stuff
-		p.activeContainer.windowId = c;
+		public void setWillClose(boolean close){
+			this.close = close;
+		}
 
-		//Add the slot listener
-		p.activeContainer.addSlotListener(p);
+		public boolean getWillDestroy(){
+			return destroy;
+		}
+
+		public void setWillDestroy(boolean destroy){
+			this.destroy = destroy;
+		}
 	}
 
 	public void destroy(){
