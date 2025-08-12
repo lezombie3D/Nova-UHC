@@ -799,8 +799,8 @@ public class Legend extends Scenario {
     }
 
     @Override
-    public void onDrop(Player player, PlayerDropItemEvent event) {
-        UHCPlayer p = UHCPlayerManager.get().getPlayer(player);
+    public void onDrop(PlayerDropItemEvent event) {
+        UHCPlayer p = UHCPlayerManager.get().getPlayer(event.getPlayer());
         if (marionetteClass.containsKey(p)) {
             event.setCancelled(true);
         }

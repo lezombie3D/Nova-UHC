@@ -12,7 +12,9 @@ public enum CommonString {
     BAR("§f§m                                                                           §r"),
     NO_PERMISSION("§cI'm sorry but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."),
     CLICK_GAUCHE(" §8» §fCliquez gauche pour §f"),
-    CLICK_DROITE(" §8» §fCliquez droite pour §f");
+    CLICK_DROITE(" §8» §fCliquez droite pour §f"),
+    CLICK_HERE_TO_TOGGLE(" §8» §fCliquez ici pour §6§lactiver/désactiver§f.");
+
     private final String message;
 
     CommonString(String message) {

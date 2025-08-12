@@ -2,7 +2,6 @@ package net.novaproject.novauhc.ui.player;
 
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
-import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.ui.ConfigVarUi;
@@ -32,7 +31,7 @@ public class LimiteStuffbyPlayerUi extends CustomInventory {
         ItemCreator diamond = new ItemCreator(Material.DIAMOND_CHESTPLATE)
                 .setName("§8┃ §f" + Common.get().getMainColor() + "Limite de pièce en Diamant")
                 .addLore("")
-                .addLore(" §8» §fActuel : §3§l" + UHCManager.get().getDiamondArmor())
+                .addLore(" §8» §fActuel : §3§l" + targetPlayer.getDiamondArmor())
                 .addLore("")
                 .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
                 .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
@@ -54,7 +53,7 @@ public class LimiteStuffbyPlayerUi extends CustomInventory {
         ItemCreator protection = new ItemCreator(Material.ENCHANTED_BOOK)
                 .setName("§8┃ §f" + Common.get().getMainColor() + "Limite de Protection en Diamant")
                 .addLore("")
-                .addLore(" §8» §fActuel : §3§l" + UHCManager.get().getProtectionMax())
+                .addLore(" §8» §fActuel : §3§l" + targetPlayer.getProtectionMax())
                 .addLore("")
                 .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
                 .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
@@ -76,7 +75,7 @@ public class LimiteStuffbyPlayerUi extends CustomInventory {
         addMenu(49, diamondlimite, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, getUHCPlayer().getLimite(), 0, 0, this) {
             @Override
             public void onChange(int newValue) {
-
+                targetPlayer.setLimite(newValue);
             }
         });
         int i = 10;
@@ -92,11 +91,16 @@ public class LimiteStuffbyPlayerUi extends CustomInventory {
                 @Override
                 public void onClick(InventoryClickEvent e) {
                     if (e.isLeftClick()) {
-                        enchants.removeConfigValue();
+                        int current = targetPlayer.getEnchantLimits().get(enchants);
+                        int newValue = Math.min(current + 1, enchants.getMax());
+                        targetPlayer.setEnchantLimit(enchants, newValue);
                     }
                     if (e.isRightClick()) {
-                        enchants.addConfigValue();
+                        int current = targetPlayer.getEnchantLimits().get(enchants);
+                        int newValue = Math.max(current - 1, enchants.getMin());
+                        targetPlayer.setEnchantLimit(enchants, newValue);
                     }
+                    openAll();
                 }
             });
             switch (i) {

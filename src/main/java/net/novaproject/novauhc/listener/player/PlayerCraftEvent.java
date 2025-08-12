@@ -58,7 +58,16 @@ public class PlayerCraftEvent implements Listener {
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
         if (player == null || event.getItem() == null)
             return;
+
         if (containsBlockedEnchant(uhcPlayer, event.getEnchantsToAdd())) {
+
+            if (isDiamondArmor(event.getItem()) && event.getEnchantsToAdd().containsKey(Enchantment.PROTECTION_ENVIRONMENTAL)) {
+                int level = event.getEnchantsToAdd().get(Enchantment.PROTECTION_ENVIRONMENTAL);
+                if (level <= uhcPlayer.getProtectionMax()) {
+                    return;
+                }
+            }
+
             event.setCancelled(true);
             player.sendMessage("§cCet enchantement est désactivé.");
         }
@@ -82,9 +91,18 @@ public class PlayerCraftEvent implements Listener {
         if (result == null || result.getEnchantments() == null)
             return;
         if (containsBlockedEnchant(uhcPlayer, result.getEnchantments())) {
-
-            getBlockedEnchant(uhcPlayer, result.getEnchantments()).keySet().forEach(enchant -> result.removeEnchantment(enchant));
-            player.sendMessage("§cCet enchantement est désactivé.");
+            if (isDiamondArmor(result) && result.containsEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL)) {
+                int level = result.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
+                if (level > uhcPlayer.getProtectionMax()) {
+                    result.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
+                    player.sendMessage("§cProtection " + level + " dépasse la limite (" + uhcPlayer.getProtectionMax() + "). Supprimée.");
+                }
+            } else {
+                getBlockedEnchant(uhcPlayer, result.getEnchantments())
+                        .keySet()
+                        .forEach(result::removeEnchantment);
+                player.sendMessage("§cCet enchantement est désactivé.");
+            }
         }
     }
 

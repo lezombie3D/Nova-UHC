@@ -114,6 +114,7 @@ public class UHCManager {
                             title = "§e" + countdown;
                             new Titles().sendTitle(p, title, subtitle, 60);
                             break;
+                        case 4:
                         case 5:
                             title = "§c" + countdown;
                             new Titles().sendTitle(p, title, subtitle, 60);
@@ -136,7 +137,10 @@ public class UHCManager {
                         default:
                             break;
                     }
-                    p.setLevel(countdown);
+                    long remaining = countdown;
+                    float ratio = Math.min(1f, (float) remaining / ConfigUtils.getGeneralConfig().getInt("timer.timer_before_start"));
+                    p.setExp(ratio);
+                    p.setLevel((int) (remaining));
                     new Titles().sendActionText(p, "§8●§fDébut de la partie dans §c" + countdown + "secondes§8●");
                     p.playSound(p.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
                 }

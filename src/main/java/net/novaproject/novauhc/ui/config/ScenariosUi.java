@@ -1,12 +1,12 @@
 package net.novaproject.novauhc.ui.config;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.ui.DefaultUi;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
 import net.novaproject.novauhc.utils.ui.item.ActionItem;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -25,7 +25,13 @@ public class ScenariosUi extends CustomInventory {
 
     @Override
     public void setup() {
-        fillCadre(0);
+        int color;
+        if (special) {
+            color = getConfig().getInt("menu.scenario.special.color");
+        } else {
+            color = getConfig().getInt("menu.scenario.color");
+        }
+        fillCadre(color);
 
         if (getLines() == 6) {
             addReturn(45, new DefaultUi(getPlayer()));
@@ -57,11 +63,14 @@ public class ScenariosUi extends CustomInventory {
             int slot = calculateSlot(positionInCategory);
 
             ItemCreator item = scenario.getItem()
+                    .setName("§8┃ §f" + scenario.getName() + ": " + (scenario.isActive() ? "§2Activé" : "§cDésactivé"))
                     .addLore("")
-                    .addLore(ChatColor.YELLOW + "► Clic gauche pour " + ChatColor.GREEN + "Activer")
-                    .addLore(ChatColor.YELLOW + "► Clic droit pour " + ChatColor.RED + "Désactiver")
-                    .addLore("")
-                    .setName("§7" + scenario.getName() + ": " + (scenario.isActive() ? "§2Activé" : "§cDésactivé"))
+                    .addLore(CommonString.CLICK_HERE_TO_TOGGLE.getMessage());
+
+            if (scenario.isSpecial()) {
+                item.addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§lOuvrir la configuration");
+            }
+            item.addLore("")
                     .setAmount(scenario.isActive() ? 1 : 0);
 
             addItem(new ActionItem(categoryForThisItem, slot, item) {

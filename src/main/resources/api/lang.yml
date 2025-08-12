@@ -31,9 +31,15 @@ menu:
   scenario:
     title: "§f(§c!§f)§c Configuration"
     color: 4
+    ig:
+      title: "§f(§c!§f)§c Configuration"
+      color: 4
     special:
       title: "§f(§c!§f)§c Configuration"
       color: 4
+      ig:
+        title: "§f(§c!§f)§c Configuration"
+        color: 4
   border:
     title: "§f(§c!§f)§c Configuration"
     color: 4

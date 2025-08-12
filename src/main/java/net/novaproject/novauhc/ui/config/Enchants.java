@@ -1,33 +1,34 @@
 package net.novaproject.novauhc.ui.config;
 
+import net.novaproject.novauhc.Common;
 import org.bukkit.enchantments.Enchantment;
 
 public enum Enchants {
-    PROTECTION_ENVIRONMENTAL(Enchantment.PROTECTION_ENVIRONMENTAL, "§8┃ §cProtection", 0, 50, 4),
-    FIRE_PROTECTION(Enchantment.PROTECTION_FIRE, "§8┃ §cFire Protection", 0, 50, 4),
-    FEATHER_FALLING(Enchantment.PROTECTION_FALL, "§8┃ §cFeather Falling", 0, 50, 4),
-    BLAST_PROTECTION(Enchantment.PROTECTION_EXPLOSIONS, "§8┃ §cBlast Protection", 0, 50, 4),
-    PROJECTILE_PROTECTION(Enchantment.PROTECTION_PROJECTILE, "§8┃ §cProjectile Protection", 0, 50, 4),
-    RESPIRATION(Enchantment.OXYGEN, "§8┃ §cRespiration", 0, 50, 3),
-    AQUA_AFFINITY(Enchantment.WATER_WORKER, "§8┃ §cAqua Affinity", 0, 50, 1),
-    THORNS(Enchantment.THORNS, "§8┃ §cThorns", 0, 50, 3),
-    DEPTH_STRIDERS(Enchantment.DEPTH_STRIDER, "§8┃ §cDepth Strider", 0, 50, 3),
-    SHARPNESS(Enchantment.DAMAGE_ALL, "§8┃ §cSharpness", 0, 50, 5),
-    SMITE(Enchantment.DAMAGE_UNDEAD, "§8┃ §cSmite", 0, 50, 5),
-    BANE_OF_ARTHROPODS(Enchantment.DAMAGE_ARTHROPODS, "§8┃ §cBane of Arthropods", 0, 50, 5),
-    KNOCKBACK(Enchantment.KNOCKBACK, "§8┃ §cKnockback", 0, 50, 2),
-    FIRE_ASPECT(Enchantment.FIRE_ASPECT, "§8┃ §cFire Aspect", 0, 50, 2),
-    LOOTING(Enchantment.LOOT_BONUS_MOBS, "§8┃ §cLooting", 0, 50, 3),
-    EFFICIENCY(Enchantment.DIG_SPEED, "§8┃ §cEfficiency", 0, 50, 5),
-    SILK_TOUCH(Enchantment.SILK_TOUCH, "§8┃ §cSilk Touch", 0, 1, 1),
-    UNBREAKING(Enchantment.DURABILITY, "§8┃ §cUnbreaking", 0, 50, 3),
-    FORTUNE(Enchantment.LOOT_BONUS_BLOCKS, "§8┃ §cFortune", 0, 50, 3),
-    POWER(Enchantment.ARROW_DAMAGE, "§8┃ §cPower", 0, 50, 5),
-    PUNCH(Enchantment.ARROW_KNOCKBACK, "§8┃ §cPunch", 0, 50, 2),
-    FLAME(Enchantment.ARROW_FIRE, "§8┃ §cFlame", 0, 1, 1),
-    INFINITY(Enchantment.ARROW_INFINITE, "§8┃ §cInfinity", 0, 1, 1),
-    LUCK_OF_THE_SEA(Enchantment.LUCK, "§8┃ §cLuck of the Sea", 0, 100, 3),
-    LURE(Enchantment.LURE, "§8┃ §cLure", 0, 100, 3);
+    PROTECTION_ENVIRONMENTAL(Enchantment.PROTECTION_ENVIRONMENTAL, "§8┃ " + Common.get().getMainColor() + "Protection", 0, 50, 4),
+    FIRE_PROTECTION(Enchantment.PROTECTION_FIRE, "§8┃ " + Common.get().getMainColor() + "Fire Protection", 0, 50, 4),
+    FEATHER_FALLING(Enchantment.PROTECTION_FALL, "§8┃ " + Common.get().getMainColor() + "Feather Falling", 0, 50, 4),
+    BLAST_PROTECTION(Enchantment.PROTECTION_EXPLOSIONS, "§8┃ " + Common.get().getMainColor() + "Blast Protection", 0, 50, 4),
+    PROJECTILE_PROTECTION(Enchantment.PROTECTION_PROJECTILE, "§8┃ " + Common.get().getMainColor() + "Projectile Protection", 0, 50, 4),
+    RESPIRATION(Enchantment.OXYGEN, "§8┃ " + Common.get().getMainColor() + "Respiration", 0, 50, 3),
+    AQUA_AFFINITY(Enchantment.WATER_WORKER, "§8┃ " + Common.get().getMainColor() + "Aqua Affinity", 0, 50, 1),
+    THORNS(Enchantment.THORNS, "§8┃ " + Common.get().getMainColor() + "Thorns", 0, 50, 3),
+    DEPTH_STRIDERS(Enchantment.DEPTH_STRIDER, "§8┃ " + Common.get().getMainColor() + "Depth Strider", 0, 50, 3),
+    SHARPNESS(Enchantment.DAMAGE_ALL, "§8┃ " + Common.get().getMainColor() + "Sharpness", 0, 50, 5),
+    SMITE(Enchantment.DAMAGE_UNDEAD, "§8┃ " + Common.get().getMainColor() + "Smite", 0, 50, 5),
+    BANE_OF_ARTHROPODS(Enchantment.DAMAGE_ARTHROPODS, "§8┃ " + Common.get().getMainColor() + "Bane of Arthropods", 0, 50, 5),
+    KNOCKBACK(Enchantment.KNOCKBACK, "§8┃ " + Common.get().getMainColor() + "Knockback", 0, 50, 2),
+    FIRE_ASPECT(Enchantment.FIRE_ASPECT, "§8┃ " + Common.get().getMainColor() + "Fire Aspect", 0, 50, 2),
+    LOOTING(Enchantment.LOOT_BONUS_MOBS, "§8┃ " + Common.get().getMainColor() + "Looting", 0, 50, 3),
+    EFFICIENCY(Enchantment.DIG_SPEED, "§8┃ " + Common.get().getMainColor() + "Efficiency", 0, 50, 5),
+    SILK_TOUCH(Enchantment.SILK_TOUCH, "§8┃ " + Common.get().getMainColor() + "Silk Touch", 0, 1, 1),
+    UNBREAKING(Enchantment.DURABILITY, "§8┃ " + Common.get().getMainColor() + "Unbreaking", 0, 50, 3),
+    FORTUNE(Enchantment.LOOT_BONUS_BLOCKS, "§8┃ " + Common.get().getMainColor() + "Fortune", 0, 50, 3),
+    POWER(Enchantment.ARROW_DAMAGE, "§8┃ " + Common.get().getMainColor() + "Power", 0, 50, 5),
+    PUNCH(Enchantment.ARROW_KNOCKBACK, "§8┃ " + Common.get().getMainColor() + "Punch", 0, 50, 2),
+    FLAME(Enchantment.ARROW_FIRE, "§8┃ " + Common.get().getMainColor() + "Flame", 0, 1, 1),
+    INFINITY(Enchantment.ARROW_INFINITE, "§8┃ " + Common.get().getMainColor() + "Infinity", 0, 1, 1),
+    LUCK_OF_THE_SEA(Enchantment.LUCK, "§8┃ " + Common.get().getMainColor() + "Luck of the Sea", 0, 100, 3),
+    LURE(Enchantment.LURE, "§8┃ " + Common.get().getMainColor() + "Lure", 0, 100, 3);
 
     private final Enchantment enchantment;
 

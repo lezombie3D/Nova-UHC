@@ -163,6 +163,12 @@ public class UHCPlayer {
         }
     }
 
+    public void setEnchantLimit(Enchants ench, int value) {
+        if (value < 0) value = 0;
+        if (value > ench.getEnchantment().getMaxLevel()) value = ench.getEnchantment().getMaxLevel();
+
+        enchantLimits.put(ench, value);
+    }
     public void connect(Player player) {
 
         if (uhcManager.isLobby()) {
@@ -193,17 +199,18 @@ public class UHCPlayer {
                 if (!player.hasPermission("novauhc.host")) {
                     attachment.setPermission("novauhc.host", true);
                 }
-                ItemCreator menuconf = new ItemCreator(Material.REDSTONE_COMPARATOR)
-                        .setName(ChatColor.YELLOW + "Configurer");
-                ItemCreator item = new ItemCreator(Material.NETHER_STAR).setName(ChatColor.GOLD + "Salle des règles");
-                player.getInventory().setItem(8, item.getItemstack());
-                player.getInventory().setItem(4, menuconf.getItemstack());
+
+
                 TeamsTagsManager.setNameTag(player, "host", "[§cHost§r] ", "");
             } else {
                 attachment.unsetPermission("novauhc.host");
             }
-            ItemCreator team = new ItemCreator(Material.BANNER).setName(ChatColor.DARK_PURPLE + "Team");
-            player.getInventory().setItem(0, team.getItemstack());
+
+            player.getInventory().setItem(0, Common.get().getTeamItem().getItemstack());
+            player.getInventory().setItem(2, Common.get().getActiveRole().getItemstack());
+            player.getInventory().setItem(4, Common.get().getConfigItem().getItemstack());
+            player.getInventory().setItem(6, Common.get().getActiveScenario().getItemstack());
+            player.getInventory().setItem(8, Common.get().getReglesItem().getItemstack());
             updateScoreboard(player);
 
             for (Player player1 : Bukkit.getOnlinePlayers()) {

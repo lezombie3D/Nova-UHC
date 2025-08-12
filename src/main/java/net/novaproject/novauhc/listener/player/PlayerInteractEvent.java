@@ -1,22 +1,27 @@
 package net.novaproject.novauhc.listener.player;
 
+import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.scenario.normal.GoldenHead;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.ui.DefaultUi;
+import net.novaproject.novauhc.ui.inGameScenario;
 import net.novaproject.novauhc.ui.player.inGameTeamUi;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 
 public class PlayerInteractEvent implements Listener {
@@ -29,27 +34,37 @@ public class PlayerInteractEvent implements Listener {
         if (UHCManager.get().isLobby()) {
             ItemStack item = event.getItem();
             if (item != null) {
-                ItemMeta meta = item.getItemMeta();
-                if (meta == null || !meta.hasDisplayName()) return;
-
-                if (item.getType() == Material.REDSTONE_COMPARATOR &&
-                        meta.getDisplayName().equals(ChatColor.YELLOW + "Configurer") &&
-                        (player.hasPermission("novauhc.host") || player.hasPermission("novauhc.cohost"))) {
-                    new DefaultUi(player).open();
-                    return;
-                }
-                if (item.getType() == Material.BANNER &&
-                        meta.getDisplayName().equals(ChatColor.DARK_PURPLE + "Team")) {
-                    new inGameTeamUi(player).open();
-                    return;
-                }
-                if (item.getType() == Material.NETHER_STAR && meta.getDisplayName().equals(ChatColor.GOLD + "Salle des règles") && (player.hasPermission("novauhc.host") || player.hasPermission("novauhc.cohost"))) {
-
-                    for (Player p : Bukkit.getOnlinePlayers()) {
-                        Location loc = new Location(p.getWorld(), 39, 61, -13);
-                        p.teleport(loc);
+                if ((player.hasPermission("novauhc.host") || player.hasPermission("novauhc.cohost"))) {
+                    if (item.isSimilar(Common.get().getConfigItem().getItemstack())) {
+                        new DefaultUi(player).open();
+                        return;
                     }
-                    return;
+                    if (item.isSimilar(Common.get().getTeamItem().getItemstack())) {
+                        new inGameTeamUi(player).open();
+                        return;
+                    }
+                    if (item.isSimilar(Common.get().getActiveRole().getItemstack())) {
+                        new inGameScenario(player, true).open();
+                        return;
+                    }
+                    if (item.isSimilar(Common.get().getActiveScenario().getItemstack())) {
+                        new inGameScenario(player).open();
+                        return;
+                    }
+                    if (item.isSimilar(Common.get().getReglesItem().getItemstack())) {
+                        if (UHCManager.get().getWaitState().equals(UHCManager.WaitState.WAIT_STATE)) {
+                            UHCManager.get().setWaitState(UHCManager.WaitState.LOBBY_STATE);
+                            for (Player p : Bukkit.getOnlinePlayers()) {
+                                p.teleport(Common.get().getLobbySpawn());
+                            }
+                        } else {
+                            UHCManager.get().setWaitState(UHCManager.WaitState.WAIT_STATE);
+                            for (Player p : Bukkit.getOnlinePlayers()) {
+                                p.teleport(Common.get().getRulesSpawn());
+                            }
+                        }
+                        return;
+                    }
                 }
             }
         }
@@ -71,10 +86,24 @@ public class PlayerInteractEvent implements Listener {
     }
 
     @EventHandler
+    public void onDrop(PlayerDropItemEvent event) {
+        if (UHCManager.get().isLobby()) {
+            event.setCancelled(true);
+            return;
+        }
+        ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
+            scenario.onDrop(event);
+        });
+    }
+    @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
         Player player = (Player) event.getWhoClicked();
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
+        if (UHCManager.get().isLobby()) {
+            event.setCancelled(true);
+            return;
+        }
         if (event.isShiftClick()) {
             ItemStack clicked = event.getCurrentItem();
             if (isDiamondArmor(clicked)) {

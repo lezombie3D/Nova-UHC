@@ -42,6 +42,11 @@ public abstract class ConfigVarUi extends CustomInventory {
 
     private void updateValue(int delta) {
         int newValue = change + delta;
+        if (limitMax == 0) {
+            onChange(newValue);
+            refresh();
+            return;
+        }
         if (newValue < limitMin || newValue > limitMax) return;
         change = newValue;
         onChange(change);

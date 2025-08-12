@@ -72,33 +72,33 @@ public class LimiteStuffUi extends CustomInventory {
             addItem(new ActionItem(i, new ItemCreator(Material.ENCHANTED_BOOK)
                     .setName(enchants.getName())
                     .addLore("")
-                    .addLore(" §8» §fActuel : §3§l" + getUHCPlayer().getEnchantLimits().get(enchants))
+                    .addLore(" §8» §fActuel : §3§l" + enchants.getConfigValue())
                     .addLore("")
                     .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
                     .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
                     .addLore("")) {
-                final int curent_value = enchants.getConfigValue();
+
 
                 @Override
                 public void onClick(InventoryClickEvent e) {
                     if (e.isLeftClick()) {
                         UHCPlayerManager.get().getOnlineUHCPlayers().forEach(uhcPlayer -> {
-                            for (Enchants uhcEnchants : getUHCPlayer().getEnchantLimits().keySet()) {
-                                if (uhcEnchants.equals(enchants)) {
-                                    uhcEnchants.setConfigValue(curent_value + 1);
-                                }
-                            }
+                            int current = uhcPlayer.getEnchantLimits().get(enchants);
+                            int newValue = Math.min(current + 1, enchants.getMax());
+                            uhcPlayer.setEnchantLimit(enchants, newValue);
                         });
+                        enchants.addConfigValue();
+                        openAll();
                     }
 
                     if (e.isRightClick()) {
                         UHCPlayerManager.get().getOnlineUHCPlayers().forEach(uhcPlayer -> {
-                            for (Enchants uhcEnchants : getUHCPlayer().getEnchantLimits().keySet()) {
-                                if (uhcEnchants.equals(enchants)) {
-                                    uhcEnchants.setConfigValue(curent_value - 1);
-                                }
-                            }
+                            int current = uhcPlayer.getEnchantLimits().get(enchants);
+                            int newValue = Math.max(current - 1, enchants.getMin());
+                            uhcPlayer.setEnchantLimit(enchants, newValue);
                         });
+                        enchants.removeConfigValue();
+                        openAll();
                     }
                 }
             });

@@ -101,7 +101,7 @@ public abstract class Scenario {
 
     }
 
-    public void onDrop(Player player, PlayerDropItemEvent event) {
+    public void onDrop(PlayerDropItemEvent event) {
 
     }
     public void onPlayerInteract(Player player,PlayerInteractEvent event){

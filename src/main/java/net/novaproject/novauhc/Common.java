@@ -31,6 +31,7 @@ public class Common {
     private ItemCreator teamItem;
     private ItemCreator activeScenario;
     private ItemCreator activeRole;
+    private ItemCreator reglesItem;
 
 
     public static Common get() {
@@ -39,6 +40,7 @@ public class Common {
 
     public void setup() {
         getServerInfo();
+        loadItems();
         LobbyCreator.cloneWorld(ConfigUtils.getWorldConfig().getString("world_lobby.lobby_template"), ConfigUtils.getWorldConfig().getString("world_lobby.lobby_target"));
         new WorldGenerator(Main.get(), arenaName);
 
@@ -60,8 +62,10 @@ public class Common {
     public void loadItems() {
         configItem = (new ItemCreator(Material.REDSTONE_COMPARATOR))
                 .setName("§b§lConfigurer la partie §8§l▪ §f§lClic-droit").setGlow(true);
-        teamItem = (new ItemCreator(Material.BANNER)).setName("§f§lChoisir une équipe §8§l▪ §f§lClic-droit");
         teamItem = (new ItemCreator(Material.BANNER)).setName("§f§lChoisir une équipe " + Common.get().getMainColor() + "§l▪ §f§lClic-droit");
+        activeScenario = (new ItemCreator(Material.BOOK)).setName("§f§lScénarios actifs " + Common.get().getMainColor() + "§l▪ §f§lClic-droit");
+        activeRole = (new ItemCreator(Material.PAPER)).setName("§f§lMode de Jeu actifs " + Common.get().getMainColor() + "§l▪ §f§lClic-droit");
+        reglesItem = (new ItemCreator(Material.NETHER_STAR)).setName("§f§lTéléportation " + Common.get().getMainColor() + "§l▪ §f§lClic-droit");
     }
 
     public World getArena() {
