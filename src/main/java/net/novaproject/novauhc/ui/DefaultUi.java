@@ -21,7 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DefaultUi extends CustomInventory {
@@ -50,23 +49,23 @@ public class DefaultUi extends CustomInventory {
                 .addLore("");
 
         ItemCreator scenarui = (new ItemCreator(Material.BOOK))
-                .setName("§8┃ §fGestion des " + Common.get().getMainColor() + "scénarios")
+                .setName(CommonString.MENU_SCENARIOS_TITLE.getMessage())
                 .addLore("")
-                .addLore(" §8» §fAccès §f: §6§lHost")
+                .addLore(CommonString.MENU_SCENARIOS_ACCESS.getMessage())
                 .addLore("")
-                .addLore("  §8┃ §fPermet d'§aajouter§f des scénarios")
-                .addLore("  §8┃ §fqui dynamiseront la " + Common.get().getMainColor() + "partie§f.")
+                .addLore(CommonString.MENU_SCENARIOS_DESCRIPTION_1.getMessage())
+                .addLore(CommonString.MENU_SCENARIOS_DESCRIPTION_2.getMessage())
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
 
         ItemCreator special = (new ItemCreator(Material.PRISMARINE_SHARD))
-                .setName("§8┃ §fMode de " + Common.get().getMainColor() + "jeu")
+                .setName(CommonString.MENU_GAMEMODE_TITLE.getMessage())
                 .addLore("")
-                .addLore(" §8» §fAccès §f: §6§lHost")
+                .addLore(CommonString.MENU_GAMEMODE_ACCESS.getMessage())
                 .addLore("")
-                .addLore("  §8┃ §fPermet de modifer les options")
-                .addLore("  §8┃ " + Common.get().getMainColor() + "liées§f au mode de jeu §aactif§f.")
+                .addLore(CommonString.MENU_GAMEMODE_DESCRIPTION_1.getMessage())
+                .addLore(CommonString.MENU_GAMEMODE_DESCRIPTION_2.getMessage())
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
@@ -137,12 +136,12 @@ public class DefaultUi extends CustomInventory {
                 .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
                 .addLore("");
 
-        ItemCreator world = UHCUtils.createCustomButon("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmM2MjExMGQ4MTg4NDQxZDIxNzk0NDM0ZjY3ZDEyYTAyMWI3NDAyYzhkYWE0MmQ0ZmVhMzIzZTdlMTllMGJiNyJ9fX0=", "§8┃ §fMonde", null)
+        ItemCreator world = UHCUtils.createCustomButon("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmM2MjExMGQ4MTg4NDQxZDIxNzk0NDM0ZjY3ZDEyYTAyMWI3NDAyYzhkYWE0MmQ0ZmVhMzIzZTdlMTllMGJiNyJ9fX0=", CommonString.MENU_WORLD_TITLE.getMessage(), null)
                 .addLore("")
-                .addLore(" §8» §fAccès §f: §6§lHost")
+                .addLore(CommonString.MENU_WORLD_ACCESS.getMessage())
                 .addLore("")
-                .addLore("  §8┃ §fPermet de configurer les")
-                .addLore("  §8┃ §paramètres de la §2map§f.")
+                .addLore(CommonString.MENU_WORLD_DESCRIPTION_1.getMessage())
+                .addLore(CommonString.MENU_WORLD_DESCRIPTION_2.getMessage())
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
@@ -151,20 +150,22 @@ public class DefaultUi extends CustomInventory {
                 : Material.ENDER_PEARL;
 
         String name = UHCManager.get().getWaitState().equals(UHCManager.WaitState.WAIT_STATE)
-                ? "§8┃ §fTéléportation au §alobby"
-                : "§8┃ §fTéléportation à la §asalle des règles";
+                ? CommonString.MENU_TP_LOBBY_TITLE.getMessage()
+                : CommonString.MENU_TP_RULES_TITLE.getMessage();
 
         String destination = UHCManager.get().getWaitState().equals(UHCManager.WaitState.WAIT_STATE)
-                ? "au point d'apparition"
-                : "dans la salle des règles";
+                ? CommonString.MENU_TP_LOBBY_DESTINATION.getMessage()
+                : CommonString.MENU_TP_RULES_DESTINATION.getMessage();
+
+        String description2 = CommonString.MENU_TP_DESCRIPTION_2.getMessage().replace("%destination%", destination);
 
         ItemCreator regles = new ItemCreator(material)
                 .setName(name)
                 .addLore("")
                 .addLore(" §8» §fAccès §f: §6§lHost")
                 .addLore("")
-                .addLore("  §8┃ §fPermet de téléporter les §ajoueurs")
-                .addLore("  §8┃ §f" + destination + "§f.")
+                .addLore(CommonString.MENU_TP_DESCRIPTION_1.getMessage())
+                .addLore(description2)
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
@@ -172,13 +173,13 @@ public class DefaultUi extends CustomInventory {
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
         meta.setOwner(getPlayer().getName());
         skull.setItemMeta(meta);
-        ItemCreator slot = new ItemCreator(skull).setName("§8┃ §fSlots")
-                .setLores(Arrays.asList(
-                        "  §8┃ §fVous permet de " + Common.get().getMainColor() + "modifier",
-                        "  §8┃ §fle nombre de " + Common.get().getMainColor() + "joueurs§f autorisés",
-                        "  §8┃ §fà se §aconnecter§f à la " + Common.get().getMainColor() + "partie§f.",
-                        ""
-                ));
+        ItemCreator slot = new ItemCreator(skull).setName(CommonString.MENU_SLOTS_TITLE.getMessage())
+                .addLore("")
+                .addLore(CommonString.MENU_SLOTS_ACCESS.getMessage())
+                .addLore("")
+                .addLore(CommonString.MENU_SLOTS_DESCRIPTION_1.getMessage())
+                .addLore(CommonString.MENU_SLOTS_DESCRIPTION_2.getMessage())
+                .addLore("");
 
         addMenu(16, world, new WorldUi(getPlayer()));
         addItem(new ActionItem(6, regles) {
@@ -258,24 +259,24 @@ public class DefaultUi extends CustomInventory {
     private ItemCreator getWool(boolean started) {
         ItemCreator dyec = new ItemCreator(Material.INK_SACK).setDurability((short) (started ? 8 : 10));
         List<String> lore = new ArrayList<>();
-        lore.add("§8➤ §fTout est §aprêt §f?");
-        lore.add("§8➤ §fAccès : §eHost");
+        lore.add(CommonString.MENU_LAUNCH_READY_QUESTION.getMessage());
+        lore.add(CommonString.MENU_LAUNCH_ACCESS.getMessage());
         lore.add("");
-        lore.add("§7Permet de lancer la " + Common.get().getMainColor() + "partie §7si");
-        lore.add("§7vous avez fini la config de la " + Common.get().getMainColor() + "partie§7.");
+        lore.add(CommonString.MENU_LAUNCH_START_DESC_1.getMessage());
+        lore.add(CommonString.MENU_LAUNCH_START_DESC_2.getMessage());
         lore.add("");
-        lore.add("§8» §fCliquez pour §aactiver§f.");
+        lore.add(CommonString.MENU_LAUNCH_ACTION_START.getMessage());
         lore.add("");
         List<String> lore2 = new ArrayList<>();
-        lore2.add("§8➤ §fPas sûr ? §cArrête§f !");
-        lore2.add("§8➤ §fAccès : §eHost");
+        lore2.add(CommonString.MENU_LAUNCH_CANCEL_QUESTION.getMessage());
+        lore2.add(CommonString.MENU_LAUNCH_ACCESS.getMessage());
         lore2.add("");
         lore2.add("§7Permet d’arrêter la " + Common.get().getMainColor() + "partie §7si");
-        lore2.add("§7vous avez mal fait la config de la " + Common.get().getMainColor() + "partie§7.");
+        lore2.add(CommonString.MENU_LAUNCH_CANCEL_DESC_2.getMessage());
         lore2.add("");
-        lore2.add("§8» §fCliquez pour §aactiver§f.");
+        lore2.add(CommonString.MENU_LAUNCH_ACTION_START.getMessage());
         lore2.add("");
-        dyec.setName(started ? "§cAnnuler le lancement" : "§aLancer la partie");
+        dyec.setName(started ? CommonString.MENU_LAUNCH_TITLE_CANCEL.getMessage() : CommonString.MENU_LAUNCH_TITLE_START.getMessage());
         dyec.setLores(started ? lore2 : lore);
         return dyec;
     }

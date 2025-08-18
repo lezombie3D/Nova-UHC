@@ -62,15 +62,16 @@ public class ScenariosUi extends CustomInventory {
             int positionInCategory = (currentScenario - 1) % scenariosPerPage;
             int slot = calculateSlot(positionInCategory);
 
+            String status = scenario.isActive() ? CommonString.SCENARIO_STATUS_ENABLED.getMessage() : CommonString.SCENARIO_STATUS_DISABLED.getMessage();
             ItemCreator item = scenario.getItem()
-                    .setName("§8┃ §f" + scenario.getName() + ": " + (scenario.isActive() ? "§2Activé" : "§cDésactivé"))
+                    .setName("§8┃ §f" + scenario.getName() + ": " + status)
                     .addLore("")
                     .addLore("  §8┃ §f" + scenario.getDescription())
                     .addLore("")
                     .addLore(CommonString.CLICK_HERE_TO_TOGGLE.getMessage());
 
             if (scenario.isSpecial()) {
-                item.addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§lOuvrir la configuration");
+                item.addLore(CommonString.CLICK_GAUCHE.getMessage() + CommonString.SCENARIO_OPEN_CONFIG.getMessage());
             }
             item.addLore("")
                     .setAmount(scenario.isActive() ? 1 : 0);
