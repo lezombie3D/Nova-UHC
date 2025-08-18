@@ -13,7 +13,7 @@ public class InfiniteEnchanter extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Donne beaucoup d'xp";
+        return "Les tables d'enchantement ne consomment pas de lapis-lazuli.";
     }
 
     @Override

@@ -1,12 +1,12 @@
 package net.novaproject.novauhc.scenario.role;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -74,7 +74,6 @@ public abstract class ScenarioRole<T extends Role> extends Scenario {
         }
     }
 
-
     @Override
     public void onSec(Player p) {
         int timer = UHCManager.get().getTimer();
@@ -98,7 +97,7 @@ public abstract class ScenarioRole<T extends Role> extends Scenario {
 
     public void giveRoles(){
 
-        Bukkit.broadcastMessage(ChatColor.RED + " Attribution des roles...");
+        Bukkit.broadcastMessage(CommonString.GIVING_ROLES.getMessage());
         default_roles.forEach((role, amount) -> {
             for (int i = 0; i < amount; i++) {
                 roles.add(createRoleInstance(role));

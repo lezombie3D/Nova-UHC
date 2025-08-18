@@ -1,20 +1,23 @@
 package net.novaproject.novauhc.scenario.special.beatthesanta;
 
-import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.TeamsTagsManager;
-import org.bukkit.*;
+import net.novaproject.novauhc.utils.UHCUtils;
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -48,7 +51,7 @@ public class BeatTheSanta extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Scénario de Noël avec des mécaniques spéciales liées au Père Noël.";
     }
 
     @Override
@@ -70,6 +73,16 @@ public class BeatTheSanta extends Scenario {
     }
 
     @Override
+    public ScenarioLang[] getLang() {
+        return BeatTheSantaLang.values();
+    }
+
+    @Override
+    public String getPath() {
+        return "special/bts";
+    }
+
+    @Override
     public boolean isSpecial() {
         return true;
     }
@@ -81,15 +94,16 @@ public class BeatTheSanta extends Scenario {
         if (santateam.getPlayers().contains(p)) {
             p.getPlayer().setMaxHealth(UHCPlayerManager.get().getPlayingOnlineUHCPlayers().size() + 20);
             p.getPlayer().setHealth(UHCPlayerManager.get().getPlayingOnlineUHCPlayers().size() + 20);
+            ScenarioLangManager.send(player, BeatTheSantaLang.WARNING_SANTA);
             return;
         }
         TeamsTagsManager.setNameTag(player, "lutin", "[§aLutin§f] ", "");
-        player.sendMessage(Common.get().getInfoTag() + ChatColor.RED + "Attention vous devez gagnez seul !");
+        ScenarioLangManager.send(player, BeatTheSantaLang.WARNING_LUTIN);
     }
 
     @Override
     public void onDeath(UHCPlayer uhcPlayer, UHCPlayer killer, PlayerDeathEvent event) {
-        Player player = uhcPlayer.getPlayer();
+        /*Player player = uhcPlayer.getPlayer();
         Location location = player.getLocation();
         player.setGameMode(GameMode.SPECTATOR);
         player.spigot().respawn();
@@ -98,13 +112,16 @@ public class BeatTheSanta extends Scenario {
         for (Player alive : Bukkit.getOnlinePlayers()) {
             alive.playSound(alive.getLocation(), Sound.WITHER_SPAWN, 1, 1);
         }
-        Bukkit.broadcastMessage(Common.get().getServertag() + ChatColor.RED + "Le joueur " + uhcPlayer.getPlayer().getName() + ChatColor.RED + " est mort !");
-        UHCManager.get().checkVictory();
+        UHCManager.get().checkVictory();*/
         for (UHCPlayer p : santateam.getPlayers()) {
             if (p.getPlayer().getMaxHealth() - 1 == 20) {
                 return;
             }
             p.getPlayer().setMaxHealth(p.getPlayer().getMaxHealth() - 1);
+        }
+        if (santateam.getPlayers().contains(uhcPlayer)) {
+            UHCManager.get().checkVictory();
+            ScenarioLangManager.send(uhcPlayer.getPlayer(), BeatTheSantaLang.WARNING_SANTA_DEATH);
         }
 
     }
@@ -113,38 +130,9 @@ public class BeatTheSanta extends Scenario {
     public void onSec(Player p) {
         UHCPlayer player = UHCPlayerManager.get().getPlayer(p);
         if (santateam.getPlayers().contains(player)) {
-            for (PotionEffect activeEffect : santaEffect()) {
-                player.getPlayer().removePotionEffect(activeEffect.getType());
-            }
-            for (PotionEffect effect : santaEffect()) {
-                effect.apply(p);
-            }
+            UHCUtils.applyInfiniteEffects(santaEffect(), p);
 
         }
-    }
-
-    @Override
-    public boolean hasCustomTeamTchat() {
-        return true;
-    }
-
-    @Override
-    public void onChatSpeek(Player player, String message, AsyncPlayerChatEvent event) {
-        UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
-
-        if (!uhcPlayer.isPlaying()) {
-            player.sendMessage(ChatColor.RED + "Vous n'avez pas le droit de parler !");
-            return;
-        }
-
-        if (UHCManager.get().getGameState() != UHCManager.GameState.INGAME) {
-            for (UHCPlayer lobby : UHCPlayerManager.get().getOnlineUHCPlayers()) {
-                lobby.getPlayer().sendMessage(ChatColor.DARK_GRAY + "❯ "
-                        + player.getName() + " » "
-                        + ChatColor.WHITE + message);
-            }
-        }
-
     }
 
     @Override

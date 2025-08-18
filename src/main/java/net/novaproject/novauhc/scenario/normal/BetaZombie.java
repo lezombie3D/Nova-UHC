@@ -17,7 +17,7 @@ public class BetaZombie extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Fait en sorte que les zombie drop des plume";
+        return "Fait en sorte que les zombies drop des plumes au lieu de chair pourrie.";
     }
 
     @Override

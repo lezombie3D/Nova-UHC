@@ -1,0 +1,157 @@
+# Configuration pour le scénario SlaveMarket
+# Positions pour les enchères
+enchere_place:
+  world: "arena"
+  x: 10
+  y: 130
+  z: 100
+  pitch: 0
+  yaw: 0
+
+# Position d'attente avant les enchères
+wait_place:
+  world: "arena"
+  x: 10
+  y: 130
+  z: 120
+  pitch: 0
+  yaw: 180
+
+# Configuration des positions d'équipes
+# Chaque section représente une équipe avec les positions du capitaine et de l'esclave
+team_place:
+  0:
+    captain:
+      world: "arena"
+      x: 2
+      y: 136
+      z: 89
+      pitch: 0
+      yaw: 90
+    slave:
+      world: "arena"
+      x: 2
+      y: 131
+      z: 89
+      pitch: 0
+      yaw: 90
+  1:
+    captain:
+      world: "arena"
+      x: 0
+      y: 136
+      z: 91
+      pitch: 0
+      yaw: 90
+    slave:
+      world: "arena"
+      x: 0
+      y: 131
+      z: 91
+      pitch: 0
+      yaw: 90
+  2:
+    captain:
+      world: "arena"
+      x: 0
+      y: 136
+      z: 106
+      pitch: 0
+      yaw: 90
+    slave:
+      world: "arena"
+      x: 0
+      y: 131
+      z: 106
+      pitch: 0
+      yaw: 90
+  3:
+    captain:
+      world: "arena"
+      x: 2
+      y: 136
+      z: 108
+      pitch: 0
+      yaw: 90
+    slave:
+      world: "arena"
+      x: 2
+      y: 131
+      z: 108
+      pitch: 0
+      yaw: 90
+  4:
+    captain:
+      world: "arena"
+      x: 17
+      y: 136
+      z: 108
+      pitch: 0
+      yaw: 90
+    slave:
+      world: "arena"
+      x: 17
+      y: 131
+      z: 108
+      pitch: 0
+      yaw: 90
+  5:
+    captain:
+      world: "arena"
+      x: 19
+      y: 136
+      z: 106
+      pitch: 0
+      yaw: 90
+    slave:
+      world: "arena"
+      x: 19
+      y: 131
+      z: 106
+      pitch: 0
+      yaw: 90
+  6:
+    captain:
+      world: "arena"
+      x: 19
+      y: 136
+      z: 91
+      pitch: 0
+      yaw: 90
+    slave:
+      world: "arena"
+      x: 19
+      y: 131
+      z: 91
+      pitch: 0
+      yaw: 90
+  7:
+    captain:
+      world: "arena"
+      x: 17
+      y: 136
+      z: 89
+      pitch: 0
+      yaw: 90
+    slave:
+      world: "arena"
+      x: 17
+      y: 131
+      z: 89
+      pitch: 0
+      yaw: 90
+  8:
+    captain:
+      world: "arena"
+      x: 10
+      y: 136
+      z: 85
+      pitch: 0
+      yaw: 0
+    slave:
+      world: "arena"
+      x: 10
+      y: 131
+      z: 85
+      pitch: 0
+      yaw: 0

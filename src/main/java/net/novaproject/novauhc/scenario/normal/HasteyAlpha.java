@@ -18,7 +18,7 @@ public class HasteyAlpha extends Scenario {
 
     @Override
     public String getDescription() {
-        return "hsdqhdskhqds";
+        return "Version réduite de HasteyBoy - seulement Efficacité I sur les outils.";
     }
 
     @Override

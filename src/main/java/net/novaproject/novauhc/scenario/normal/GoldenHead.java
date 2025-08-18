@@ -26,7 +26,7 @@ public class GoldenHead extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les têtes de joueurs morts peuvent être craftées en pommes dorées spéciales.";
     }
 
     @Override

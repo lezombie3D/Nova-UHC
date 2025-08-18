@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.task;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.utils.ProgressBar;
 import net.novaproject.novauhc.utils.Titles;
@@ -19,12 +20,12 @@ public class LoadingChunkTask extends BukkitRunnable {
     private final int radius;
     private final int chunkStep = 16;
 
+    private final int chunkPerAxis;
     private final double totalChunksToLoad;
     private double loadedChunks = 0;
     private double percent = 0;
 
-    private int cx;
-    private int cz;
+    private int idx = 0;
 
     private boolean finished = false;
     private boolean canceled = false;
@@ -39,11 +40,8 @@ public class LoadingChunkTask extends BukkitRunnable {
         this.nether = nether;
         this.radius = radius;
 
-        int chunkPerAxis = (radius * 2) / chunkStep;
-        this.totalChunksToLoad = Math.pow(chunkPerAxis, 2) * 2;
-
-        this.cx = -radius;
-        this.cz = -radius;
+        this.chunkPerAxis = ((radius * 2) / chunkStep) + 1;
+        this.totalChunksToLoad = chunkPerAxis * chunkPerAxis * 2;
 
         instance = this;
     }
@@ -57,7 +55,7 @@ public class LoadingChunkTask extends BukkitRunnable {
         task.runTaskTimer(Main.get(), 0L, 5L);
         task.state = LoadingTaskState.RUNNING;
 
-        Bukkit.broadcastMessage(ChatColor.GREEN + "Démarrage de la prégénération...");
+        Bukkit.broadcastMessage(CommonString.PREGEN_STARTED.getMessage());
         return task;
     }
 
@@ -66,7 +64,7 @@ public class LoadingChunkTask extends BukkitRunnable {
             instance.setCanceled(true);
             instance.cancel();
             ChunkUnloadListener.keepChunk.clear();
-            Bukkit.broadcastMessage(ChatColor.RED + "Prégénération arrêtée !");
+            Bukkit.broadcastMessage(CommonString.PREGEN_FINISHED.getMessage());
         }
     }
 
@@ -88,29 +86,34 @@ public class LoadingChunkTask extends BukkitRunnable {
 
         updateProgress();
 
+        if (loadedChunks >= totalChunksToLoad && !finished) {
+            finished = true;
+        }
+
         if (finished) {
             state = LoadingTaskState.FINISHED;
-            Bukkit.broadcastMessage(ChatColor.GREEN + "La prégénération est terminée !");
+            Bukkit.broadcastMessage(CommonString.PREGEN_FINISHED.getMessage());
             cancel();
         }
     }
 
     private void loadNextChunk() {
-        loadChunk(overworld, cx, cz);
-        loadChunk(nether, cx / 8, cz / 8);
+        if (idx >= chunkPerAxis * chunkPerAxis) return;
 
-        cx += chunkStep;
+        int xStep = idx % chunkPerAxis;
+        int zStep = idx / chunkPerAxis;
+
+        int x = -radius + (xStep * chunkStep);
+        int z = -radius + (zStep * chunkStep);
+
+        loadChunk(overworld, x, z);
         loadedChunks++;
 
-        if (cx > radius) {
-            cx = -radius;
-            cz += chunkStep;
+        loadChunk(nether, x / 8, z / 8);
+        loadedChunks++;
 
-            if (cz > radius) {
-                finished = true;
-                loadedChunks = totalChunksToLoad;
-            }
-        }
+        idx++;
+
     }
 
     private void loadChunk(World world, int x, int z) {
@@ -122,7 +125,9 @@ public class LoadingChunkTask extends BukkitRunnable {
     }
 
     private void updateProgress() {
-        percent = loadedChunks / totalChunksToLoad * 100.0;
+        percent = Math.min(loadedChunks / totalChunksToLoad * 100.0, 100.0);
+
+        if (loadedChunks >= totalChunksToLoad) percent = 100.0;
 
         String formatted = String.format("%.1f", percent);
         String progressBar = ProgressBar.getProgressBar((int) percent, 100, 40, "|", ChatColor.GREEN, ChatColor.GRAY);

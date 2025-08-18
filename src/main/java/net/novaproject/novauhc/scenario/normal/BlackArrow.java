@@ -17,7 +17,7 @@ public class BlackArrow extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les minerais de charbon donnent des flèches au lieu de charbon.";
     }
 
     @Override

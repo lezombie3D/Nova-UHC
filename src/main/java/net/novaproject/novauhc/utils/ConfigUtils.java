@@ -2,6 +2,7 @@ package net.novaproject.novauhc.utils;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,6 +29,7 @@ public class ConfigUtils {
         registerConfig(GENERAL_CONFIG_PATH);
         registerConfig(LANG_CONFIG);
         createDefaultFiles();
+        CommonString.loadMessages(getLangConfig());
     }
 
     public static void registerConfig(String path) {
@@ -35,6 +37,16 @@ public class ConfigUtils {
             REGISTERED_PATHS.add(path);
         }
     }
+
+    public static void createDefaultFiles(String path) {
+        File file = new File(Main.get().getDataFolder(), path);
+        if (!file.exists()) {
+            Main.get().saveResource(path, false);
+            Bukkit.getLogger().log(Level.INFO, "Created default config: {0}", path);
+        }
+    }
+
+
 
     private static void createDefaultFiles() {
         REGISTERED_PATHS.forEach(path -> {

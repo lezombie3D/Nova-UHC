@@ -16,7 +16,7 @@ public class NoNether extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Désactive complètement l'accès au Nether.";
     }
 
     @Override

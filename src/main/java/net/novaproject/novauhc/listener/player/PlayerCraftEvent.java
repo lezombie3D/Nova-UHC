@@ -1,6 +1,6 @@
 package net.novaproject.novauhc.listener.player;
 
-import net.novaproject.novauhc.Common;
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.scenario.normal.GoldenHead;
@@ -46,7 +46,7 @@ public class PlayerCraftEvent implements Listener {
 
         if (golden.isActive()) {
             if (item == goldenHead.getResult()) {
-                event.getWhoClicked().sendMessage(Common.get().getInfoTag() + ChatColor.RED + "Golden Head Desactivée !");
+                CommonString.BLOCKED_CRAFT_ITEM.send((Player) event.getWhoClicked());
                 event.setCancelled(true);
             }
         }
@@ -69,7 +69,7 @@ public class PlayerCraftEvent implements Listener {
             }
 
             event.setCancelled(true);
-            player.sendMessage("§cCet enchantement est désactivé.");
+            CommonString.BLOCKED_ENCHANT.send(player);
         }
     }
 
@@ -95,13 +95,13 @@ public class PlayerCraftEvent implements Listener {
                 int level = result.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL);
                 if (level > uhcPlayer.getProtectionMax()) {
                     result.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL);
-                    player.sendMessage("§cProtection " + level + " dépasse la limite (" + uhcPlayer.getProtectionMax() + "). Supprimée.");
+                    CommonString.EXEDED_LIMITE.send(player);
                 }
             } else {
                 getBlockedEnchant(uhcPlayer, result.getEnchantments())
                         .keySet()
                         .forEach(result::removeEnchantment);
-                player.sendMessage("§cCet enchantement est désactivé.");
+                CommonString.BLOCKED_ENCHANT.send(player);
             }
         }
     }
@@ -138,7 +138,7 @@ public class PlayerCraftEvent implements Listener {
                 if (result.getType() == potion.getMaterial() && !potion.isEnabled()) {
                     event.getInventory().remove(result);
                     event.setCancelled(true);
-                    player.sendMessage("§cCette potion est désactivée.");
+                    CommonString.BLOCKED_POTION.send(player);
                     player.closeInventory();
                 }
             }

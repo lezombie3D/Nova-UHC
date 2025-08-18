@@ -1,11 +1,15 @@
 package net.novaproject.novauhc.scenario;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
+import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -24,9 +28,12 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
-
+@Getter
+@Setter
 public abstract class Scenario {
 
+
+    private FileConfiguration config;
     public abstract String getName();
 
     public abstract String getDescription();
@@ -49,6 +56,10 @@ public abstract class Scenario {
 
     public boolean hasCustomTeamTchat() {
         return false;
+    }
+
+    public String getPath() {
+        return null;
     }
 
     public void enable() {
@@ -81,6 +92,17 @@ public abstract class Scenario {
 
     }
     public void setup(){
+        if (getPath() != null) {
+            String configPath = "api/scenario/" + getPath() + ".yml";
+            ConfigUtils.createDefaultFiles(configPath);
+            this.config = ConfigUtils.getConfig(configPath);
+        }
+        if (getLang() != null) {
+            for (ScenarioLang lang : getLang()) {
+                lang.setConfig(config);
+            }
+            ScenarioLangManager.loadMessages(config, getLang());
+        }
 
     }
 
@@ -88,9 +110,10 @@ public abstract class Scenario {
 
     }
 
-    public void onMeetup() {
-
+    public ScenarioLang[] getLang() {
+        return null;
     }
+
     public void onSec(Player p){
 
     }

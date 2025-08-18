@@ -18,7 +18,7 @@ public class HasteyBoy extends Scenario {
 
     @Override
     public String getDescription() {
-        return "hsdqhdskhqds";
+        return "Tous les outils craftés reçoivent automatiquement Efficacité III et Solidité I.";
     }
 
     @Override

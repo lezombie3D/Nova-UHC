@@ -18,14 +18,13 @@ public class ArrowSwitch extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les joueurs touchés par une flèche échangent leur position avec le tireur.";
     }
 
     @Override
     public ItemCreator getItem() {
         return new ItemCreator(Material.ARROW);
     }
-
 
     @Override
     public void onHit(Entity entity, Entity dammager, EntityDamageByEntityEvent event) {

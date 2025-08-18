@@ -1,6 +1,7 @@
 package net.novaproject.novauhc.scenario.special.fallenkigdom;
 
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.ui.config.ScenariosUi;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
@@ -24,8 +25,10 @@ public class FallenUi extends CustomInventory {
         addReturn(0, new ScenariosUi(getPlayer(), true));
         ItemCreator assaut = new ItemCreator(Material.DIAMOND_SWORD).setName(ChatColor.RED + "Episodes des assauts : " + ChatColor.GOLD + kingdom.getAssaut())
                 .addLore("")
-                .addLore(ChatColor.YELLOW + "► Clic gauche pour " + ChatColor.GREEN + "augmenter")
-                .addLore(ChatColor.YELLOW + "► Clic droit pour " + ChatColor.RED + "diminuer")
+                .addLore(" §8» §fAccès §f: §6§lHost")
+                .addLore("")
+                .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
+                .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
                 .addLore("");
         addItem(new ActionItem(2, assaut) {
             @Override
@@ -44,8 +47,10 @@ public class FallenUi extends CustomInventory {
         });
         ItemCreator nether = new ItemCreator(Material.NETHERRACK).setName(ChatColor.RED + "Episodes des Nether : " + ChatColor.GOLD + kingdom.getNether())
                 .addLore("")
-                .addLore(ChatColor.YELLOW + "► Clic gauche pour " + ChatColor.GREEN + "augmenter")
-                .addLore(ChatColor.YELLOW + "► Clic droit pour " + ChatColor.RED + "diminuer")
+                .addLore(" §8» §fAccès §f: §6§lHost")
+                .addLore("")
+                .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
+                .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
                 .addLore("");
         addItem(new ActionItem(4, nether) {
             @Override
@@ -64,8 +69,10 @@ public class FallenUi extends CustomInventory {
         });
         ItemCreator end = new ItemCreator(Material.ENDER_PEARL).setName(ChatColor.RED + "Episodes des End : " + ChatColor.GOLD + kingdom.getEnd())
                 .addLore("")
-                .addLore(ChatColor.YELLOW + "► Clic gauche pour " + ChatColor.GREEN + "augmenter")
-                .addLore(ChatColor.YELLOW + "► Clic droit pour " + ChatColor.RED + "diminuer")
+                .addLore(" §8» §fAccès §f: §6§lHost")
+                .addLore("")
+                .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
+                .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
                 .addLore("");
         addItem(new ActionItem(6, end) {
             @Override

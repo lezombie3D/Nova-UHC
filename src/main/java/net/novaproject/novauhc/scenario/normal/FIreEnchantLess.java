@@ -19,7 +19,7 @@ public class FIreEnchantLess extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Emepeche tout les enchantement de feu";
+        return "Désactive les enchantements liés au feu (Fire Aspect, Flame).";
     }
 
     @Override

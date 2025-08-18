@@ -1,0 +1,11 @@
+first_level: 70
+second_level: 100
+third_level: 160
+firth_damage: 4
+second_damage: 2
+third_damage: 1
+message:
+  DAMAGE_FIRST_LAYER: "Vous prenez des dégats %first_dagame% allez a la couche %first_level%!"
+  DAMAGE_SECOND_LAYER: "Vous prenez des dégats %second_damage% allez a la couche %second_level%!"
+  DAMAGE_THIRD_LAYER: "Vous prenez des dégats %third_damage% allez a la couche %third_level%!"
+  WARNING_SKY_HIGH: "Attention, vous devez monter dans le ciel !"

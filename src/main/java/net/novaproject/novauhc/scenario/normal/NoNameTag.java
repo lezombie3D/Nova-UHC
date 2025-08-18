@@ -14,7 +14,7 @@ public class NoNameTag extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Masque les noms des joueurs au-dessus de leur tête.";
     }
 
     @Override

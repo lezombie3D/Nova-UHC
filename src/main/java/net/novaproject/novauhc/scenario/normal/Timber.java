@@ -19,7 +19,7 @@ public class Timber extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Casse les arbres tel un bucherons";
+        return "Casse les arbres tel un bûcheron - un seul bloc cassé fait tomber tout l'arbre.";
     }
 
     @Override

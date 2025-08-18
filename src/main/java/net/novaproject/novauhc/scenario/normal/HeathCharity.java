@@ -19,7 +19,7 @@ public class HeathCharity extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Partage automatiquement la vie entre les membres d'une équipe.";
     }
 
     @Override

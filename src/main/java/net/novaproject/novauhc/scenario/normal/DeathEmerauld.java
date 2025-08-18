@@ -19,7 +19,7 @@ public class DeathEmerauld extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Miner une émeraude inflige des dégâts à un joueur aléatoire.";
     }
 
     @Override

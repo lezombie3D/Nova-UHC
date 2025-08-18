@@ -15,7 +15,7 @@ public class Compensation extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les joueurs reçoivent des objets en compensation de certaines actions.";
     }
 
     @Override

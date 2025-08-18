@@ -1,6 +1,7 @@
 package net.novaproject.novauhc.task;
 
 import net.novaproject.novauhc.Common;
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.ScenarioManager;
@@ -122,7 +123,7 @@ public class ScatterTask extends BukkitRunnable {
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().clear();
 
-        Bukkit.broadcastMessage(Common.get().getServertag() + "§a" + player.getName() + " a été téléporté !");
+        Bukkit.broadcastMessage(CommonString.TP_MESSAGE.getMessage(player));
         Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.NOTE_STICKS, 1, 1));
 
     }

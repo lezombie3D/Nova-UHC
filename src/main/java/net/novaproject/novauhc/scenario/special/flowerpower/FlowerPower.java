@@ -20,7 +20,7 @@ public class FlowerPower extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les fleurs donnent des pouvoirs spéciaux aux joueurs.";
     }
 
     @Override

@@ -13,7 +13,7 @@ public class NoFood extends Scenario {
 
     @Override
     public String getDescription() {
-        return "empêche les joueur de mourir de faim";
+        return "Désactive la faim - les joueurs ne perdent jamais de nourriture.";
     }
 
     @Override

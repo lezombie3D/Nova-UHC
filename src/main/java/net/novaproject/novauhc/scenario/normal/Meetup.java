@@ -15,7 +15,7 @@ public class Meetup extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Donne un équipement UHC";
+        return "Téléporte tous les joueurs au centre de la map à un moment donné.";
     }
 
     @Override

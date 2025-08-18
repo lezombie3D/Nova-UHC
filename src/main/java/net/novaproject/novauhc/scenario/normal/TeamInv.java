@@ -22,7 +22,7 @@ public class TeamInv extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les membres d'une équipe partagent leurs inventaires.";
     }
 
     @Override

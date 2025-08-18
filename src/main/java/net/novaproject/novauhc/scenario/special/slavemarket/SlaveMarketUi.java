@@ -43,7 +43,7 @@ public class SlaveMarketUi extends CustomInventory {
                             return;
                         }
                         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
-                        if (slave.getOwners().size() + 1 <= 8) {
+                        if (slave.getOwners().size() + 1 <= slave.getTeamPlaces().size()) {
                             slave.addOwner(uhcPlayer);
                         } else {
                             getPlayer().sendMessage(ChatColor.RED + "Impossible, il y a déjà 8 propriétaires !");

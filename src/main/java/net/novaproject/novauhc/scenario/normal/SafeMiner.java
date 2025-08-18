@@ -19,7 +19,7 @@ public class SafeMiner extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Protège les joueurs des dégâts de lave et d'étouffement en minant.";
     }
 
     @Override

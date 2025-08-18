@@ -31,7 +31,7 @@ public class BuffKiller extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Tuer un joueur donne des effets de potion bénéfiques au tueur.";
     }
 
     @Override

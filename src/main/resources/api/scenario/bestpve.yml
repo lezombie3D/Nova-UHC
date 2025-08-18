@@ -1,0 +1,6 @@
+timer: 600
+heart_gain: 1
+message:
+  LIST_QUIT: "Vous avez quittez la list BestPve. Vous la rejoidnrais de nouveaux dans %best_timer%"
+  LIST_JOIN: "Vous avez rejoint la list BestPve. Attention a ne plus prendre de degats !"
+  GAIN_MESSAGE: "Vous avez gagné §a%heart_gain% §fcoeur(s) !"

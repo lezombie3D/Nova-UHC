@@ -28,7 +28,7 @@ public class DoubleOre extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Doubles les minerais";
+        return "Double la quantité de minerais obtenus lors du minage.";
     }
 
     @Override

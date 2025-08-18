@@ -1,10 +1,12 @@
 package net.novaproject.novauhc.listener.player;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.ui.config.DropItemRate;
+import net.novaproject.novauhc.utils.Titles;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,16 +38,20 @@ public class PlayerBlockEvent implements Listener {
 
         Material type = block.getType();
 
-        if (type == Material.DIAMOND_ORE && UHCManager.get().getDimamondLimit() != 0) {
+        if (type == Material.DIAMOND_ORE
+                && (UHCManager.get().getDimamondLimit() != 0 || uhcPlayer.getLimite() != 0)) {
             if (uhcPlayer.getDiamondmined() < uhcPlayer.getLimite()) {
                 uhcPlayer.setMinedDiamond(uhcPlayer.getDiamondmined() + 1);
+                new Titles().sendActionText(player, CommonString.DIAMOND_LIMIT_INCREASED.getMessage(uhcPlayer.getPlayer()));
             } else {
                 event.setCancelled(true);
                 block.setType(Material.AIR);
                 dropNaturally(block, new ItemStack(Material.GOLD_INGOT, 2));
+                CommonString.DIAMOND_LIMIT_REACHED.send(player);
                 return;
             }
         }
+
 
         Random random = new Random();
 

@@ -15,7 +15,7 @@ public class CatEye extends Scenario {
 
     @Override
     public String getDescription() {
-        return "PErmet d'avoir nigth vision permanent";
+        return "Donne une vision nocturne permanente à tous les joueurs.";
     }
 
     @Override

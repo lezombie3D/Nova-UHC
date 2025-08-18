@@ -3,6 +3,7 @@ package net.novaproject.novauhc.uhcplayer;
 import lombok.Getter;
 import lombok.Setter;
 import net.novaproject.novauhc.Common;
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
@@ -33,6 +34,7 @@ public class UHCPlayer {
     private final UUID uuid;
     private boolean playing = false;
     private final String hostname = PlayerConnectionEvent.getHost().getName();
+    private Player killer;
     public List<ItemStack> deathIteam = new LinkedList<>();
     private Optional<UHCTeam> team = Optional.empty();
     private boolean bypassed = false;
@@ -73,7 +75,7 @@ public class UHCPlayer {
         if (!team.isPresent()) {
 
             this.team.ifPresent(uhcTeam -> {
-                player.sendMessage(Common.get().getServertag() + "Vous avez quitté l'équipe " + uhcTeam.getName());
+                CommonString.SUCCESSFUL_MODIFICATION.send(getPlayer());
                 uhcTeam.getTeam().removePlayer(getOfflinePlayer());
             });
 
@@ -86,7 +88,7 @@ public class UHCPlayer {
             UHCTeam next = team.get();
 
             if (next.getPlayers().size() == team_size && team_size != 1) {
-                player.sendMessage(Common.get().getServertag() + "sorry mais c'est full");
+                CommonString.DISABLE_ACTION.send(getPlayer());
             } else {
 
                 this.team.ifPresent(uhcTeam -> {
@@ -94,7 +96,7 @@ public class UHCPlayer {
                 });
 
                 this.team = team;
-                player.sendMessage(Common.get().getServertag() + "vous avez rejoins l'équipe " + next.getName());
+                CommonString.SUCCESSFUL_MODIFICATION.send(getPlayer());
                 next.getTeam().addPlayer(getOfflinePlayer());
 
             }
@@ -141,7 +143,7 @@ public class UHCPlayer {
         if (!team.isPresent()) {
 
             this.team.ifPresent(uhcTeam -> {
-                player.sendMessage(Common.get().getServertag() + "Vous avez quitté l'équipe " + uhcTeam.getName());
+                CommonString.SUCCESSFUL_MODIFICATION.send(getPlayer());
                 uhcTeam.getTeam().removePlayer(getOfflinePlayer());
             });
 
@@ -156,7 +158,7 @@ public class UHCPlayer {
             });
 
             this.team = team;
-            player.sendMessage(Common.get().getServertag() + "vous avez rejoins l'équipe " + next.getName());
+
             next.getTeam().addPlayer(getOfflinePlayer());
 
 
@@ -195,82 +197,37 @@ public class UHCPlayer {
             }
             PermissionAttachment attachment = player.addAttachment(Main.get());
             Main.getDatabaseManager().connectPlayer(player.getUniqueId());
-            if (player == PlayerConnectionEvent.getHost()) {
+            if (player.equals(PlayerConnectionEvent.getHost())) {
                 if (!player.hasPermission("novauhc.host")) {
                     attachment.setPermission("novauhc.host", true);
                 }
-
-
+                CommonString.WELCOME_HOST.send(player);
+                System.out.println(CommonString.WELCOME_HOST.getMessage(player));
                 TeamsTagsManager.setNameTag(player, "host", "[§cHost§r] ", "");
             } else {
                 attachment.unsetPermission("novauhc.host");
+                CommonString.WELCOME.send(player);
             }
 
-            player.getInventory().setItem(0, Common.get().getTeamItem().getItemstack());
-            player.getInventory().setItem(2, Common.get().getActiveRole().getItemstack());
-            player.getInventory().setItem(4, Common.get().getConfigItem().getItemstack());
-            player.getInventory().setItem(6, Common.get().getActiveScenario().getItemstack());
-            player.getInventory().setItem(8, Common.get().getReglesItem().getItemstack());
             updateScoreboard(player);
-
+            UHCUtils.giveLobbyItems(getPlayer());
             for (Player player1 : Bukkit.getOnlinePlayers()) {
                 new Titles().sendActionText(player1, ChatColor.GREEN + player.getName() + " (" + Bukkit.getOnlinePlayers().size() + "/" + uhcManager.getSlot() + ")");
             }
             String grade = Main.getDatabaseManager().getGrade(player.getUniqueId());
-            switch (grade) {
-                case "default":
-                    TeamsTagsManager.setNameTag(player, "default", "[§fJoueur§r] ", "");
-                    Bukkit.broadcastMessage("§f[§a+§f] " + player.getName() + " §fa rejoint le serveur");
-                    break;
-                case "vip":
-                    TeamsTagsManager.setNameTag(player, "vip", "[§6VIP§r] ", "");
-                    Bukkit.broadcastMessage("§f[§a+§f] Le §6Vip §f" + player.getName() + " §fa rejoint le serveur");
-                    player.setAllowFlight(true);
-
-                    break;
-                case "host":
-                    TeamsTagsManager.setNameTag(player, "host", "[§dHost§r] ", "");
-                    Bukkit.broadcastMessage("§f[§a+§f] L' §dHost §f" + player.getName() + " §fa rejoint le serveur");
-
-                    break;
-                case "build":
-                    TeamsTagsManager.setNameTag(player, "build", "[§bBuild§r] ", "");
-                    Bukkit.broadcastMessage("§f[§a+§f] Le §aBuilder §f" + player.getName() + " §fa rejoint le serveur !");
-                    player.setAllowFlight(true);
-                    break;
-                case "modo":
-                    TeamsTagsManager.setNameTag(player, "modo", "[§5Modo§r] ", "");
-                    Bukkit.broadcastMessage("§f[§a+§f] Le §5Modérateur §f" + player.getName() + " §fa rejoint le serveur !");
-                    player.setAllowFlight(true);
-                    break;
-                case "dev":
-                    TeamsTagsManager.setNameTag(player, "dev", "[§2Dev§r] ", "");
-                    Bukkit.broadcastMessage("§f[§a+§f] Le §2Développer §f" + player.getName() + " §fa rejoint le serveur !");
-                    player.setAllowFlight(true);
-                    player.setOp(true);
-                    break;
-                case "admin":
-                    TeamsTagsManager.setNameTag(player, "admin", "[§cAdmin§r] ", "");
-                    Bukkit.broadcastMessage("§f[§a+§f] L' §cAdministateur §f" + player.getName() + " §fa rejoint le serveur !");
-                    player.setAllowFlight(true);
-                    player.setOp(true);
-                    break;
-                default:
-                    break;
-            }
-
         } else {
 
             if (!playing) {
                 player.teleport(new Location(Common.get().getArena(), 0, 100, 0));
                 player.setGameMode(GameMode.SPECTATOR);
                 TeamsTagsManager.setNameTag(player, "zzzzz", "§8§o[Spec] ", "");
+                CommonString.WELCOME_SPECTATOR.send(player);
                 updateScoreboard(player);
 
             } else {
 
                 for (Player player1 : Bukkit.getOnlinePlayers()) {
-                    new Titles().sendActionText(player1, ChatColor.GREEN + "§c>> " + player.getName() + " (" + Bukkit.getOnlinePlayers().size() + "/" + uhcManager.getSlot() + ")");
+                    new Titles().sendActionText(player1, CommonString.CONNECTION_GAME.getMessage(getPlayer()));
                 }
 
                 updateScoreboard(player);
@@ -308,7 +265,7 @@ public class UHCPlayer {
 
         if (uhcManager.isLobby()) {
             for (Player player1 : Bukkit.getOnlinePlayers()) {
-                new Titles().sendActionText(player1, ChatColor.RED + "§c<< " + player.getName() + " (" + (Bukkit.getOnlinePlayers().size() - 1) + "/" + uhcManager.getSlot() + ")");
+                new Titles().sendActionText(player1, CommonString.DECONNECTION_LOBBY.getMessage(getPlayer()));
             }
             setTeam(Optional.empty());
 
@@ -316,7 +273,7 @@ public class UHCPlayer {
 
             if (playing) {
                 for (Player player1 : Bukkit.getOnlinePlayers()) {
-                    new Titles().sendActionText(player1, ChatColor.RED + "§c<< " + player.getName() + " (" + (Bukkit.getOnlinePlayers().size() - 1) + "/" + uhcManager.getSlot() + ")");
+                    new Titles().sendActionText(player1, CommonString.DECONNECTION_GAME.getMessage(getPlayer()));
                 }
 
                 uhcManager.checkVictory();
@@ -333,11 +290,13 @@ public class UHCPlayer {
 
         Player player = getPlayer();
         Location location = player.getLocation();
-
+        uhcManager.checkVictory();
         if (killer != null) {
             killer.setKill(killer.getKill() + 1);
             Main.getDatabaseManager().addKills(killer.getUniqueId(), 1);
+            this.killer = killer.getPlayer();
         }
+
         Main.getDatabaseManager().addDeath(player.getUniqueId(), 1);
 
         TeamsTagsManager.setNameTag(player, "zzzzz", "§8§o[Spec] ", "");
@@ -366,7 +325,12 @@ public class UHCPlayer {
             alive.playSound(alive.getLocation(), Sound.WITHER_SPAWN, 1, 1);
         }
 
-        Bukkit.broadcastMessage(Common.get().getServertag() + ChatColor.RED + "Le joueur " + player.getName() + ChatColor.RED + " est mort !");
+        if (getTeam().isPresent()) {
+            Bukkit.broadcastMessage(CommonString.DEATH_MESSAGE_TEAM.getMessage(getPlayer()));
+            uhcManager.checkVictory();
+            return;
+        }
+        Bukkit.broadcastMessage(CommonString.DEATH_MESSAGE.getMessage(getPlayer()));
 
         uhcManager.checkVictory();
     }
@@ -374,14 +338,12 @@ public class UHCPlayer {
     private void updateScoreboard(Player player) {
         FastBoard scoreboard = new FastBoard(player);
         String string_ip = Common.get().getServerIp();
-        if (string_ip.length() + 2 > 30) {
-            string_ip = string_ip.substring(0, 30);
-        }
         BlinkEffect ip = new BlinkEffect(string_ip);
 
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (!uhcManager.isLobby() && !uhcManager.isGame()) cancel();
                 if (getPlayer() == null) cancel();
                 ip.next();
                 String ips = ip.getText();
@@ -394,22 +356,16 @@ public class UHCPlayer {
 
                 String phase = uhcManager.isLobby() ? "lobby" : (uhcManager.isGame() ? "game" : "end");
 
-                header = config.getString("message.tab." + phase + ".header", "");
-                footer = config.getString("message.tab." + phase + ".footer", "");
-
-                header = UHCUtils.translateGamePlaceholders(
-                        UHCUtils.applyPlayerPlaceholders(header, uhcPlayer), null);
-                footer = UHCUtils.translateGamePlaceholders(
-                        UHCUtils.applyPlayerPlaceholders(footer, uhcPlayer), null);
+                header = CommonString.getMessage(config.getString("message.tab." + phase + ".header", ""), uhcPlayer);
+                footer = CommonString.getMessage(config.getString("message.tab." + phase + ".footer", ""), uhcPlayer);
 
                 String title = config.getString("message.scoreboard." + phase + ".title", "§6NovaUHC");
                 List<String> lines = config.getStringList("message.scoreboard." + phase + ".lines");
 
                 List<String> processedLines = lines.stream()
                         .map(line -> {
-                            line = line.replace("<ip>", ips);
-                            return UHCUtils.translateGamePlaceholders(
-                                    UHCUtils.applyPlayerPlaceholders(line, uhcPlayer), null);
+                            line = line.replace("<ip>", string_ip);
+                            return CommonString.getMessage(line, uhcPlayer);
                         })
                         .collect(Collectors.toList());
 
@@ -417,7 +373,6 @@ public class UHCPlayer {
                 scoreboard.updateLines(processedLines);
                 TabListManager.sendTab(player, header, footer);
 
-                if (!uhcManager.isLobby() && !uhcManager.isGame()) cancel();
             }
         }.runTaskTimerAsynchronously(Main.get(), 0L, 2L);
 

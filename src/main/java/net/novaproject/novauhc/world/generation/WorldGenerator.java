@@ -94,7 +94,7 @@ public class WorldGenerator {
         String netherName = arenaName + "_nether";
         safeDeleteWorld(netherName);
 
-        Bukkit.broadcastMessage(ChatColor.YELLOW + "Cr\u00E9ation du Nether...");
+        Bukkit.broadcastMessage(ChatColor.YELLOW + "Création du Nether...");
 
         WorldCreator creator = new WorldCreator(netherName);
         creator.environment(World.Environment.NETHER);
@@ -102,15 +102,12 @@ public class WorldGenerator {
         World nether = creator.createWorld();
 
         if (nether == null) {
-            Bukkit.broadcastMessage(ChatColor.RED + "\u00C9chec de la cr\u00E9ation du Nether !");
-
             return;
         }
         nether.setGameRuleValue("doFireTick", "false");
         nether.setGameRuleValue("naturalRegeneration", "false");
-        nether.setDifficulty(Difficulty.HARD);
+        nether.setDifficulty(Difficulty.NORMAL);
 
-        Bukkit.broadcastMessage(ChatColor.GREEN + "Nether g\u00E9n\u00E9r\u00E9 avec succ\u00E8s !");
     }
 
     public void createEnd() {
@@ -125,7 +122,6 @@ public class WorldGenerator {
         World end = creator.createWorld();
 
         if (end == null) {
-            Bukkit.broadcastMessage(ChatColor.RED + "\u00C9chec de la cr\u00E9ation du End !");
 
             return;
         }
@@ -133,7 +129,6 @@ public class WorldGenerator {
         end.setGameRuleValue("naturalRegeneration", "false");
         end.setDifficulty(Difficulty.HARD);
 
-        Bukkit.broadcastMessage(ChatColor.GREEN + "End g\u00E9n\u00E9r\u00E9 avec succ\u00E8s !");
     }
 
     private void log(String message) {

@@ -1,5 +1,8 @@
 package net.novaproject.novauhc.ui;
 
+import net.novaproject.novauhc.CommonString;
+import net.novaproject.novauhc.uhcplayer.UHCPlayer;
+import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ui.AnvilUi;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
@@ -46,7 +49,7 @@ public class WhiteListUi extends CustomInventory {
             @Override
             public void onClick(InventoryClickEvent e) {
                 Bukkit.getServer().setWhitelist(false);
-                getPlayer().sendMessage(ChatColor.RED + "La Whitelist est désactivée");
+                CommonString.SUCCESSFUL_DESACTIVATION.send(getPlayer());
             }
         });
 
@@ -54,7 +57,7 @@ public class WhiteListUi extends CustomInventory {
             @Override
             public void onClick(InventoryClickEvent e) {
                 Bukkit.getServer().setWhitelist(true);
-                getPlayer().sendMessage(ChatColor.GREEN + "La Whitelist est activée");
+                CommonString.SUCCESSFUL_ACTIVATION.send(getPlayer());
             }
         });
 
@@ -65,6 +68,9 @@ public class WhiteListUi extends CustomInventory {
                     if (event.getSlot() == AnvilUi.AnvilSlot.OUTPUT) {
                         String enteredText = event.getName();
                         Bukkit.getOfflinePlayer(enteredText).setWhitelisted(true);
+                        CommonString.SUCCESSFUL_MODIFICATION.send(getPlayer());
+                        openAll();
+                        return;
                     }
                     new WhiteListUi(getPlayer()).open();
                 }).setSlot("Nom du joueur").open();
@@ -102,7 +108,22 @@ public class WhiteListUi extends CustomInventory {
                 public void onClick(InventoryClickEvent e) {
                     if (p.isWhitelisted()) {
                         p.setWhitelisted(false);
-                        Bukkit.broadcastMessage(ChatColor.RED + p.getName() + " a été retiré de la whitelist !");
+                        UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(p.getPlayer());
+                        if (uhcPlayer == null) {
+                            return;
+                        }
+                        new ConfirmMenu(getPlayer(),
+                                "§cÊtes-vous sûr de vouloir retirer " + p.getName() + " de la Whitelist ?",
+                                () -> {
+                                    p.setWhitelisted(false);
+                                    p.getPlayer().kickPlayer(CommonString.KICKED_MESSAGE.getMessage());
+                                    openAll();
+                                },
+                                () -> {
+
+                                    openAll();
+                                }, new WhiteListUi(getPlayer())).open();
+                        Bukkit.broadcastMessage(CommonString.KICKED_MESSAGE.getMessage());
                         openAll();
                     }
                 }

@@ -18,7 +18,7 @@ public class HasteyBabie extends Scenario {
 
     @Override
     public String getDescription() {
-        return "hsdqhdskhqds";
+        return "Version extrême de HasteyBoy - Efficacité VII et Solidité V sur tous les outils.";
     }
 
     @Override

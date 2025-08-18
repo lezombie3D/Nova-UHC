@@ -15,7 +15,7 @@ public class StarterTools extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Donne des items de départ";
+        return "Donne des outils de base à tous les joueurs au début de la partie.";
     }
 
     @Override

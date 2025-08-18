@@ -13,7 +13,7 @@ public class NoEnd extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Désactive complètement l'accès à l'End.";
     }
 
     @Override

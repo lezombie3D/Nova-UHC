@@ -22,7 +22,7 @@ public class NetheriBus extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Modifie l'expérience du Nether avec des mécaniques spéciales.";
     }
 
     @Override

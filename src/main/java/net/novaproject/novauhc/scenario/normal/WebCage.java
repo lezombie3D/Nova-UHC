@@ -20,7 +20,7 @@ public class WebCage extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "À la mort, le joueur est entouré d'une cage de toiles d'araignée.";
     }
 
     @Override

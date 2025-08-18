@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.ui.world;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.UHCUtils;
@@ -135,7 +136,7 @@ public class OrePopulatorUi extends CustomInventory {
     @Override
     public void onClose() {
         if (change) {
-            getPlayer().sendMessage(getConfig().getString("message.oreboost.message"));
+            CommonString.ORE_BOOST.send(getPlayer());
         }
         super.onClose();
     }

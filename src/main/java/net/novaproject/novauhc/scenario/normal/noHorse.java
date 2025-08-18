@@ -15,7 +15,7 @@ public class noHorse extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Interdit de monter sur les chevaux.";
     }
 
     @Override

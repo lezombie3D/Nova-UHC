@@ -19,7 +19,7 @@ public class XpSansue extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Modifie le système d'expérience pour le rendre plus équilibré.";
     }
 
     @Override

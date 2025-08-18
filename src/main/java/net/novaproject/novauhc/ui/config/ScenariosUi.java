@@ -65,6 +65,8 @@ public class ScenariosUi extends CustomInventory {
             ItemCreator item = scenario.getItem()
                     .setName("§8┃ §f" + scenario.getName() + ": " + (scenario.isActive() ? "§2Activé" : "§cDésactivé"))
                     .addLore("")
+                    .addLore("  §8┃ §f" + scenario.getDescription())
+                    .addLore("")
                     .addLore(CommonString.CLICK_HERE_TO_TOGGLE.getMessage());
 
             if (scenario.isSpecial()) {

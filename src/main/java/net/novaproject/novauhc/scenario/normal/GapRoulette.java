@@ -39,7 +39,7 @@ public class GapRoulette extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les pommes dorées donnent des effets aléatoires au lieu de leurs effets normaux.";
     }
 
     @Override

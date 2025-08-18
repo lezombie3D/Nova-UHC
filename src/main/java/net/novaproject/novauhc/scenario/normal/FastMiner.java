@@ -16,7 +16,7 @@ public class FastMiner extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Augmente la vitesse de minage de tous les joueurs.";
     }
 
     @Override

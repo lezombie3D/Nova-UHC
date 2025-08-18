@@ -39,12 +39,12 @@ public class DefaultUi extends CustomInventory {
         fillCorner(getConfig().getInt("menu.main.color"));
         ItemCreator border = (new ItemCreator(Material.STAINED_GLASS))
                 .setDurability((short) 9)
-                .setName("§8┃ §fGestion de la " + Common.get().getMainColor() + "bordure")
+                .setName(CommonString.MENU_BORDER_TITLE.getMessage())
                 .addLore("")
-                .addLore(" §8» §fAccès §f: §6§lHost")
+                .addLore(CommonString.MENU_BORDER_ACCESS.getMessage())
                 .addLore("")
-                .addLore("  §8┃ §fPermet de modifer la §ataille")
-                .addLore("  §8┃ §fet la §bvitesse§f de la " + Common.get().getMainColor() + "bordure§f.")
+                .addLore(CommonString.MENU_BORDER_DESCRIPTION_1.getMessage())
+                .addLore(CommonString.MENU_BORDER_DESCRIPTION_2.getMessage())
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
@@ -72,23 +72,23 @@ public class DefaultUi extends CustomInventory {
                 .addLore("");
 
         ItemCreator team = new ItemCreator(Material.BANNER)
-                .setName("§8┃ §fGestion des " + Common.get().getMainColor() + "équipes")
+                .setName(CommonString.MENU_TEAMS_TITLE.getMessage())
                 .setDurability((short) 15)
                 .addLore("")
-                .addLore(" §8» §fAccès §f: §6§lHost")
+                .addLore(CommonString.MENU_TEAMS_ACCESS.getMessage())
                 .addLore("")
-                .addLore("  §8┃ §fPermet de gérer les")
-                .addLore("  §8┃ " + Common.get().getMainColor() + "options §fdes équipes.")
+                .addLore(CommonString.MENU_TEAMS_DESCRIPTION_1.getMessage())
+                .addLore(CommonString.MENU_TEAMS_DESCRIPTION_2.getMessage())
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
         ItemCreator stop = new ItemCreator(Material.BARRIER)
-                .setName("§8┃ §fStopper le serveur")
+                .setName(CommonString.MENU_STOP_TITLE.getMessage())
                 .addLore("")
-                .addLore(" §8» §fAccès §f: §6§lHost")
+                .addLore(CommonString.MENU_STOP_ACCESS.getMessage())
                 .addLore("")
-                .addLore("  §8┃ §fPermet de stopper")
-                .addLore("  §8┃ §fle " + Common.get().getMainColor() + "serveur")
+                .addLore(CommonString.MENU_STOP_DESCRIPTION_1.getMessage())
+                .addLore(CommonString.MENU_STOP_DESCRIPTION_2.getMessage())
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_ACTIVATE.getMessage())
                 .addLore("");
@@ -205,7 +205,7 @@ public class DefaultUi extends CustomInventory {
             }
         });
         addMenu(11, stop, new ConfirmMenu(getPlayer(),
-                "Etes-vous sûr de vouloir stopper le serveur ?",
+                CommonString.MENU_STOP_CONFIRM.getMessage(),
                 () -> {
                     Bukkit.shutdown();
                 },

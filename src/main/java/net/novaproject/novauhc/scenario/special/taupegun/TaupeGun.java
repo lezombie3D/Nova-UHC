@@ -52,7 +52,7 @@ public class TaupeGun extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Certains joueurs deviennent des taupes secrètes avec des kits spéciaux.";
     }
 
     @Override

@@ -1,6 +1,7 @@
 package net.novaproject.novauhc.listener.player;
 
 import net.novaproject.novauhc.Common;
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.scenario.normal.GoldenHead;
@@ -76,7 +77,7 @@ public class PlayerInteractEvent implements Listener {
             if (currentDiamondPieces >= UHCManager.get().getDiamondArmor()) {
                 event.setCancelled(true);
                 player.playSound(player.getLocation(), Sound.ANVIL_LAND, 1, 1);
-                player.sendMessage("§cVous ne pouvez pas équiper plus de " + UHCManager.get().getDiamondArmor() + " pièces en diamant !");
+                CommonString.EXEDED_LIMITE.send(player);
             }
         }
 
@@ -110,7 +111,7 @@ public class PlayerInteractEvent implements Listener {
                 if (exceedsDiamondLimit(player)) {
                     event.setCancelled(true);
                     player.playSound(player.getLocation(), Sound.ANVIL_LAND, 1, 1);
-                    player.sendMessage("§cVous ne pouvez pas équiper plus de " + uhcPlayer.getDiamondArmor() + " pièces en diamant !");
+                    CommonString.EXEDED_LIMITE.send(player);
                 }
             }
             return;
@@ -127,7 +128,7 @@ public class PlayerInteractEvent implements Listener {
                 if (currentPieces >= uhcPlayer.getDiamondArmor()) {
                     event.setCancelled(true);
                     player.playSound(player.getLocation(), Sound.ANVIL_LAND, 1, 1);
-                    player.sendMessage("§cVous ne pouvez pas équiper plus de " + uhcPlayer.getDiamondArmor() + " pièces en diamant !");
+                    CommonString.EXEDED_LIMITE.send(player);
                 }
             }
         }

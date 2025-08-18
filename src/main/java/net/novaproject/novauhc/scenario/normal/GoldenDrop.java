@@ -16,7 +16,7 @@ public class GoldenDrop extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les joueurs morts drop automatiquement une pomme dorée.";
     }
 
     @Override

@@ -29,7 +29,7 @@ public class Cutclean extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Ores and animal drops are automatically smelted, no furnaces needed.\n";
+        return "Les minerais et les drops d'animaux sont automatiquement fondus, aucun four nécessaire.";
     }
 
     @Override

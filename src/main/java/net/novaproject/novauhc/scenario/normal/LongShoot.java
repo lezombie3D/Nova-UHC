@@ -18,7 +18,7 @@ public class LongShoot extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les tirs à l'arc de plus de 75 blocs infligent 50% de dégâts supplémentaires.";
     }
 
     @Override

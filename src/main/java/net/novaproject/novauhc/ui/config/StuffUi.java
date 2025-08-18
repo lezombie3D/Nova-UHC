@@ -58,7 +58,7 @@ public class StuffUi extends CustomInventory {
 
     @Override
     public String getTitle() {
-        return "§2Inventaire de depart";
+        return getConfig().getString("menu.stuff.title");
     }
 
     @Override

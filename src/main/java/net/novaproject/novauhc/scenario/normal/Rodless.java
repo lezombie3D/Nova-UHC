@@ -16,7 +16,7 @@ public class Rodless extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Empêche l'utilisation de certain item";
+        return "Empêche l'utilisation et la fabrication de cannes à pêche.";
     }
 
     @Override

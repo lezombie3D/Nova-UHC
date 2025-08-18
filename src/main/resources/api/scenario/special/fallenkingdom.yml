@@ -1,0 +1,100 @@
+zone_size: 30
+capture_time: 30
+fk_temlate: "falen"
+nether_portals:
+  0:
+    world: "arena"
+    x: 0
+    y: 100
+    z: 0
+    pitch: 0
+    yaw: 0
+  1:
+    world: "arena"
+    x: 0
+    y: 100
+    z: 0
+    pitch: 0
+    yaw: 0
+end_portals:
+  0:
+    world: "arena"
+    x: 0
+    y: 100
+    z: 0
+    pitch: 0
+    yaw: 0
+  1:
+    world: "arena"
+    x: 0
+    y: 100
+    z: 0
+    pitch: 0
+    yaw: 0
+team_zone_location:
+  0:
+    world: "arena"
+    x: 0
+    y: 100
+    z: 0
+    pitch: 0
+    yaw: 0
+  1:
+    world: "arena"
+    x: 0
+    y: 100
+    z: 0
+    pitch: 0
+    yaw: 0
+  2:
+    world: "arena"
+    x: 0
+    y: 100
+    z: 0
+    pitch: 0
+    yaw: 0
+  3:
+    world: "arena"
+    x: 0
+    y: 100
+    z: 0
+    pitch: 0
+    yaw: 0
+  4:
+    world: "arena"
+    x: 0
+    y: 100
+    z: 0
+    pitch: 0
+    yaw: 0
+  5:
+    world: "arena"
+    x: 0
+    y: 100
+    z: 0
+    pitch: 0
+    yaw: 0
+message:
+  ANNONCE_NEW_EPISODE: "§8§m--------- §m jdsqjlkmsqjsqjml§8§m----------§r\n §3 Debut de l'episode :  %fk_episode%\n §8§m--------- §m + jdsqjlkmsqjsqjml§8§m----------§r"
+  ANNONCE_NETHER: "Le Nether est maintenant ouvert !"
+  ANNONCE_END: "L'End est maintenant ouvert !"
+  ANNONCE_ASSAUT: "L'assaut est maintenant ouvert !"
+  WELCOME_FK: "Bienvenue dans FallenKingdom !\n
+                Les équipes sont définies, et chaque équipe a sa propre zone de construction.\n
+                Vous pouvez construire et miner dans votre zone, mais pas dans celle des autres équipes.\n
+                Le but est de capturer le coffre de léquipe ennemie pour gagner !\n
+                Bonne chance !"
+  WARNING_CAPTURE_FK: "ATtention ! votre coffre est en train d'être capturé !"
+  CAPTURE_FK: "Vous Capturez le coffre de l'équipe %enemy_team% !\n
+                Vous devez rester dans la zone de capture pendant %capture_time% secondes pour capturer le coffre.\n
+                Si vous êtes tué, la capture sera annulée et vous devrez recommencer."
+  CAPTURE_FK_SUCCESS: "Vous avez capturé le coffre de l'équipe %enemy_team% !\n
+                            Vous avez gagné la partie !"
+  CAPTURE_FK_FAIL: "Vous avez échoué à capturer le coffre de l'équipe %enemy_team% !\n
+                    Vous devez recommencer la capture."
+  REMAINING_CAPTURE_FK: "Il reste %remaining_capture_time% secondes pour capturer le coffre de l'équipe %enemy_team% !\n
+                                        Restez dans la zone de capture pour continuer la capture."
+  WARNING_REMAIN_CAPTURE_FK: "Attention ! Il reste %remaining_capture_time% secondes avant que votre coffre soit captureé !"
+  TEAM_ELIMINATION: "Votre équipe a été éliminée par %enemy_team%!"
+  KILL_TEAM: "Votre équipe a tué %enemy_team% !\n"
+  ANNONCE_TEAM_ELIMINATION: "L'équipe %enemy_team% a été éliminée !\n"

@@ -67,7 +67,7 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         if (mongoClient != null) {
             mongoClient.close();
-            getLogger().info("MongoDB connection closed.");
+            getLogger().info(CommonString.MONGODB_CONNECTION_CLOSED.getRawMessage());
         }
     }
 
@@ -84,9 +84,10 @@ public class Main extends JavaPlugin {
             mongoClient = MongoClients.create(settings);
             database = mongoClient.getDatabase(name);
             database.runCommand(new Document("ping", 1));
-            getLogger().info("Successfully connected to MongoDB!");
+            getLogger().info(CommonString.MONGODB_CONNECTED.getRawMessage());
         } catch (MongoException e) {
-            getLogger().severe("Failed to connect to MongoDB: " + e.getMessage());
+            String errorMessage = CommonString.MONGODB_CONNECTION_FAILED.getRawMessage().replace("%error%", e.getMessage());
+            getLogger().severe(errorMessage);
             e.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);
         }

@@ -11,6 +11,10 @@ serverinfo:
     "1234"
   servername:
     "§cSERVER"
+  helpop:
+    "§f[§6HELP§f] "
 mumble:
   port: ""
   ip: ""
+## PlaceHolder utilisable :
+

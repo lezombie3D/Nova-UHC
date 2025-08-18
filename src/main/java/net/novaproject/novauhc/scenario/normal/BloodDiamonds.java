@@ -28,6 +28,6 @@ public class BloodDiamonds extends Scenario {
     public void onBreak(Player player, Block block, BlockBreakEvent event) {
         if (!isActive() || block.getType() != Material.DIAMOND_ORE) return;
 
-        player.damage(2.0); // Inflige 1 cœur de dégâts
+        player.damage(2.0);
     }
 }

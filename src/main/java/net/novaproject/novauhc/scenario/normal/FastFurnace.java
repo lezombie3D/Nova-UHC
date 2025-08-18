@@ -16,7 +16,7 @@ public class FastFurnace extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les fours cuisent et fondent 3 fois plus rapidement.";
     }
 
     @Override

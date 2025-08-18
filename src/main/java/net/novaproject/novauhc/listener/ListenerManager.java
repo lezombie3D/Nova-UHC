@@ -28,7 +28,6 @@ public class ListenerManager {
         pm.registerEvents(new EntityBowEvent(), Main.get());
         pm.registerEvents(new EntityDamageEntity(), Main.get());
         pm.registerEvents(new ChunkUnloadListener(), Main.get());
-
     }
 
 }

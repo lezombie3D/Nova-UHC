@@ -4,16 +4,26 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import sun.misc.Unsafe;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class Reflection {
+    private static Unsafe unsafe;
+
+    static {
+        try {
+            Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+            unsafeField.setAccessible(true);
+            unsafe = (Unsafe) unsafeField.get(null);
+        } catch (Exception e) {
+            // Unsafe not available, will fall back to other methods
+            unsafe = null;
+        }
+    }
     public static void playSound(Player player, Location location, String soundName, float volume, float pitch) {
         try {
             Class<?> soundClass = getClass("org.bukkit.Sound");
@@ -288,19 +298,71 @@ public class Reflection {
 
     public static void setFinalStatic(Field field, Object value) throws ReflectiveOperationException {
         field.setAccessible(true);
-        Class.class.getModifiers();
-        Field mf = Field.class.getDeclaredField("modifiers");
-        mf.setAccessible(true);
-        mf.setInt(field, field.getModifiers() & 0xFFFFFFEF);
-        field.set(null, value);
+
+        // Method 1: Try the old modifiers approach (Java 8-11)
+        try {
+            Field mf = Field.class.getDeclaredField("modifiers");
+            mf.setAccessible(true);
+            mf.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+            field.set(null, value);
+            return;
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            // Fall through to next method
+        }
+
+        // Method 2: Try using Unsafe (works on most Java versions)
+        if (unsafe != null) {
+            try {
+                Object staticFieldBase = unsafe.staticFieldBase(field);
+                long staticFieldOffset = unsafe.staticFieldOffset(field);
+                unsafe.putObject(staticFieldBase, staticFieldOffset, value);
+                return;
+            } catch (Exception e) {
+                // Fall through to next method
+            }
+        }
+
+        // Method 3: Last resort - try direct field access (may fail on newer Java)
+        try {
+            field.set(null, value);
+        } catch (IllegalAccessException e) {
+            throw new ReflectiveOperationException("Unable to set final static field: " + field.getName() +
+                    ". This may be due to Java security restrictions. Consider using --add-opens java.base/java.lang=ALL-UNNAMED", e);
+        }
     }
 
     public static void setFinal(Object object, Field field, Object value) throws ReflectiveOperationException {
         field.setAccessible(true);
-        Field mf = Field.class.getDeclaredField("modifiers");
-        mf.setAccessible(true);
-        mf.setInt(field, field.getModifiers() & 0xFFFFFFEF);
-        field.set(object, value);
+
+        // Method 1: Try the old modifiers approach (Java 8-11)
+        try {
+            Field mf = Field.class.getDeclaredField("modifiers");
+            mf.setAccessible(true);
+            mf.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+            field.set(object, value);
+            return;
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            // Fall through to next method
+        }
+
+        // Method 2: Try using Unsafe for instance fields
+        if (unsafe != null && object != null) {
+            try {
+                long fieldOffset = unsafe.objectFieldOffset(field);
+                unsafe.putObject(object, fieldOffset, value);
+                return;
+            } catch (Exception e) {
+                // Fall through to next method
+            }
+        }
+
+        // Method 3: Last resort - try direct field access
+        try {
+            field.set(object, value);
+        } catch (IllegalAccessException e) {
+            throw new ReflectiveOperationException("Unable to set final field: " + field.getName() +
+                    ". This may be due to Java security restrictions.", e);
+        }
     }
 
     public enum PackageType {

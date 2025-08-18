@@ -14,7 +14,7 @@ public class FIreLess extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Empêche les joueurs de prendre des dégâts de feu";
+        return "Désactive les dégâts de feu et de lave.";
     }
 
     @Override

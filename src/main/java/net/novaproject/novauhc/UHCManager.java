@@ -15,6 +15,7 @@ import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.ui.config.Enchants;
 import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.Titles;
+import net.novaproject.novauhc.utils.UHCUtils;
 import net.novaproject.novauhc.world.utils.SimpleBorder;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
@@ -49,7 +50,7 @@ public class UHCManager {
     private int diamondArmor = 2;
     private int protectionMax = 2;
     private int dimamondLimit = 22;
-    private int timerpvp = 60;
+    private int timerpvp = 60 * 20;
     private int timerborder = 3600;
     private double targetSize = 200.0;
     private long reducSpeed = 2;
@@ -113,26 +114,31 @@ public class UHCManager {
                         case 10:
                             title = "§e" + countdown;
                             new Titles().sendTitle(p, title, subtitle, 60);
+                            p.playSound(p.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
                             break;
                         case 4:
                         case 5:
                             title = "§c" + countdown;
                             new Titles().sendTitle(p, title, subtitle, 60);
+                            p.playSound(p.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
                             break;
                         case 3:
                             title = "§6" + countdown;
                             subtitle = "§ePlugin par lezombie3D";
                             new Titles().sendTitle(p, title, subtitle, 60);
+                            p.playSound(p.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
                             break;
                         case 2:
                             title = "§e" + countdown;
                             subtitle = "§ePlugin par lezombie3D";
                             new Titles().sendTitle(p, title, subtitle, 60);
+                            p.playSound(p.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
                             break;
                         case 1:
                             title = "§2" + countdown;
                             subtitle = "§ePlugin par lezombie3D";
                             new Titles().sendTitle(p, title, subtitle, 60);
+                            p.playSound(p.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
                             break;
                         default:
                             break;
@@ -142,7 +148,7 @@ public class UHCManager {
                     p.setExp(ratio);
                     p.setLevel((int) (remaining));
                     new Titles().sendActionText(p, "§8●§fDébut de la partie dans §c" + countdown + "secondes§8●");
-                    p.playSound(p.getLocation(), Sound.NOTE_PLING, 1.0f, 1.0f);
+
                 }
                 countdown--;
                 if (countdown < 0) {
@@ -166,7 +172,7 @@ public class UHCManager {
         timer++;
 
         if (timer == 30) {
-            Bukkit.broadcastMessage("§aVous prenez désormais des dégâts !");
+            Bukkit.broadcastMessage(CommonString.INVULNERABLE_OFF.getMessage());
         }
 
         ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
@@ -176,26 +182,24 @@ public class UHCManager {
         });
 
         if (timer == timerpvp - 300) {
-            Bukkit.broadcastMessage("§aLe PvP seras activé dans 5min");
+            Bukkit.broadcastMessage(CommonString.PVP_START_IN.getMessage().replace("%time_before%", UHCUtils.getFormattedTime(300)));
 
         }
         if (timer == timerpvp - 60) {
-            Bukkit.broadcastMessage("§aLe PvP seras activé dans 1min");
+            Bukkit.broadcastMessage(CommonString.PVP_START_IN.getMessage().replace("%time_before%", UHCUtils.getFormattedTime(60)));
         }
         if (timer == timerpvp) {
 
             Common.get().getArena().setPVP(true);
-            Bukkit.broadcastMessage("§aLe PvP est désormais activer");
-            ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
-                scenario.onPvP();
-            });
+            Bukkit.broadcastMessage(CommonString.PVP_START.getMessage());
+            ScenarioManager.get().getActiveScenarios().forEach(Scenario::onPvP);
 
         }
         if (timer == timerborder - 6000) {
-            Bukkit.broadcastMessage("§aLa bordure se mettra en mouvement dans 10min");
+            Bukkit.broadcastMessage(CommonString.MEETUP_START_IN.getMessage().replace("%time_before%", UHCUtils.getFormattedTime(6000)));
         }
         if (timer == timerborder - 60) {
-            Bukkit.broadcastMessage("§aLa bordure se mettra en mouvement dans 1min");
+            Bukkit.broadcastMessage(CommonString.MEETUP_START_IN.getMessage().replace("%time_before%", UHCUtils.getFormattedTime(60)));
         }
         if (timer == timerborder) {
             WorldBorder border = Common.get().getArena().getWorldBorder();
@@ -278,14 +282,14 @@ public class UHCManager {
     }
 
     public void checkVictory() {
-
+        System.out.println(getGameState().name());
         if (gameState != GameState.INGAME) {
             return;
         }
 
         boolean win = false;
 
-        if (uhcTeamManager.getAliveTeams().size() == 1) {
+        if (uhcTeamManager.getAliveTeams().size() <= 1) {
 
             StringBuilder winner = new StringBuilder();
             StringBuilder teamMemeber = new StringBuilder();
@@ -303,7 +307,7 @@ public class UHCManager {
             }
             Bukkit.broadcastMessage(ChatColor.GOLD + " Félicitations à l'équipe " + winner + " : " + teamMemeber);
             win = true;
-        } else if (uhcPlayerManager.getPlayingOnlineUHCPlayers().size() == 1) {
+        } else if (uhcPlayerManager.getPlayingOnlineUHCPlayers().size() <= 1) {
 
             String winner = "";
             for (UHCPlayer player : uhcPlayerManager.getPlayingOnlineUHCPlayers()) {

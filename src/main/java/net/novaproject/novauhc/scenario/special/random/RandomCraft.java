@@ -28,7 +28,7 @@ public class RandomCraft extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les recettes de craft donnent des objets aléatoires.";
     }
 
     @Override

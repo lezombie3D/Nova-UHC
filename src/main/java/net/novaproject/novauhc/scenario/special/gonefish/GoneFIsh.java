@@ -14,7 +14,7 @@ public class GoneFIsh extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Scénario centré sur la pêche avec des récompenses spéciales.";
     }
 
     @Override

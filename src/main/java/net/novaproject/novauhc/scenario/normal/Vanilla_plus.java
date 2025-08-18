@@ -19,7 +19,7 @@ public class Vanilla_plus extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Améliore l'expérience vanilla avec des bonus équilibrés.";
     }
 
     @Override

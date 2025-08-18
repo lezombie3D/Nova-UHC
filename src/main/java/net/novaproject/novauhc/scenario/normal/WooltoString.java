@@ -16,7 +16,7 @@ public class WooltoString extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Transforme la laine en ficelle";
+        return "Convertit automatiquement la laine en ficelle.";
     }
 
     @Override

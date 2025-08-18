@@ -1,13 +1,17 @@
 package net.novaproject.novauhc.listener.player;
 
 import net.novaproject.novauhc.Common;
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.TravelAgent;
+import org.bukkit.World;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -55,7 +59,7 @@ public class PlayerListener implements Listener {
         if (fromWorld.getName().equalsIgnoreCase("arena")) {
             World netherWorld = Bukkit.getWorld(Common.get().getArenaName() + "_nether");
             if (netherWorld == null) {
-                player.sendMessage(ChatColor.RED + "Le Nether n'est pas disponible !");
+                CommonString.DIM_NOT_ACCEIBLE.send(player);
                 event.setCancelled(true);
                 return;
             }
@@ -76,7 +80,7 @@ public class PlayerListener implements Listener {
         if (fromWorld.getName().equalsIgnoreCase(Common.get().getArenaName() + "_nether")) {
             World overworld = Common.get().getArena();
             if (overworld == null) {
-                player.sendMessage(ChatColor.RED + "Le monde principal n'est pas disponible !");
+                CommonString.DIM_NOT_ACCEIBLE.send(player);
                 event.setCancelled(true);
                 return;
             }
@@ -95,9 +99,9 @@ public class PlayerListener implements Listener {
         }
 
         if (event.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL) {
-            World endWorld = Bukkit.getWorld("arena_the_end");
+            World endWorld = Bukkit.getWorld(Common.get().getArenaName() + "_the_end");
             if (endWorld == null) {
-                player.sendMessage(ChatColor.RED + "L'End n'est pas disponible !");
+                CommonString.DIM_NOT_ACCEIBLE.send(player);
                 event.setCancelled(true);
                 return;
             }
@@ -122,31 +126,28 @@ public class PlayerListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         String message = event.getMessage();
-        event.setCancelled(true);
+
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
 
         System.out.println(player.getDisplayName() + " " + message);
 
-        // Si la partie n'est pas en cours
         if (UHCManager.get().getGameState() != UHCManager.GameState.INGAME) {
-            for (UHCPlayer lobby : UHCPlayerManager.get().getOnlineUHCPlayers()) {
-                lobby.getPlayer().sendMessage(ChatColor.DARK_GRAY + "❯ "
-                        + player.getName() + " » "
-                        + ChatColor.WHITE + message);
-            }
+            event.setFormat(CommonString.LOBBY_CHAT_FORMAT.getMessage(uhcPlayer.getPlayer()));
             return;
+
         }
 
-        // Si le joueur ne joue pas
         if (!uhcPlayer.isPlaying()) {
-            player.sendMessage(ChatColor.RED + "Vous n'avez pas le droit de parler !");
+            CommonString.CANT_TALK_DEATH.send(player);
             return;
         }
 
-        // Si le chat est désactivé
-        if (UHCManager.get().isChatdisbale()) return;
+        if (UHCManager.get().isChatdisbale()) {
+            CommonString.CHAT_DISABLED.send(player);
+            event.setCancelled(true);
+            return;
+        }
 
-        // Scénarios avec chat custom
         List<Scenario> chatScenarios = ScenarioManager.get().getActiveScenarios().stream()
                 .filter(Scenario::hasCustomTeamTchat)
                 .collect(Collectors.toList());
@@ -157,32 +158,21 @@ public class PlayerListener implements Listener {
         }
 
         if (UHCManager.get().getTeam_size() == 1) {
-            for (UHCPlayer lobby : UHCPlayerManager.get().getOnlineUHCPlayers()) {
-                lobby.getPlayer().sendMessage(ChatColor.DARK_GRAY + "❯ "
-                        + player.getName() + " » "
-                        + ChatColor.WHITE + message);
-            }
+            event.setFormat(CommonString.SOLO_CHAT_FORMAT.getMessage(event.getPlayer()));
             return;
         }
 
-        // Chat global avec "!"
         if (message.startsWith("!")) {
-            for (UHCPlayer lobby : UHCPlayerManager.get().getOnlineUHCPlayers()) {
-                lobby.getPlayer().sendMessage(ChatColor.GREEN + "✦ Global ✦ "
-                        + ChatColor.DARK_GRAY + player.getName() + " » "
-                        + ChatColor.WHITE + message.substring(1));
-            }
+            event.setFormat(CommonString.CHAT_GLOBAL_FORMAT.getMessage(event.getPlayer()));
             return;
         }
 
-        // Chat d'équipe normal
         if (uhcPlayer.getTeam().isPresent()) {
             UHCTeam team = uhcPlayer.getTeam().get();
-            for (UHCPlayer teamPlayer : team.getPlayers()) {
-                teamPlayer.getPlayer().sendMessage(ChatColor.DARK_PURPLE + "❖ Team ❖ "
-                        + ChatColor.DARK_GRAY + player.getName() + " » "
-                        + ChatColor.WHITE + message);
-            }
+
+            event.getRecipients().removeIf(p -> !team.getPlayers().contains(UHCPlayerManager.get().getPlayer(p)));
+            event.setFormat(CommonString.TEAM_CHAT_FORMAT.getMessage(event.getPlayer()));
+
         }
     }
 

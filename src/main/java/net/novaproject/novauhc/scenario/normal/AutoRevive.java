@@ -25,7 +25,7 @@ public class AutoRevive extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les joueurs ressuscitent automatiquement une fois par partie.";
     }
 
     @Override

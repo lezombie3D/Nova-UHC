@@ -1,6 +1,7 @@
 package net.novaproject.novauhc.ui.player;
 
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
 import net.novaproject.novauhc.scenario.Scenario;
@@ -11,7 +12,6 @@ import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.TeamsTagsManager;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
 import net.novaproject.novauhc.utils.ui.item.ActionItem;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -26,11 +26,11 @@ public class inGameTeamUi extends CustomInventory {
 
     @Override
     public void setup() {
-        fillLine(1, getConfig().getInt("menu.team.ingame.color"));
+        fillLine(1, getConfig().getInt("menu.teams.ingame.color"));
         addClose(8);
 
 
-        addItem(new ActionItem(0, new ItemCreator(Material.PAPER).setName(ChatColor.WHITE + "Equipes aléatoire")) {
+        addItem(new ActionItem(0, new ItemCreator(Material.PAPER).setName(CommonString.RANDOM_TEAMS.getMessage())) {
             @Override
             public void onClick(InventoryClickEvent e) {
                 getUHCPlayer().setTeam(Optional.empty());
@@ -79,7 +79,7 @@ public class inGameTeamUi extends CustomInventory {
 
     @Override
     public String getTitle() {
-        return getConfig().getString("menu.team.ingame.title");
+        return getConfig().getString("menu.teams.ingame.title");
     }
 
     @Override
@@ -101,7 +101,7 @@ public class inGameTeamUi extends CustomInventory {
             super.open();
             return;
         } else if (UHCManager.get().getTeam_size() == 1) {
-            getPlayer().sendMessage(ChatColor.RED + "Les équipes sont Désactivées ! ");
+            CommonString.DISABLE_ACTION.send(getPlayer());
             return;
         }
         super.open();

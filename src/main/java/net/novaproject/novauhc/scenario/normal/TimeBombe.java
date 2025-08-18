@@ -24,7 +24,7 @@ public class TimeBombe extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les joueurs morts explosent après un délai, créant un cratère.";
     }
 
     @Override

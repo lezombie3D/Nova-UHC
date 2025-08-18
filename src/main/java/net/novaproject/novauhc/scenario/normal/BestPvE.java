@@ -2,6 +2,9 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.BestPvELang;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -24,7 +27,7 @@ public class BestPvE extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Récompense les joueurs qui excellent dans le PvE avec des bonus.";
     }
 
     @Override
@@ -38,19 +41,31 @@ public class BestPvE extends Scenario {
         bestPvE(player);
     }
 
+    @Override
+    public String getPath() {
+        return "bestpve";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return BestPvELang.values();
+    }
+
     private void bestPvE(Player player) {
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (listPve.contains(player)) {
-                    player.setMaxHealth(player.getMaxHealth() + 1);
+                    player.setMaxHealth(player.getMaxHealth() + getConfig().getInt("heart_gain"));
+                    ScenarioLangManager.send(player, BestPvELang.GAIN_MESSAGE);
                 } else if (listOutPve.contains(player)) {
                     listOutPve.remove(player);
                     listPve.add(player);
+                    ScenarioLangManager.send(player, BestPvELang.LIST_JOIN);
                 }
 
             }
-        }.runTaskTimer(Main.get(), 0, 20 * 300 * 2);
+        }.runTaskTimer(Main.get(), 0, 20L * getConfig().getInt("timer"));
     }
 
     @Override
@@ -61,8 +76,10 @@ public class BestPvE extends Scenario {
                 listPve.remove(player);
                 if (!listOutPve.contains(player)) {
                     listOutPve.add(player);
+                    ScenarioLangManager.send(player, BestPvELang.LIST_QUIT);
                 }
             }
         }
     }
+
 }

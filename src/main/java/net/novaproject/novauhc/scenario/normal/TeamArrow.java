@@ -20,7 +20,7 @@ public class TeamArrow extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les flèches ne peuvent pas blesser les membres de sa propre équipe.";
     }
 
     @Override

@@ -58,7 +58,7 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
 
     @Override
     public void setup() {
-
+        super.setup();
         meurt.clear();
         addRole(Roue.class);
         addRole(Patriarche.class);
@@ -248,6 +248,7 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
         return false;
     }
 
+
     private boolean isSoloCamp(String camp) {
         return camp.startsWith("Solo");
     }
@@ -307,16 +308,15 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
 
                 break;
             case "compa":
-                if (getRoleByUHCPlayer(p).getName() == "Peintre") {
+                if (getRoleByUHCPlayer(p).getName().equalsIgnoreCase("Peintre")) {
                     PeintreCMD(player, args);
                 } else {
                     player.sendMessage("pas Peintre");
                 }
 
                 break;
-
             case "snif":
-                if (getRoleByUHCPlayer(p).getName() == "chasseur") {
+                if (getRoleByUHCPlayer(p).getName().equalsIgnoreCase("chasseur")) {
                     chasseurCMD(player, args);
                 } else {
                     player.sendMessage("pas chasseur");

@@ -13,6 +13,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import java.util.Random;
 
 public class BatRoulette extends Scenario {
+
     @Override
     public String getName() {
         return "BatRoulette";
@@ -20,7 +21,7 @@ public class BatRoulette extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Tuer une chauve-souris donne un effet aléatoire (positif ou négatif).";
     }
 
     @Override
@@ -29,11 +30,17 @@ public class BatRoulette extends Scenario {
     }
 
     @Override
+    public String getPath() {
+        return "batroulette";
+    }
+
+
+    @Override
     public void onEntityDeath(Entity entity, Player killer, EntityDeathEvent event) {
         Location loc = entity.getLocation();
         if (entity instanceof Bat && killer != null) {
             int random = new Random().nextInt(100);
-            if (random <= 15) {
+            if (random <= getConfig().getInt("pourcentage")) {
                 killer.teleport(new Location(Common.get().getArena(), loc.getX(), 300, loc.getZ()));
             } else {
                 event.getEntity().getWorld().dropItem(loc, new ItemCreator(Material.GOLDEN_APPLE).getItemstack());

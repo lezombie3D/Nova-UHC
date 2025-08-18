@@ -31,10 +31,25 @@ commands:
     aliases: cg
     description: Commande pour la configuration.
   ff:
-    aliases: fireforce
+    aliases:
+      - fireforce
+      - fforce
+      - fire
+      - fforce
     description: CMD
-
-
+  msg:
+    aliases:
+      - tell
+      - m
+      - message
+      - wisper
+      - w
+    description: Envoie un message privé à un joueur.
+    usage: /msg <joueur> <message>
+  r:
+    aliases: reply
+    description: Répond à un message privé.
+    usage: /r <message>
 permission:
   novauhc.host:
     default: OP

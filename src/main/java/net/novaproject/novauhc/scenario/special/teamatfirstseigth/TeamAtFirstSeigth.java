@@ -27,7 +27,7 @@ public class TeamAtFirstSeigth extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les équipes se forment automatiquement entre les premiers joueurs qui se voient.";
     }
 
     @Override

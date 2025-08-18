@@ -30,7 +30,7 @@ public class RandomDrop extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Tous les drops de mobs et blocs sont randomisés.";
     }
 
     @Override

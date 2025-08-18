@@ -1,9 +1,9 @@
 package net.novaproject.novauhc.listener.player;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
-import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.TeamsTagsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -72,23 +72,24 @@ public class PlayerConnectionEvent implements Listener {
                 return;
             }
         }
-        if (!Bukkit.getServer().getWhitelistedPlayers().contains(player)) {
-            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, ConfigUtils.getLangConfig().getString("message.whitelist"));
+        if (!Bukkit.getServer().getWhitelistedPlayers().contains(player) && Bukkit.hasWhitelist()) {
+            event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, CommonString.KICK_WHITELIST.getMessage());
             return;
+        }
+        if (!UHCManager.get().isSpectator() && UHCManager.get().isGame()) {
+            if (UHCPlayerManager.get().getPlayer(player) == null) {
+                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, CommonString.KICK_SPEC.getMessage());
+                return;
+            }
         }
         int slot = UHCManager.get().getSlot();
         int playersize = UHCPlayerManager.get().getPlayingOnlineUHCPlayers().size();
 
         if (playersize >= slot) {
-            event.disallow(PlayerLoginEvent.Result.KICK_FULL, ConfigUtils.getLangConfig().getString("message.full"));
-            return;
-        }
-        if (!UHCManager.get().isSpectator()) {
-            if (UHCPlayerManager.get().getPlayer(player) == null) {
-                event.disallow(PlayerLoginEvent.Result.KICK_OTHER, ConfigUtils.getLangConfig().getString("message.spec"));
+            event.disallow(PlayerLoginEvent.Result.KICK_FULL, CommonString.KICK_FULL.getMessage());
 
-            }
         }
+
 
     }
 

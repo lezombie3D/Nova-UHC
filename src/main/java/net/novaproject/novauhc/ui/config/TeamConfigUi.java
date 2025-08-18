@@ -1,6 +1,7 @@
 package net.novaproject.novauhc.ui.config;
 
 import net.novaproject.novauhc.Common;
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
@@ -47,7 +48,7 @@ public class TeamConfigUi extends CustomInventory {
             public void onClick(InventoryClickEvent e) {
                 UHCManager.get().setTeam_size(1);
                 openAll();
-                Bukkit.broadcastMessage(Common.get().getInfoTag() + ChatColor.YELLOW + "Les teams sont maintenant désactivées");
+                Bukkit.broadcastMessage(CommonString.TEAM_DESACTIVATED.getMessage(getPlayer()));
                 ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
                     scenario.onTeamUpdate();
                 });

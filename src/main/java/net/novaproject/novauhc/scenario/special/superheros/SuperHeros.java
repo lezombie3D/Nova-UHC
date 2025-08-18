@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.scenario.special.superheros;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
@@ -30,7 +31,7 @@ public class SuperHeros extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les joueurs reçoivent des pouvoirs de super-héros aléatoires.";
     }
 
     @Override
@@ -100,18 +101,20 @@ public class SuperHeros extends Scenario {
 
         if (message.startsWith("!")) {
             for (UHCPlayer lobby : UHCPlayerManager.get().getOnlineUHCPlayers()) {
-                lobby.getPlayer().sendMessage(ChatColor.GREEN + "✦ Global ✦ "
-                        + ChatColor.DARK_GRAY + player.getName() + " » "
-                        + ChatColor.WHITE + message.substring(1));
+                String formattedMessage = CommonString.CHAT_GLOBAL_SCENARIO_FORMAT.getMessage();
+                formattedMessage = formattedMessage.replace("%player%", player.getName());
+                formattedMessage = formattedMessage.replace("%message%", message.substring(1));
+                lobby.getPlayer().sendMessage(formattedMessage);
             }
             return;
         }
 
         if (UHCManager.get().getTeam_size() == 1) {
             for (UHCPlayer lobby : UHCPlayerManager.get().getOnlineUHCPlayers()) {
-                lobby.getPlayer().sendMessage(ChatColor.DARK_GRAY + "❯ "
-                        + player.getName() + " » "
-                        + ChatColor.WHITE + message);
+                String formattedMessage = CommonString.CHAT_SOLO_SCENARIO_FORMAT.getMessage();
+                formattedMessage = formattedMessage.replace("%player%", player.getName());
+                formattedMessage = formattedMessage.replace("%message%", message);
+                lobby.getPlayer().sendMessage(formattedMessage);
             }
             return;
         }

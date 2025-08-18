@@ -1,13 +1,13 @@
 package net.novaproject.novauhc.scenario.special.skyhigt;
 
-import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.utils.ItemCreator;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,7 +26,7 @@ public class SkyHigh extends Scenario {
 
     @Override
     public String getDescription() {
-        return "ça va haut";
+        return "Force les joueurs à rester en hauteur, les dégâts augmentent en dessous d'une certaine altitude.";
     }
 
     @Override
@@ -53,15 +53,18 @@ public class SkyHigh extends Scenario {
     public void onSec(Player p) {
         int timer = UHCManager.get().getTimer();
         if (timer == UHCManager.get().getTimerborder() - 120) {
-            p.sendMessage(Common.get().getInfoTag() + ChatColor.RED + "Vous avez 2 minutes pour vous élever au ciel !");
+            ScenarioLangManager.send(p, SkyHigthLang.WARNING_SKY_HIGH);
         }
         if (timer >= UHCManager.get().getTimerborder()) {
-            if (p.getLocation().getBlockY() < 160) {
-                p.damage(1);
-            } else if (p.getLocation().getBlockY() < 100) {
-                p.damage(2);
-            } else if (p.getLocation().getBlockY() < 70) {
-                p.damage(4);
+            if (p.getLocation().getBlockY() < getConfig().getInt("third_level")) {
+                ScenarioLangManager.send(p, SkyHigthLang.DAMAGE_THIRD_LAYER);
+                p.damage(getConfig().getInt("third_damage"));
+            } else if (p.getLocation().getBlockY() < getConfig().getInt("second_level")) {
+                ScenarioLangManager.send(p, SkyHigthLang.DAMAGE_SECOND_LAYER);
+                p.damage(getConfig().getInt("second_damage"));
+            } else if (p.getLocation().getBlockY() < getConfig().getInt("first_level")) {
+                ScenarioLangManager.send(p, SkyHigthLang.DAMAGE_FIRST_LAYER);
+                p.damage(getConfig().getInt("firth_damage"));
             }
         }
     }
@@ -86,4 +89,14 @@ public class SkyHigh extends Scenario {
         return true;
     }
 
+    @Override
+    public String getPath() {
+        return "special/skyhigh";
+    }
+
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return SkyHigthLang.values();
+    }
 }

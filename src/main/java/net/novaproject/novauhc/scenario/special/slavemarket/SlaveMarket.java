@@ -5,13 +5,18 @@ import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
+import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.UHCUtils;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
 import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -21,11 +26,11 @@ import java.util.*;
 
 public class SlaveMarket extends Scenario {
     private static SlaveMarket slaveMarket;
-    private World lob;
     private Location center;
     private final Random random = new Random();
     private final HashMap<UHCPlayer, Integer> diams = new HashMap<>();
     private List<UHCPlayer> owners = new ArrayList<>();
+    private List<TeamPlace> team_place = new ArrayList<>();
     private UHCPlayer lastBuyer;
     private UHCPlayer choosen;
     private boolean canBuy = true;
@@ -47,7 +52,7 @@ public class SlaveMarket extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Les joueurs sont vendus aux enchères aux capitaines d'équipe qui misent avec des diamants";
+        return "Système d'enchères où les joueurs peuvent être achetés par d'autres équipes.";
     }
 
     @Override
@@ -59,6 +64,71 @@ public class SlaveMarket extends Scenario {
     public void setup() {
         owners = new ArrayList<>();
         slaveMarket = this;
+        team_place = loadTeamPlacesFromConfig();
+    }
+
+    @Override
+    public String getPath() {
+        return "special/slave";
+    }
+
+
+    private List<TeamPlace> loadTeamPlacesFromConfig() {
+        List<TeamPlace> teamPlaces = new ArrayList<>();
+        FileConfiguration config = getConfig();
+
+        if (!config.contains("team_place")) {
+            Bukkit.getLogger().warning("Aucune configuration 'team_place' trouvée pour SlaveMarket!");
+            return teamPlaces;
+        }
+
+        ConfigurationSection teamPlaceSection = config.getConfigurationSection("team_place");
+        if (teamPlaceSection == null) {
+            Bukkit.getLogger().warning("Section 'team_place' invalide dans la configuration SlaveMarket!");
+            return teamPlaces;
+        }
+
+        for (String teamIndex : teamPlaceSection.getKeys(false)) {
+            String basePath = "team_place." + teamIndex;
+
+            Location captainLocation = ConfigUtils.getLocation(config, basePath + ".captain");
+            Location slaveLocation = ConfigUtils.getLocation(config, basePath + ".slave");
+
+            if (captainLocation != null && slaveLocation != null) {
+                TeamPlace teamPlace = new TeamPlace(captainLocation, slaveLocation);
+                teamPlaces.add(teamPlace);
+                Bukkit.getLogger().info("Équipe " + teamIndex + " chargée avec succès pour SlaveMarket");
+            } else {
+                Bukkit.getLogger().warning("Équipe " + teamIndex + " ignorée - positions captain ou slave manquantes");
+            }
+        }
+
+        Bukkit.getLogger().info("SlaveMarket: " + teamPlaces.size() + " équipes chargées depuis la configuration");
+        return teamPlaces;
+    }
+
+
+    private Location getSlaveLocationForOwner(UHCPlayer owner) {
+        if (owner == null || !owner.getTeam().isPresent()) {
+            return null;
+        }
+
+        List<UHCTeam> teams = UHCTeamManager.get().getTeams();
+        int teamIndex = teams.indexOf(owner.getTeam().get());
+
+        if (teamIndex >= 0 && teamIndex < team_place.size()) {
+            TeamPlace teamPlace = team_place.get(teamIndex);
+            if (teamPlace.isValid()) {
+                return teamPlace.getSlaveLocation();
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return SlaveMarketLang.values();
     }
 
     @Override
@@ -66,27 +136,26 @@ public class SlaveMarket extends Scenario {
         UHCTeamManager.get().scatterTeam(uhcPlayer, teamloc);
     }
 
-    public void initCenterLocation() {
-        World lob = Bukkit.getWorld("lob");
-        if (lob == null) {
-            Bukkit.getLogger().warning("[UHC] Le monde 'lob' n'a pas été trouvé !");
-            return;
-        }
-        this.center = new Location(lob, 9, 129, 98);
-        this.lob = lob;
-    }
 
     @Override
     public void toggleActive() {
         super.toggleActive();
-        initCenterLocation();
+        this.center = ConfigUtils.getLocation(getConfig(), "enchere_place");
+        Location wait = ConfigUtils.getLocation(getConfig(), "wait_place");
         if (isActive()) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                player.teleport(new Location(lob, 10, 129, 112));
+                player.teleport(wait);
             }
-            for (int i = 0; i < 9; i++) {
+
+            int teamCount = team_place.size();
+            if (teamCount == 0) {
+                Bukkit.getLogger().warning("Aucune équipe configurée pour SlaveMarket! Utilisation de 9 équipes par défaut.");
+                teamCount = 8;
+            }
+            for (int i = 0; i < teamCount; i++) {
                 UHCTeamManager.get().createTeam(UHCManager.get().getSlot());
             }
+            Bukkit.getLogger().info("SlaveMarket: " + teamCount + " équipes créées");
         } else {
             if (auctionTask != null) {
                 auctionTask.cancel();
@@ -98,7 +167,6 @@ public class SlaveMarket extends Scenario {
     @Override
     public void onTeamUpdate() {
         UHCManager.get().setTeam_size(1);
-        Bukkit.broadcastMessage(ChatColor.YELLOW + "La taille des équipes a été automatiquement désactivée pour le mode SlaveMarket.");
     }
 
     public boolean addOwner(UHCPlayer player) {
@@ -135,15 +203,26 @@ public class SlaveMarket extends Scenario {
     }
 
     public void startEnchere() {
-        List<Location> locations = Arrays.asList(
-                new Location(lob, 2, 136, 89),
-                new Location(lob, 0, 136, 91),
-                new Location(lob, 0, 136, 106),
-                new Location(lob, 2, 136, 108),
-                new Location(lob, 17, 136, 108),
-                new Location(lob, 19, 136, 106),
-                new Location(lob, 19, 136, 91),
-                new Location(lob, 17, 136, 89));
+        List<Location> captainLocations = new ArrayList<>();
+        for (TeamPlace teamPlace : team_place) {
+            if (teamPlace.isValid()) {
+                captainLocations.add(teamPlace.getCaptainLocation());
+            }
+        }
+
+        if (captainLocations.isEmpty()) {
+            Bukkit.getLogger().warning("Aucune position de capitaine configurée, utilisation des positions par défaut");
+            World lob = Common.get().getLobby();
+            captainLocations = Arrays.asList(
+                    new Location(lob, 2, 136, 89),
+                    new Location(lob, 0, 136, 91),
+                    new Location(lob, 0, 136, 106),
+                    new Location(lob, 2, 136, 108),
+                    new Location(lob, 17, 136, 108),
+                    new Location(lob, 19, 136, 106),
+                    new Location(lob, 19, 136, 91),
+                    new Location(lob, 17, 136, 89));
+        }
 
         List<UHCPlayer> players = new ArrayList<>();
 
@@ -165,7 +244,7 @@ public class SlaveMarket extends Scenario {
 
         int i = 0;
         for (UHCPlayer p : owners) {
-            if (i >= locations.size() || i >= UHCTeamManager.get().getTeams().size()) break;
+            if (i >= captainLocations.size() || i >= UHCTeamManager.get().getTeams().size()) break;
 
             diams.put(p, nbDiamond);
             p.getPlayer().getInventory().setItem(4, new ItemCreator(Material.DIAMOND)
@@ -182,7 +261,7 @@ public class SlaveMarket extends Scenario {
                     .getItemstack());
 
             p.setTeam(Optional.ofNullable(UHCTeamManager.get().getTeams().get(i)));
-            p.getPlayer().teleport(locations.get(i));
+            p.getPlayer().teleport(captainLocations.get(i));
 
             players.remove(p);
             i++;
@@ -255,9 +334,14 @@ public class SlaveMarket extends Scenario {
                             lastBuyer = randomOwner;
                         }
 
-                        Location teamateLoc = lastBuyer.getPlayer().getLocation();
-                        Location loc = new Location(lob, teamateLoc.getX(), teamateLoc.getY() - 5, teamateLoc.getZ());
-                        choosen.getPlayer().teleport(loc);
+                        Location slaveLocation = getSlaveLocationForOwner(lastBuyer);
+                        if (slaveLocation != null) {
+                            choosen.getPlayer().teleport(slaveLocation);
+                        } else {
+                            Location teamateLoc = lastBuyer.getPlayer().getLocation();
+                            Location loc = new Location(teamateLoc.getWorld(), teamateLoc.getX(), teamateLoc.getY() - 5, teamateLoc.getZ());
+                            choosen.getPlayer().teleport(loc);
+                        }
 
                         beingBuy = false;
                         if (players.isEmpty()) {
@@ -265,13 +349,9 @@ public class SlaveMarket extends Scenario {
                             cancel();
                             for (UHCPlayer p : UHCPlayerManager.get().getOnlineUHCPlayers()) {
                                 p.getPlayer().getInventory().clear();
-                                p.getPlayer().teleport(new Location(lob, 10, 129, 112));
+                                p.getPlayer().teleport(Common.get().getLobbySpawn());
                                 if (PlayerConnectionEvent.getHost() == p.getPlayer()) {
-                                    ItemCreator menuconf = new ItemCreator(Material.REDSTONE_COMPARATOR)
-                                            .setName(ChatColor.YELLOW + "Configurer");
-                                    ItemCreator item = new ItemCreator(Material.NETHER_STAR).setName(ChatColor.GOLD + "Salle des règles");
-                                    p.getPlayer().getInventory().setItem(8, item.getItemstack());
-                                    p.getPlayer().getInventory().setItem(4, menuconf.getItemstack());
+                                    UHCUtils.giveLobbyItems(p.getPlayer());
                                 }
 
                             }
@@ -359,6 +439,11 @@ public class SlaveMarket extends Scenario {
 
     public boolean canBuy() {
         return canBuy;
+    }
+
+
+    public List<TeamPlace> getTeamPlaces() {
+        return new ArrayList<>(team_place);
     }
 
     @Override

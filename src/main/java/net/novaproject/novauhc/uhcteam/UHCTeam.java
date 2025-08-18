@@ -1,10 +1,10 @@
 package net.novaproject.novauhc.uhcteam;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -80,7 +80,7 @@ public class UHCTeam {
             lore.add("§b➤ " + (getPlayers().size() < i + 1 ? "" : getPlayers().get(i).getPlayer().getName()));
         }
         lore.add("");
-        lore.add(ChatColor.YELLOW + "► Clic pour " + ChatColor.GREEN + "rejoindre");
+        lore.add(CommonString.CLICK_HERE_TO_APPLY.getMessage());
         lore.add("");
 
         ItemStack banner = new ItemStack(Material.BANNER);

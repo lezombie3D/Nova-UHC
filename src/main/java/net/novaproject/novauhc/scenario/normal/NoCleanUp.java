@@ -14,7 +14,7 @@ public class NoCleanUp extends Scenario {
 
     @Override
     public String getDescription() {
-        return "";
+        return "Tuer un joueur restaure 4 cœurs de vie au tueur.";
     }
 
     @Override

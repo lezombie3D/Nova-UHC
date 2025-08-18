@@ -18,7 +18,7 @@ public class BlinkEffect {
     private List<String> generateFrames(String text) {
         List<String> list = new ArrayList<>();
         int length = text.length();
-        if (length > 16) return list;
+        if (length > 30) return list;
         for (int i = 0; i < length; i++) {
             StringBuilder sb = new StringBuilder("§6");
             for (int j = 0; j < length; j++) {

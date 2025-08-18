@@ -3,24 +3,16 @@ package net.novaproject.novauhc.utils;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import net.novaproject.novauhc.Common;
-import net.novaproject.novauhc.UHCManager;
-import net.novaproject.novauhc.scenario.ScenarioManager;
-import net.novaproject.novauhc.scenario.role.ScenarioRole;
-import net.novaproject.novauhc.uhcplayer.UHCPlayer;
-import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionEffect;
 
 import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class UHCUtils {
 
@@ -43,33 +35,81 @@ public class UHCUtils {
         return head;
     }
 
-    public static String applyPlayerPlaceholders(String message, UHCPlayer uhcPlayer) {
-        if (uhcPlayer == null) return message;
+    public static Map<String, ItemStack[]> savePlayerInventory(Player player) {
+        PlayerInventory inv = player.getInventory();
+        Map<String, ItemStack[]> savedInventory = new HashMap<>();
+        savedInventory.put("armor", inv.getArmorContents());
+        savedInventory.put("inventory", inv.getContents());
 
-        return message
-                .replace("%kills%", String.valueOf(uhcPlayer.getKill()))
-                .replace("%team%", uhcPlayer.getTeam().isPresent() ? uhcPlayer.getTeam().get().getName() : "Solo")
-                .replace("%state%", uhcPlayer.getPlayer().getGameMode().toString())
-                .replace("%health%", String.valueOf(uhcPlayer.getPlayer().getHealth()))
-                .replace("%role%", ScenarioManager.get().getActiveSpecialScenarios().stream().filter(scenario -> scenario instanceof ScenarioRole).findFirst().map(scenario -> ((ScenarioRole<?>) scenario).getRoleByUHCPlayer(uhcPlayer).getName()).orElse("Aucun"))
-                .replace("%arrow%", uhcPlayer.getArrowDirection(uhcPlayer.getPlayer().getLocation(), new Location(Common.get().getArena(), 0, 100, 0), uhcPlayer.getPlayer().getLocation().getYaw()));
+        return savedInventory;
     }
 
-    public static String translateGamePlaceholders(String text, Object gameData) {
-        return text
-                .replace("<time>", new SimpleDateFormat("HH:mm:ss").format(new Date()))
-                .replace("<date>", new SimpleDateFormat("dd/MM/yyyy").format(new Date()))
-                .replace("<max>", String.valueOf(UHCManager.get().getSlot()))
-                .replace("<border>", String.valueOf(Common.get().getArena().getWorldBorder().getSize()))
-                .replace("<difficulty>", Bukkit.getWorlds().get(0).getDifficulty().name())
-                .replace("<timer>", UHCManager.get().getTimerFormatted())
-                .replace("<serveurname>", Common.get().getServername())
-                .replace("<gamestate>", UHCManager.get().getGameState().name())
-                .replace("<players>", String.valueOf(UHCPlayerManager.get().getPlayingOnlineUHCPlayers().size()))
-                .replace("<maxplayers>", String.valueOf(UHCManager.get().getSlot()));
+    public static void applyInfiniteEffects(PotionEffect[] effects, Player player) {
+        for (PotionEffect activeEffect : effects) {
+            player.getPlayer().removePotionEffect(activeEffect.getType());
+        }
+        for (PotionEffect effect : effects) {
+            effect.apply(player);
+        }
+    }
+
+    public static String getInventoryContentsAsString(Map<String, ItemStack[]> savedInventory) {
+        if (savedInventory == null) return "Aucun inventaire sauvegardé.";
+
+        StringBuilder content = new StringBuilder("Inventaire sauvegardé :\n");
+
+        content.append(" - Armure : ");
+        if (savedInventory.containsKey("armor")) {
+            for (ItemStack item : savedInventory.get("armor")) {
+                if (item != null && item.getType() != Material.AIR) {
+                    content.append(item.getType().name()).append(", ");
+                }
+            }
+        }
+        content.append("\n");
+        content.append(" - Contenu : ");
+        if (savedInventory.containsKey("inventory")) {
+            for (ItemStack item : savedInventory.get("inventory")) {
+                if (item != null && item.getType() != Material.AIR) {
+                    content.append(item.getAmount()).append("x ").append(item.getType().toString()).append(", ");
+                }
+            }
+        }
+
+        return content.toString();
+    }
+
+    public static void giveLobbyItems(Player player) {
+        player.getInventory().setItem(0, Common.get().getTeamItem().getItemstack());
+        player.getInventory().setItem(2, Common.get().getActiveRole().getItemstack());
+        player.getInventory().setItem(6, Common.get().getActiveScenario().getItemstack());
+        if (player.hasPermission("novauhc.host") || player.hasPermission("novauhc.cohost")) {
+            player.getInventory().setItem(4, Common.get().getConfigItem().getItemstack());
+            player.getInventory().setItem(8, Common.get().getReglesItem().getItemstack());
+        }
+
 
     }
 
+    public static void restorePlayerInventory(Player player, Map<String, ItemStack[]> savedInventory) {
+        if (savedInventory == null) return;
+
+        PlayerInventory inv = player.getInventory();
+
+        if (savedInventory.containsKey("armor")) {
+            inv.setArmorContents(savedInventory.get("armor"));
+        }
+
+        if (savedInventory.containsKey("inventory")) {
+            inv.setContents(savedInventory.get("inventory"));
+        }
+    }
+
+    public static void clearPlayerInventory(Player player) {
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(null);
+
+    }
 
     public static ItemCreator createCustomButon(String texture, String name, List<String> lore) {
         ItemCreator item = new ItemCreator(createCustomHead(texture));

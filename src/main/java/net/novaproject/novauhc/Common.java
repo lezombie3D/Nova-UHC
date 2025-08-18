@@ -19,6 +19,7 @@ public class Common {
     private String infoTag;
     private String serverIp;
     private String servername;
+    private String helpop;
 
     private String mainColor;
     private String mbip;
@@ -50,6 +51,7 @@ public class Common {
         servername = Main.get().getConfig().getString("serverinfo.servername");
         servertag = Main.get().getConfig().getString("serverinfo.servertag");
         infoTag = Main.get().getConfig().getString("serverinfo.info");
+        helpop = Main.get().getConfig().getString("serverinfo.helpop");
         serverIp = Main.get().getConfig().getString("serverinfo.ip");
         mbip = Main.get().getConfig().getString("mumble.ip");
         mbport = Main.get().getConfig().getString("mumble.port");
