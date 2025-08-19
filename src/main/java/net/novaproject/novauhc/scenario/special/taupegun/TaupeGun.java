@@ -5,6 +5,7 @@ import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.scenario.normal.TeamInv;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
@@ -131,7 +132,7 @@ public class TaupeGun extends Scenario {
     public void onTaupeCMD(Player player, String subCommand, String[] args) {
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
         if (!getTeamsTaupe().contains(uhcPlayer.getTeam().get())) {
-            player.sendMessage("vous ete pas une taupe ");
+            ScenarioLangManager.send(player, TaupeGunLang.NOT_TAUPE_COMMAND_ERROR);
             return;
         }
 
@@ -152,7 +153,7 @@ public class TaupeGun extends Scenario {
                 TaupeRevealManager(uhcPlayer);
                 break;
             default:
-                player.sendMessage(ChatColor.RED + "Commande inconnue. Essayez /p pour plus d'informations.");
+                ScenarioLangManager.send(player, TaupeGunLang.UNKNOWN_COMMAND);
         }
     }
 
@@ -162,10 +163,12 @@ public class TaupeGun extends Scenario {
 
                 UHCTeam team = uhcPlayer.getTeam().get();
                 TeamsTagsManager.setNameTag(uhcPlayer.getPlayer(), team.getName(), "[§c" + team.getName() + "§r] ", "");
-                Bukkit.broadcastMessage(Common.get().getInfoTag() + "La Taupe " + uhcPlayer.getPlayer().getName() + " s'est révélés");
+                Map<String, Object> placeholders = new HashMap<>();
+                placeholders.put("%player%", uhcPlayer.getPlayer().getName());
+                Bukkit.broadcastMessage(ScenarioLangManager.get(TaupeGunLang.REVEAL_SUCCESS, uhcPlayer, placeholders));
                 uhcPlayer.getPlayer().getInventory().addItem(new ItemStack(Material.GOLDEN_APPLE, 2));
             } else {
-                uhcPlayer.getPlayer().sendMessage(Common.get().getInfoTag() + "Vous ne pouvais pas vous reveal car vous etes pas Taupe ! ");
+                ScenarioLangManager.send(uhcPlayer.getPlayer(), TaupeGunLang.REVEAL_NOT_TAUPE);
             }
         }
     }
@@ -283,29 +286,25 @@ public class TaupeGun extends Scenario {
 
                 break;
         }
-        uhcPlayer.getPlayer().sendMessage("[§cTaupeGun§r] Vous avez bien recu votre Kit");
+        ScenarioLangManager.send(uhcPlayer.getPlayer(), TaupeGunLang.KIT_RECEIVED);
     }
 
     @Override
     public void onTaupeTcCMD(Player player, int x, int y, int z, String coordsMessage) {
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
 
+        Map<String, Object> placeholders = new HashMap<>();
+        placeholders.put("%player%", player.getName());
+        placeholders.put("%message%", coordsMessage);
+
         if (getTeamsTaupe().contains(uhcPlayer.getTeam().get())) {
-
-            String taupeMessage = ChatColor.RED + "❖ Taupe ❖ " +
-                    ChatColor.DARK_GRAY + player.getName() + " » " + coordsMessage;
-
+            String taupeMessage = ScenarioLangManager.get(TaupeGunLang.TAUPE_COORDS_FORMAT, uhcPlayer, placeholders);
             uhcPlayer.getTeam().get().getPlayers().forEach(teamPlayer ->
                     teamPlayer.getPlayer().sendMessage(taupeMessage));
-
         } else {
-
-            String teamMessage = ChatColor.DARK_PURPLE + "❖ Team ❖ " +
-                    ChatColor.DARK_GRAY + player.getName() + " » " + coordsMessage;
-
+            String teamMessage = ScenarioLangManager.get(TaupeGunLang.TEAM_COORDS_FORMAT, uhcPlayer, placeholders);
             uhcPlayer.getTeam().get().getPlayers().forEach(teamPlayer ->
                     teamPlayer.getPlayer().sendMessage(teamMessage));
-
 
             for (Map.Entry<UHCPlayer, UHCTeam> entry : getOldTeam().entrySet()) {
                 if (entry.getValue().equals(uhcPlayer.getTeam().get())) {
@@ -314,7 +313,6 @@ public class TaupeGun extends Scenario {
                     break;
                 }
             }
-
         }
     }
 
@@ -371,7 +369,9 @@ public class TaupeGun extends Scenario {
                     int kitnumber = random.nextInt(7);
                     kit.put(chosenPlayer, kitnumber);
                     TeamsTagsManager.setNameTag(chosenPlayer.getPlayer(), team.getName(), team.getPrefix(), "");
-                    new Titles().sendTitle(chosenPlayer.getPlayer(), ChatColor.RED + "Vous êtes la Taupe", "", 10);
+                    new Titles().sendTitle(chosenPlayer.getPlayer(),
+                            ScenarioLangManager.get(TaupeGunLang.TAUPE_ASSIGNED_TITLE, chosenPlayer),
+                            ScenarioLangManager.get(TaupeGunLang.TAUPE_ASSIGNED_SUBTITLE, chosenPlayer), 10);
                     sendKitDescription(kitnumber, chosenPlayer);
 
                     addTaupe(chosenPlayer, chosenTeam);
@@ -389,55 +389,35 @@ public class TaupeGun extends Scenario {
 
 
     private void sendKitDescription(int kitnumber, UHCPlayer chosenPlayer) {
+        TaupeGunLang kitLang;
 
         switch (kitnumber) {
-
             case 0:
-                chosenPlayer.getPlayer().sendMessage("§8§m---------" + ChatColor.RED + "❖ Taupe Punchonator ❖§8§m----------§r\n" +
-                        "§fDescription du Kit : " + ChatColor.DARK_PURPLE + "Vous possedez un livre Punch 1, un livre Power 3, 64 Flèche et 3 fil\n" +
-                        "§8§m--------------------------");
+                kitLang = TaupeGunLang.KIT_DESCRIPTION_0;
                 break;
             case 1:
-                chosenPlayer.getPlayer().sendMessage("§8§m---------" + ChatColor.RED + "❖ Taupe Aérien ❖§8§m----------§r\n" +
-                        "§fDescription du Kit : " + ChatColor.DARK_PURPLE + "Vous possedez 4 enderPearl et un livre FeatherFalling 4\n" +
-                        "§8§m--------------------------");
+                kitLang = TaupeGunLang.KIT_DESCRIPTION_1;
                 break;
             case 2:
-
-                chosenPlayer.getPlayer().sendMessage("§8§m---------" + ChatColor.RED + "❖ Taupe Alchimiste ❖§8§m----------§r\n" +
-                        "§fDescription du Kit : " + ChatColor.DARK_PURPLE + "Vous possedez une potion de Speed 1 de 8min, une potion de FireResistance 1 de 8min et une potion de Poison 1 de 30s\n" +
-                        "§8§m--------------------------");
+                kitLang = TaupeGunLang.KIT_DESCRIPTION_2;
                 break;
             case 3:
-
-                chosenPlayer.getPlayer().sendMessage("§8§m---------" + ChatColor.RED + "❖ Taupe Assasin ❖§8§m----------§r\n" +
-                        "§fDescription du Kit : " + ChatColor.DARK_PURPLE + "Vous possedez des Livre Protection 3, Power 3 et Sharpness 3\n" +
-                        "§8§m--------------------------");
+                kitLang = TaupeGunLang.KIT_DESCRIPTION_3;
                 break;
-
             case 4:
-                chosenPlayer.getPlayer().sendMessage("§8§m---------" + ChatColor.RED + "❖ Taupe Mineur ❖§8§m----------§r\n" +
-                        "§fDescription du Kit : " + ChatColor.DARK_PURPLE + "Vous possédez 14 Obsidian, 10 Diams , 32 Gold ingot et 64 Iron Ingot\n" +
-                        "§8§m--------------------------");
+                kitLang = TaupeGunLang.KIT_DESCRIPTION_4;
                 break;
-
             case 5:
-                chosenPlayer.getPlayer().sendMessage("§8§m---------" + ChatColor.RED + "❖ Taupe Pyromane ❖§8§m----------§r\n" +
-                        "§fDescription du Kit : " + ChatColor.DARK_PURPLE + "Vous possédez un livre FireAspect 1 et Flame 1\n" +
-                        "§8§m--------------------------");
+                kitLang = TaupeGunLang.KIT_DESCRIPTION_5;
                 break;
             case 6:
-
-                chosenPlayer.getPlayer().sendMessage("§8§m---------" + ChatColor.RED + "❖ Taupe Ninja ❖§8§m----------§r\n" +
-                        "§fDescription du Kit : " + ChatColor.DARK_PURPLE + "Vous posséedez une PotionUi d'invisibilité 2 de 8 min et une potion de Force 1 de 3min \n" +
-                        "§8§m--------------------------");
+                kitLang = TaupeGunLang.KIT_DESCRIPTION_6;
                 break;
-
             default:
-
-                break;
+                return; // Pas de description pour ce kit
         }
 
+        ScenarioLangManager.send(chosenPlayer.getPlayer(), kitLang);
     }
 
     @Override
@@ -464,15 +444,16 @@ public class TaupeGun extends Scenario {
 
         if (UHCManager.get().getGameState() != UHCManager.GameState.INGAME) {
             for (UHCPlayer lobby : UHCPlayerManager.get().getOnlineUHCPlayers()) {
-                lobby.getPlayer().sendMessage(ChatColor.DARK_GRAY + "❯ "
-                        + player.getName() + " » "
-                        + ChatColor.WHITE + message);
+                Map<String, Object> placeholders = new HashMap<>();
+                placeholders.put("%player%", player.getName());
+                placeholders.put("%message%", message);
+                lobby.getPlayer().sendMessage(ScenarioLangManager.get(TaupeGunLang.LOBBY_CHAT_FORMAT, uhcPlayer, placeholders));
             }
             return;
         }
 
         if (!uhcPlayer.isPlaying()) {
-            player.sendMessage(ChatColor.RED + "Vous n'avez pas le droit de parler !");
+            ScenarioLangManager.send(player, TaupeGunLang.DEAD_CANNOT_SPEAK);
             return;
         }
 
@@ -480,15 +461,16 @@ public class TaupeGun extends Scenario {
 
         if (message.startsWith("!")) {
             for (UHCPlayer lobby : UHCPlayerManager.get().getOnlineUHCPlayers()) {
-                lobby.getPlayer().sendMessage(ChatColor.GREEN + "✦ Global ✦ "
-                        + ChatColor.DARK_GRAY + player.getName() + " » "
-                        + ChatColor.WHITE + message.substring(1));
+                Map<String, Object> placeholders = new HashMap<>();
+                placeholders.put("%player%", player.getName());
+                placeholders.put("%message%", message.substring(1));
+                lobby.getPlayer().sendMessage(ScenarioLangManager.get(TaupeGunLang.GLOBAL_CHAT_FORMAT, uhcPlayer, placeholders));
             }
             return;
         }
 
         if (message.startsWith("?") && !TeamsTaupe.contains(uhcPlayer.getTeam().get())) {
-            player.sendMessage("[§cTaupeGun§r]" + ChatColor.RED + "Vous n'êtes pas une taupe, vous ne pouvez pas parler en chat taupe !");
+            ScenarioLangManager.send(player, TaupeGunLang.NOT_TAUPE_ERROR);
             return;
         }
 

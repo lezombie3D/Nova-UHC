@@ -34,14 +34,14 @@ public class WhiteListUi extends CustomInventory {
         ItemStack disableWool = new ItemStack(Material.WOOL, 1, (byte) 14);
         ItemMeta disableMeta = disableWool.getItemMeta();
         if (disableMeta != null) {
-            disableMeta.setDisplayName("§cDésactiver la Whitelist");
+            disableMeta.setDisplayName(CommonString.WHITELIST_DISABLE_BUTTON.getRawMessage());
             disableWool.setItemMeta(disableMeta);
         }
 
         ItemStack enableWool = new ItemStack(Material.WOOL, 1, (byte) 5);
         ItemMeta enableMeta = enableWool.getItemMeta();
         if (enableMeta != null) {
-            enableMeta.setDisplayName("§aActiver la Whitelist");
+            enableMeta.setDisplayName(CommonString.WHITELIST_ENABLE_BUTTON.getRawMessage());
             enableWool.setItemMeta(enableMeta);
         }
 

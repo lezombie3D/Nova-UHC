@@ -77,7 +77,7 @@ public class HCMD implements CommandExecutor {
                 if (args.length >= 2) {
                     broadcastMessage(args, player);
                 } else {
-                    player.sendMessage(ChatColor.RED + "Usage : /h say <message>");
+                    CommonString.HOST_SAY_USAGE.send(player);
                 }
                 break;
             case "title":
@@ -87,7 +87,7 @@ public class HCMD implements CommandExecutor {
                 if (args.length >= 3) {
                     manageCohost(player, args[1].toLowerCase(), args[2]);
                 } else {
-                    player.sendMessage(ChatColor.RED + "Usage : /h cohost <add|remove> <joueur>");
+                    CommonString.HOST_COHOST_USAGE.send(player);
                 }
                 break;
 
@@ -244,25 +244,13 @@ public class HCMD implements CommandExecutor {
             player.getPlayer().setHealth(player.getPlayer().getMaxHealth());
         }
 
-        Bukkit.broadcastMessage(Common.get().getInfoTag() + "Heal effectuer !");
+        Bukkit.broadcastMessage(CommonString.HEAL_BROADCAST.getMessage());
 
     }
 
 
     private void sendHelpMessage(Player player) {
-        player.sendMessage(ChatColor.DARK_PURPLE + "Utilisation de la commande : \n" +
-                "/h config : Ouvre le menu de configuration et donne l'item de configuration.\n" +
-                "/h bypass : Permet de se mettre en créatif/survie.\n" +
-                "/h cohost (add/remove) <target> : Ajouter ou retirer un cohost.\n" +
-                "/h whitelist (add/remove/list/clear/on/off) : Gerer la whitelist.\n" +
-                "/h say <message> : Envoie un message pour tous les joueurs.\n" +
-                "/h title <message> : Envoie un message sur leur ecrans pour tous les joueurs.\n" +
-                "/h heal : Heal tout les joueur en vie.\n" +
-                "/h forcepvp : Force le PvP.\n" +
-                "/h forcemtp : Force le Meetup.\n" +
-                "/h stuff (modif/save/clear) : Gere le stuff de depart.\n"
-
-        );
+        CommonString.HOST_HELP_MESSAGE.send(player);
     }
 
     private void handleConfigCommand(Player player) {
@@ -274,7 +262,7 @@ public class HCMD implements CommandExecutor {
             player.getInventory().setItem(4, menuConf.getItemstack());
             new DefaultUi(player).open();
         } else {
-            player.sendMessage(ChatColor.RED + "Vous ne pouvez pas configurer en cours de jeu.");
+            CommonString.CONFIG_CANNOT_INGAME.send(player);
         }
     }
 
@@ -284,10 +272,10 @@ public class HCMD implements CommandExecutor {
         boolean bypassed = host.isBypassed();
 
         if (bypassed) {
-            player.sendMessage(ChatColor.GREEN + "Mode bypass activé !");
+            CommonString.HOST_BYPASS_ENABLED.send(player);
             player.setGameMode(GameMode.CREATIVE);
         } else {
-            player.sendMessage(ChatColor.RED + "Mode bypass désactivé !");
+            CommonString.HOST_BYPASS_DISABLED.send(player);
             GameMode newGameMode = UHCManager.get().isGame() ? GameMode.SURVIVAL : GameMode.ADVENTURE;
             player.setGameMode(newGameMode);
         }

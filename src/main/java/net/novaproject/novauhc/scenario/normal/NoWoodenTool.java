@@ -14,7 +14,7 @@ public class NoWoodenTool extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Interdit la fabrication et l'utilisation d'outils en bois.";
+        return "Remplace automatiquement les outils en bois par des outils en fer.";
     }
 
     @Override

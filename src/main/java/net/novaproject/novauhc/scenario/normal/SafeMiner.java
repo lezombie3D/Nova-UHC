@@ -32,11 +32,16 @@ public class SafeMiner extends Scenario {
         if (actived) {
             if (event.getEntity() instanceof Player) {
                 Player player = (Player) event.getEntity();
-                if (player.getLocation().getY() <= 60) {
+                if (player.getLocation().getY() <= getConfig().getInt("max_height")) {
                     event.setCancelled(true);
                 }
             }
         }
+    }
+
+    @Override
+    public String getPath() {
+        return "safeminer";
     }
 
     @Override

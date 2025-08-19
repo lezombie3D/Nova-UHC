@@ -2,126 +2,140 @@ main_color: "§e§l"
 start_canceled:
   title: "§3Nova-§fUHC"
   subtitle: "§3Dommage :c"
-  duration: 20
-menu:
-  main:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  preconfig:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  game:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  teams:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-    ingame:
-      title: "§f(§c!§f)§c Configuration"
-      color: 4
-  whitelist:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  enchant:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  potion:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  scenario:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-    ig:
-      title: "§f(§c!§f)§c Configuration"
-      color: 4
-    special:
-      title: "§f(§c!§f)§c Configuration"
-      color: 4
-      ig:
-        title: "§f(§c!§f)§c Configuration"
-        color: 4
-  border:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  mumble:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  drop:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  stuff:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  world:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-    oreboost:
-      title: "§f(§c!§f)§c Configuration"
-      color: 4
-      lapis_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWMwZTkxNDQ3NmUxYjE1ZGEyYTkxZjQ1Njk2ZGQyMTc2NjlkNGRhYzRmYTYyMTY1MDkyOWJhY2UwM2RlMjI1NCJ9fX0="
-      iron_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzFhNzg1OTE2ZDJkMTdjYTBlYTJhZDIzZDgwMjQ3YzdjNTAyMTQ0MzkwM2JiYWI3YjI0Yjc5MzRiNmEzNjFhYiJ9fX0="
-      gold_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDFiNWZkZWZmZmZmYTcwODM4MWU3MGYzNTAzYTI3NTc3MmI0NTI5NmNmOWYxNjI1YTg3ZWRjNmI2MjU0OWVmNiJ9fX0="
-      diams_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGJmYzdmYTRlNzRiNmU0MDFhZTA2NDE0OGFlNWU3NjhiODkzZjFkOTI5N2Y4NzQ3NTEwMWY3MjI1YTJhNWE2YSJ9fX0"
-
+  duration: 20 # en tick 20 tick = 1 seconde
 message:
   CLICK_HERE_TO_APPLY: " §8» §fCliquez pour §a§lappliquer§f."
   CLICK_HERE_TO_ACTIVATE: " §8» §fCliquez pour §a§lactiver§f."
   CLICK_HERE_TO_DESACTIVATE: " §8» §fCliquez pour §c§ldésactiver§f."
   CLICK_HERE_TO_MODIFY: " §8» §fCliquez pour §6§lmodifier§f."
-  CLICK_HERE_TO_ACCESS: " §8» §fCliquez pour y %main_color% accéder§f."
+  CLICK_HERE_TO_ACCESS: " §8» §fCliquez pour y %main_color%accéder§f."
   BAR: "§f§m                                                                           §r"
-  NO_PERMISSION: "§cI'm sorry but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."
-  CLICK_GAUCHE: " §8» §fCliquez gauche pour §f"
-  CLICK_DROITE: " §8» §fCliquez droite pour §f"
+  NO_PERMISSION: "§cDésolé, mais vous n'avez pas la permission d'exécuter cette commande. Veuillez contacter les administrateurs du serveur si vous pensez qu'il s'agit d'une erreur."
+  CLICK_GAUCHE: " §8» §fClic gauche pour §f"
+  CLICK_DROITE: " §8» §fClic droit pour §f"
   CLICK_HERE_TO_TOGGLE: " §8» §fCliquez ici pour §6§lactiver/désactiver§f."
 
-  KICKED: "Vous avez été kick par l'host"
-  KICKED_MESSAGE: "Le joueur %player% a été kick par l'host !"
-  WELCOME: "Bienvenue sur la partie de %host%"
-  WELCOME_HOST: "Bienvenue sur la partie de %host% !\n\n§cAttention, vous êtes l'host de cette partie, vous devez configurer la partie avant de pouvoir commencer !\n\n§ePour commencer, faites §c/uhc config§e !"
-  WELCOME_SPECTATOR: "Bienvenue en tant que spectateur sur la partie de %host% !"
-  ORE_BOOST: "Modification §a§lenregistré§r, n'oubliée pad de recrée une arena"
-  KICK_SPEC: "Vous ne pouvez pas vous connecter, car l'host a désactivé les spec"
-  KICK_FULL: "La partie est pleine"
-  KICK_WHITELIST: "Vous n'estes pas whitelist par l'host"
-  EXEDED_LIMITE: "Limite depasser"
-  DIM_NOT_ACCEIBLE: "La DImmesion n'est pas accecible "
-  CANT_TALK_DEATH: "Vous ne pouvez pas parler dans le chat"
-  CANT_TALK_SPECTATOR: "Vous ne pouvez pas parler dans le chat en tant que spectateur"
+  KICKED: "§cVous avez été exclu de la partie par l'host"
+  KICKED_MESSAGE: "§c» Le joueur §f%player% §ca été exclu de la partie par l'host !"
+  WELCOME: "§a§lBienvenue §fsur la partie de §6%host%§f !"
+  WELCOME_HOST: "§a§lBienvenue §fsur votre partie §6%host%§f !\n\n§c⚠ Attention §f: Vous êtes l'host de cette partie, vous devez la configurer avant de commencer !"
+  WELCOME_SPECTATOR: "§7Bienvenue en tant que §espectateur §fsur la partie de §6%host%§f !"
+  ORE_BOOST: "§aModification enregistrée §f! N'oubliez pas de recréer l'arène pour appliquer les changements."
+  KICK_SPEC: "§cConnexion refusée : L'host a désactivé le mode spectateur"
+  KICK_FULL: "§cConnexion refusée : La partie est complète"
+  KICK_WHITELIST: "§cConnexion refusée : Vous n'êtes pas dans la whitelist de l'host"
+  EXEDED_LIMITE: "§cLimite dépassée"
+  DIM_NOT_ACCEIBLE: "§cCette dimension n'est pas accessible"
+  CANT_TALK_DEATH: "§cVous ne pouvez pas parler dans le chat car vous êtes mort"
+  CANT_TALK_SPECTATOR: "§cVous ne pouvez pas parler dans le chat en tant que spectateur"
   CHAT_GLOBAL_FORMAT: "§7[§6Global§7] §f%s §8» §f%s"   #1er %s = Nom du joueur, 2eme %s = Message
   LOBBY_CHAT_FORMAT: "§7[§6Lobby§7] §f%s §8» §f%s"
   SOLO_CHAT_FORMAT: "§7[§6Solo§7] §f%s §8» §f%s"
   TEAM_CHAT_FORMAT: "§7[§6Équipe§7] §f%s §8» §f%s"
   HELPOP_MESSAGE: "%helpop% §2» "
-  BLOCKED_ENCHANT: "§cVous ne pouvez pas faire cette enchantement"
-  BLOCKED_POTION: "§cVous ne pouvez pas faire cette potion"
-  BLOCKED_CRAFT: "§cVous ne pouvez pas faire ce craft"
-  BLOCKED_CRAFT_ITEM: "§cVous ne pouvez pas faire ce craft"
-  DIAMOND_LIMIT_REACHED: "§cVous avez atteint la limite de diamant"
-  DIAMOND_LIMIT_INCREASED: "%mined_diamond% / %diamond_limite%"
-  TP_MESSAGE: "Le joueur %player% a été téléporté !"
-  DECONNECTION_LOBBY: "§c» %player% §cse déconnecte de la partie !"
-  DECONNECTION_GAME: "§c» %player% §cse déconnecte de la partie !"
-  CONNECTION_GAME: "§a» %player% §ase connecte à la partie !"
-  DEATH_MESSAGE: "§c» %player% §cmeurt par %killer%!"
-  DEATH_MESSAGE_TEAM: "§c» [%team%] %player% §cmeurt"
-  JOIN_TEAM_MESSAGE: "VOUS avez rejoint l'équipe §6%team%"
-  PREGEN_FINISHED: "Pré-génération terminée !"
-  PREGEN_STARTED: "Pré-génération en cours !"
-  CHAT_DISABLED: "§cLe chat est désactivé !"
-  REVIVE_MESSAGE: "§a» %player% §aest réssucité par %host% !"
-  INVULNERABLE_OFF: "§cVous n'êtes plus invulnérable !"
-  MEETUP_START: "le Meetup est activé ! §c§lAttention, la bordure est en mouvement !"
-  MEETUP_START_IN: "Le Meetup sera activé dans §a%time_before%"
-  PVP_START: "Le PVP est activé !"
-  PVP_START_IN: "Le PVP sera activé dans §a%time_before%"
-  DISABLE_ACTION: "§cVous ne pouvez pas faire cette action !"
-  SUCCESSFUL_ACTIVATION: "§aL'activation a été effectuée avec succès !"
-  SUCCESSFUL_DESACTIVATION: "§cLa désactivation a été effectuée avec succès !"
-  SUCCESSFUL_MODIFICATION: "§6La modification a été effectuée avec succès !"
-  TEAM_UPDATED: "§6Les équipe ont été mise à jour !"
-  TEAM_DESACTIVATED: "§cLes équipe ont été désactivée !"
-  GIVING_ROLES: "§6Distribution des rôles en cours..."
-  TEAM_UPDATED_MESSAGE: "§6Les équipes ont été mises à jour !"
-  TEAM_DESACTIVATED_MESSAGE: "§cLes équipes ont été désactivées !"
-  TEAM_REDFINIED_AUTO: "§6Les équipes ont été redéfinies automatiquement !"
+  BLOCKED_ENCHANT: "§cVous ne pouvez pas appliquer cet enchantement"
+  BLOCKED_POTION: "§cVous ne pouvez pas créer cette potion"
+  BLOCKED_CRAFT: "§cVous ne pouvez pas effectuer ce craft"
+  BLOCKED_CRAFT_ITEM: "§cVous ne pouvez pas créer cet objet"
+  DIAMOND_LIMIT_REACHED: "§cVous avez atteint la limite de diamants minés"
+  DIAMOND_LIMIT_INCREASED: "§bDiamants minés : §f%mined_diamond%§7/§f%diamond_limite%"
+  TP_MESSAGE: "§a» Le joueur §f%player% §aa été téléporté !"
+  DECONNECTION_LOBBY: "§c» §f%player% §cse déconnecte du lobby"
+  DECONNECTION_GAME: "§c» §f%player% §cse déconnecte de la partie"
+  CONNECTION_GAME: "§a» §f%player% §ase connecte à la partie"
+  DEATH_MESSAGE: "§c☠ §f%player% §ca été éliminé par §f%killer%§c !"
+  DEATH_MESSAGE_TEAM: "§c☠ §7[§6%team%§7] §f%player% §ca été éliminé"
+  JOIN_TEAM_MESSAGE: "§aVous avez rejoint l'équipe §6%team%§a !"
+  PREGEN_FINISHED: "§a✓ Pré-génération terminée avec succès !"
+  PREGEN_STARTED: "§e⚡ Pré-génération en cours..."
+  CHAT_DISABLED: "§cLe chat est actuellement désactivé !"
+  REVIVE_MESSAGE: "§a✦ §f%player% §aa été ressuscité par §6%host%§a !"
+  INVULNERABLE_OFF: "§c⚠ Vous n'êtes plus invulnérable !"
+  MEETUP_START: "§c§l♦ MEETUP ACTIVÉ ! §r§cAttention, la bordure se réduit !"
+  MEETUP_START_IN: "§e⌚ Le Meetup sera activé dans §a%time_before%"
+  PVP_START: "§c⚔ Le PVP est maintenant activé !"
+  PVP_START_IN: "§e⌚ Le PVP sera activé dans §a%time_before%"
+  DISABLE_ACTION: "§cVous ne pouvez pas effectuer cette action !"
+  SUCCESSFUL_ACTIVATION: "§a✓ Activation effectuée avec succès !"
+  SUCCESSFUL_DESACTIVATION: "§c✓ Désactivation effectuée avec succès !"
+  SUCCESSFUL_MODIFICATION: "§6✓ Modification effectuée avec succès !"
+  TEAM_UPDATED: "§6⚡ Les équipes ont été mises à jour !"
+  TEAM_DESACTIVATED: "§c⚡ Les équipes ont été désactivées !"
+  GIVING_ROLES: "§6♦ Distribution des rôles en cours..."
+  TEAM_UPDATED_MESSAGE: "§6⚡ Les équipes ont été mises à jour !"
+  TEAM_DESACTIVATED_MESSAGE: "§c⚡ Les équipes ont été désactivées !"
+  TEAM_REDFINIED_AUTO: "§6◉ Les équipes ont été redéfinies automatiquement !"
+
+  # Messages de commandes
+  MSG_USAGE: "§c✗ Usage: §f/msg <joueur> <message>"
+  MSG_PLAYER_OFFLINE: "§c✗ Ce joueur est hors ligne ou introuvable"
+  MSG_CANNOT_MESSAGE_SELF: "§c✗ Vous ne pouvez pas vous envoyer un message à vous-même !"
+  MSG_SENT_FORMAT: "§8│ §7§lMoi §7→ §7§l%target% §f%message%"
+  MSG_RECEIVED_FORMAT: "§8│ §7§l%sender% §7→ §7§lMoi §f%message%"
+
+  # Messages d'interface
+  WHITELIST_ENABLE_BUTTON: "§a✓ Activer la Whitelist"
+  WHITELIST_DISABLE_BUTTON: "§c✗ Désactiver la Whitelist"
+  RANDOM_TEAMS_BUTTON: "§f◆ Équipes aléatoires"
+
+  # Messages de scénarios
+  FINAL_HEAL_BROADCAST: "§a♥ Final Heal effectué ! Tous les joueurs ont été soignés."
+  TIMEBOMB_EXPLOSION: "§c☠ Le corps de §f%player% §ca explosé !"
+  GOLDEN_HEAD_NAME: "§6✦ Tête de %player%"
+
+  # Messages de commandes host
+  HOST_HELP_MESSAGE: "§6◆ Commandes Host disponibles:\n§f/h config §7- Ouvre le menu de configuration\n§f/h bypass §7- Active/désactive le mode créatif\n§f/h cohost <add|remove> <joueur> §7- Gère les co-hosts\n§f/h whitelist <add|remove|list|clear|on|off> §7- Gère la whitelist\n§f/h say <message> §7- Diffuse un message\n§f/h title <message> §7- Affiche un titre\n§f/h heal §7- Soigne tous les joueurs\n§f/h forcepvp §7- Force le PvP\n§f/h forcemtp §7- Force le Meetup\n§f/h stuff <modif|save|clear> §7- Gère l'équipement"
+  HOST_SAY_USAGE: "§c✗ Usage: §f/h say <message>"
+  HOST_COHOST_USAGE: "§c✗ Usage: §f/h cohost <add|remove> <joueur>"
+  HOST_BYPASS_ENABLED: "§a✓ Mode bypass activé (Créatif)"
+  HOST_BYPASS_DISABLED: "§c✗ Mode bypass désactivé (Survie)"
+
+  # Messages de commandes joueur
+  PLAYER_HELP_MESSAGE: "§6◆ Commandes Joueur disponibles:\n§f/p helpop <message> §7- Envoie un message aux hosts"
+
+  # Messages supplémentaires host
+  HEAL_BROADCAST: "§a♥ Heal effectué ! Tous les joueurs ont été soignés."
+  CONFIG_CANNOT_INGAME: "§c✗ Vous ne pouvez pas configurer en cours de partie"
+  TITLE_USAGE: "§c✗ Usage: §f/h title <message>"
+  REVIVE_USAGE: "§c✗ Usage: §f/h revive <joueur>"
+  WHITELIST_USAGE: "§c✗ Usage: §f/h whitelist <add|remove|list|clear|on|off> [joueur]"
+  STUFF_USAGE: "§c✗ Usage: §f/h stuff <modif|save|clear>"
+  COHOST_ADDED: "§a✓ §f%player% §aa été ajouté comme co-host"
+  COHOST_REMOVED: "§c✓ §f%player% §ca été retiré des co-hosts"
+  COHOST_ALREADY_EXISTS: "§c✗ Ce joueur est déjà co-host"
+  COHOST_NOT_FOUND: "§c✗ Ce joueur n'est pas co-host"
+  PLAYER_NOT_FOUND: "§c✗ Joueur introuvable ou hors ligne"
+  FORCE_PVP_BROADCAST: "§c⚔ Le PVP a été forcé par l'host !"
+  FORCE_MEETUP_BROADCAST: "§c♦ Le Meetup a été forcé par l'host !"
+
+  # Messages d'erreur standardisés
+  ERROR_INVALID_NUMBER: "§c✗ Nombre invalide. Veuillez entrer un nombre valide."
+  ERROR_NUMBER_TOO_LOW: "§c✗ Le nombre doit être supérieur à %min%"
+  ERROR_NUMBER_TOO_HIGH: "§c✗ Le nombre doit être inférieur à %max%"
+  ERROR_INVALID_ARGUMENT: "§c✗ Argument invalide: §f%argument%"
+  ERROR_MISSING_ARGUMENT: "§c✗ Argument manquant. Consultez l'aide de la commande."
+  ERROR_COMMAND_DISABLED: "§c✗ Cette commande est actuellement désactivée"
+  ERROR_WORLD_NOT_FOUND: "§c✗ Monde introuvable: §f%world%"
+  ERROR_LOCATION_INVALID: "§c✗ Position invalide ou inaccessible"
+  ERROR_FILE_NOT_FOUND: "§c✗ Fichier introuvable: §f%file%"
+  ERROR_PERMISSION_DENIED: "§c✗ Vous n'avez pas la permission d'effectuer cette action"
+  ERROR_PLAYER_OFFLINE: "§c✗ Le joueur §f%player% §cn'est pas en ligne"
+  ERROR_PLAYER_NOT_IN_GAME: "§c✗ Le joueur §f%player% §cn'est pas en jeu"
+  ERROR_ALREADY_IN_PROGRESS: "§c✗ Une opération est déjà en cours"
+  ERROR_NOT_STARTED: "§c✗ Aucune partie n'est en cours"
+  ERROR_COOLDOWN_ACTIVE: "§c✗ Veuillez attendre §f%time% §cavant de réutiliser cette commande"
+
+  # Messages de succès standardisés
+  SUCCESS_OPERATION_COMPLETED: "§a✓ Opération terminée avec succès"
+  SUCCESS_PLAYER_ADDED: "§a✓ Joueur §f%player% §aajouté avec succès"
+  SUCCESS_PLAYER_REMOVED: "§a✓ Joueur §f%player% §cretiré avec succès"
+  SUCCESS_SETTINGS_SAVED: "§a✓ Paramètres sauvegardés avec succès"
+  SUCCESS_WORLD_LOADED: "§a✓ Monde §f%world% §achargé avec succès"
+  SUCCESS_TELEPORT_COMPLETED: "§a✓ Téléportation effectuée"
+
+  # Messages d'information standardisés
+  INFO_LOADING: "§e⚡ Chargement en cours..."
+  INFO_PROCESSING: "§e⚡ Traitement en cours..."
+  INFO_PLEASE_WAIT: "§e⌛ Veuillez patienter..."
+  INFO_OPERATION_CANCELLED: "§7◆ Opération annulée"
+  INFO_NO_CHANGES_MADE: "§7◆ Aucune modification effectuée"

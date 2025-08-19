@@ -17,7 +17,7 @@ public class Cripple extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Réduit la vitesse de déplacement de tous les joueurs.";
+        return "Rend Tout les joueur faibles";
     }
 
     @Override

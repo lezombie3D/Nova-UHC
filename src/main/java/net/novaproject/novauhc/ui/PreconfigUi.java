@@ -49,8 +49,8 @@ public class PreconfigUi extends CustomInventory {
                         .addLore("")
                         .addLore(" §8» §fAccès §f: §6§lHost")
                         .addLore("")
-                        .addLore(CommonString.CLICK_LEFT.getMessage() + "§8» §a§lCharger")
-                        .addLore(CommonString.CLICK_RIGHT.getMessage() + "§8» §c§lSupprimer")
+                        .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§lCharger")
+                        .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§lSupprimer")
                         .addLore("");
 
                 addItem(new ActionItem(category, slot, item) {
@@ -89,7 +89,7 @@ public class PreconfigUi extends CustomInventory {
                 .addLore("")
                 .addLore("  §8┃ §fPermet d'ajouter une §e§lConfiguration")
                 .addLore("")
-                .addLore(CommonString.CLICK_TO_MODIFY.getMessage())
+                .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
                 .addLore("")) {
             @Override
             public void onClick(InventoryClickEvent e) {

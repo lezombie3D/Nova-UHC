@@ -8,6 +8,26 @@ import java.util.Map;
 
 public enum SlaveMarketLang implements ScenarioLang {
 
+    // Messages d'enchères
+    OWNER_ADDED,
+    OWNER_REMOVED,
+    AUCTION_START,
+    AUCTION_SOLD,
+    AUCTION_RANDOM_ASSIGN,
+    BID_PLACED,
+    BID_NOT_ENOUGH_DIAMONDS,
+    BID_ALREADY_HIGHEST,
+    AUCTION_TIMER,
+
+    // Messages d'interface
+    INVALID_PLAYER,
+    MAX_OWNERS_REACHED,
+    AUCTION_CANCELLED,
+
+    // Items d'enchères
+    BID_ONE_NAME,
+    BID_FIVE_NAME,
+    DIAMONDS_NAME,
 
     ;
 

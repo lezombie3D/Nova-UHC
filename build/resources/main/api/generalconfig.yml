@@ -1,45 +1,63 @@
 message:
   tab:
     lobby:
-      header: "§f[§6%servername%§f]"
-      footer: "§7En attente de joueurs... (%players%/%slot%)"
+      header: "§f╔══════ §6%servername% §f══════╗\n"
+      footer: "\n§7 En attente de joueurs... §8(§b%players%§8/§b%slot%§8)"
     game:
-      header: "§f[§6%servername%§f] §8| §aEn Jeu"
-      footer: "§8§m⎯⎯⎯ §fKills: §a%kills% §8§m⎯⎯⎯"
+      header: "§f╔══════ §6%servername% §f══════╗\n§a⚔ PARTIE EN COURS ⚔\n"
+      footer: "\n §8§m⎯⎯⎯ §f☠ Éliminations: §c%kills% §8§m⎯⎯⎯"
     end:
-      header: "§f[§6%servername%§f] §8| §cFin de partie"
-      footer: "§7Merci d'avoir joué !"
+      header: "§f╔══════ §6%servername% §f══════╗\n§c★ FIN DE PARTIE ★\n"
+      footer: "\n§a✦ Merci d'avoir participé ! ✦"
 
   scoreboard:
     lobby:
-      title: "§6 En attente"
+      title: "§6§l✦ NOVA UHC ✦"
       lines:
+        - "§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
         - ""
-        - "§fJoueurs: §b%players%§f/§b%slot%"
-        - "§fÉtat: §aLobby"
+        - "§f♦ Joueurs: §b%players%§f/§b%slot%"
+        - "§f◆ État: §a En attente"
+        - "§f♛ Host: §6%host%"
         - ""
-        - "<ip>"
+        - "§f⌘ Serveur:"
+        - "§e<ip>"
+        - ""
+        - "§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
     game:
-      title: "§a✦ En Jeu ✦"
+      title: "§a§l⚔ EN COMBAT ⚔"
       lines:
+        - "§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
         - ""
-        - "§fJoueurs: §b%players%§f/§b%slot%"
-        - "§fKill: §a%kills%"
+        - "§f♦ Joueurs: §b%players%§f/§b%slot%"
+        - "§f☠ Éliminations: §c%kills%"
+        - "§f♥ Vie: §c%health%§4♥"
         - ""
-        - "§fTemps: §a%timer%"
-        - "§fDirection: §a%arrow%"
+        - "§f➤ Temps: §a%timer%"
+        - "§f➤ Direction: §e%arrow%"
+        - "§f◉ Bordure: §6%border%"
         - ""
-        - "<ip>"
+        - "§f★ Équipe: §6%team%"
+        - ""
+        - "§e<ip>"
+        - "§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
     end:
-      title: "§c✦ Fin ✦"
+      title: "§c§l★ PARTIE TERMINÉE ★"
       lines:
+        - "§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
         - ""
-        - "§fDurée: §a%timer%"
-        - "§fKill: §a%kills%"
+        - "§f➤ Durée totale: §a%timer%"
+        - "§f☠ Vos éliminations: §c%kills%"
+        - "§f★ Équipe finale: §6%team%"
         - ""
-        - "<ip>"
+        - "§a✦ Félicitations ! ✦"
+        - ""
+        - "§f⌘ Serveur:"
+        - "§e<ip>"
+        - ""
+        - "§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
 
 
 
 timer:
-  timer_before_start: 30
+  timer_before_start: 15

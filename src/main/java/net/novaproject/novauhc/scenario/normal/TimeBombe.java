@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.scenario.normal;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
@@ -15,6 +16,9 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TimeBombe extends Scenario {
     @Override
@@ -82,7 +86,9 @@ public class TimeBombe extends Scenario {
                     time--;
 
                     if (time == 0) {
-                        Bukkit.broadcastMessage("§a" + uhcPlayer.getPlayer().getName() + "'s §fcorpse has exploded!");
+                        Map<String, Object> placeholders = new HashMap<>();
+                        placeholders.put("%player%", uhcPlayer.getPlayer().getName());
+                        Bukkit.broadcastMessage(CommonString.getMessage(CommonString.TIMEBOMB_EXPLOSION.getRawMessage(), uhcPlayer));
 
                         loc.getBlock().setType(Material.AIR);
 

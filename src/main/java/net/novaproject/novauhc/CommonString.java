@@ -27,8 +27,6 @@ public enum CommonString {
     CLICK_DROITE,
     CLICK_HERE_TO_TOGGLE,
 
-    // language
-
     KICKED,
     KICKED_MESSAGE,
     WELCOME,
@@ -79,6 +77,81 @@ public enum CommonString {
     TEAM_UPDATED_MESSAGE,
     TEAM_DESACTIVATED_MESSAGE,
     TEAM_REDFINIED_AUTO,
+
+    // Messages de commandes
+    MSG_USAGE,
+    MSG_PLAYER_OFFLINE,
+    MSG_CANNOT_MESSAGE_SELF,
+    MSG_SENT_FORMAT,
+    MSG_RECEIVED_FORMAT,
+
+    // Messages d'interface
+    WHITELIST_ENABLE_BUTTON,
+    WHITELIST_DISABLE_BUTTON,
+    RANDOM_TEAMS_BUTTON,
+
+    // Messages de scénarios
+    FINAL_HEAL_BROADCAST,
+    TIMEBOMB_EXPLOSION,
+    GOLDEN_HEAD_NAME,
+
+    // Messages de commandes host
+    HOST_HELP_MESSAGE,
+    HOST_SAY_USAGE,
+    HOST_COHOST_USAGE,
+    HOST_BYPASS_ENABLED,
+    HOST_BYPASS_DISABLED,
+
+    // Messages de commandes joueur
+    PLAYER_HELP_MESSAGE,
+
+    // Messages supplémentaires host
+    HEAL_BROADCAST,
+    CONFIG_CANNOT_INGAME,
+    TITLE_USAGE,
+    REVIVE_USAGE,
+    WHITELIST_USAGE,
+    STUFF_USAGE,
+    COHOST_ADDED,
+    COHOST_REMOVED,
+    COHOST_ALREADY_EXISTS,
+    COHOST_NOT_FOUND,
+    PLAYER_NOT_FOUND,
+    FORCE_PVP_BROADCAST,
+    FORCE_MEETUP_BROADCAST,
+
+    // Messages d'erreur standardisés
+    ERROR_INVALID_NUMBER,
+    ERROR_NUMBER_TOO_LOW,
+    ERROR_NUMBER_TOO_HIGH,
+    ERROR_INVALID_ARGUMENT,
+    ERROR_MISSING_ARGUMENT,
+    ERROR_COMMAND_DISABLED,
+    ERROR_WORLD_NOT_FOUND,
+    ERROR_LOCATION_INVALID,
+    ERROR_FILE_NOT_FOUND,
+    ERROR_PERMISSION_DENIED,
+    ERROR_PLAYER_OFFLINE,
+    ERROR_PLAYER_NOT_IN_GAME,
+    ERROR_ALREADY_IN_PROGRESS,
+    ERROR_NOT_STARTED,
+    ERROR_COOLDOWN_ACTIVE,
+
+    // Messages de succès standardisés
+    SUCCESS_OPERATION_COMPLETED,
+    SUCCESS_PLAYER_ADDED,
+    SUCCESS_PLAYER_REMOVED,
+    SUCCESS_SETTINGS_SAVED,
+    SUCCESS_WORLD_LOADED,
+    SUCCESS_TELEPORT_COMPLETED,
+
+    // Messages d'information standardisés
+    INFO_LOADING,
+    INFO_PROCESSING,
+    INFO_PLEASE_WAIT,
+    INFO_OPERATION_CANCELLED,
+    INFO_NO_CHANGES_MADE,
+
     ;
 
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");
@@ -88,32 +161,12 @@ public enum CommonString {
     private static final String DEFAULT_MESSAGE = "§cMissing Translation";
 
     public static void loadMessages(FileConfiguration config) {
-        System.out.print(config);
         TRANSLATIONS.clear();
         for (CommonString lang : values()) {
             String path = "message." + lang.name();
             String message = config.getString(path);
             TRANSLATIONS.put(lang, message != null ? message.replace("&", "§") : DEFAULT_MESSAGE);
         }
-    }
-
-    public static Map<String, Object> getPlaceHolders() {
-        Map<String, Object> placeHolders = new HashMap<>();
-        placeHolders.put("%time%", SIMPLE_DATE_FORMAT.format(new Date()));
-        placeHolders.put("%date%", YEARS_FORMAT.format(new Date()));
-        placeHolders.put("%border%", String.valueOf(Common.get().getArena().getWorldBorder().getSize()));
-        placeHolders.put("%timer%", UHCManager.get().getTimerFormatted());
-        placeHolders.put("%serveurname%", Common.get().getServername());
-        placeHolders.put("%gamestate%", UHCManager.get().getGameState().name());
-        placeHolders.put("%players%", String.valueOf(UHCPlayerManager.get().getPlayingOnlineUHCPlayers().size()));
-        placeHolders.put("%slot%", String.valueOf(UHCManager.get().getSlot()));
-        placeHolders.put("%main_color%", Common.get().getMainColor());
-        placeHolders.put("%host%", PlayerConnectionEvent.getHost() != null ? PlayerConnectionEvent.getHost().getName() : "Aucun");
-        placeHolders.put("%infotag%", Common.get().getInfoTag());
-        placeHolders.put("%servertag%", Common.get().getServertag());
-        placeHolders.put("%servername%", Common.get().getServername());
-        placeHolders.put("%diamond_limite%", String.valueOf(UHCManager.get().getDimamondLimit()));
-        return placeHolders;
     }
 
     public static String getMessage(String text, UHCPlayer uhcPlayer) {
@@ -124,27 +177,134 @@ public enum CommonString {
         return message;
     }
 
-    public static Map<String, Object> getPlaceHolders(UHCPlayer uhcPlayer) {
+    public static Map<String, Object> getPlaceHolders() {
         Map<String, Object> placeHolders = new HashMap<>();
         placeHolders.put("%time%", SIMPLE_DATE_FORMAT.format(new Date()));
         placeHolders.put("%date%", YEARS_FORMAT.format(new Date()));
-        placeHolders.put("%border%", String.valueOf(Common.get().getArena().getWorldBorder().getSize()));
-        placeHolders.put("%timer%", UHCManager.get().getTimerFormatted());
-        placeHolders.put("%gamestate%", UHCManager.get().getGameState().name());
-        placeHolders.put("%players%", String.valueOf(UHCPlayerManager.get().getPlayingOnlineUHCPlayers().size()));
-        placeHolders.put("%slot%", String.valueOf(UHCManager.get().getSlot()));
-        placeHolders.put("%main_color%", Common.get().getMainColor());
-        placeHolders.put("%player%", uhcPlayer.getPlayer().getName());
-        placeHolders.put("%kills%", uhcPlayer.getKill());
-        placeHolders.put("%team%", uhcPlayer.getTeam().isPresent() ? uhcPlayer.getTeam().get().getName() : "Solo");
-        placeHolders.put("%state%", uhcPlayer.isPlaying() ? "En jeu" : "Mort");
-        placeHolders.put("%health%", uhcPlayer.getPlayer().getHealth());
-        placeHolders.put("%role%", ScenarioManager.get().getActiveSpecialScenarios().stream()
-                .filter(scenario -> scenario instanceof ScenarioRole)
-                .findFirst()
-                .map(scenario -> ((ScenarioRole<?>) scenario).getRoleByUHCPlayer(uhcPlayer).getName())
-                .orElse("Aucun"));
-        placeHolders.put("%arrow%", uhcPlayer.getArrowDirection(uhcPlayer.getPlayer().getLocation(), new Location(Common.get().getArena(), 0, 100, 0), uhcPlayer.getPlayer().getLocation().getYaw()));
+
+        try {
+            if (Common.get() != null && Common.get().getArena() != null) {
+                placeHolders.put("%border%", String.valueOf((int) Common.get().getArena().getWorldBorder().getSize()));
+            } else {
+                placeHolders.put("%border%", "N/A");
+            }
+        } catch (Exception e) {
+            placeHolders.put("%border%", "N/A");
+        }
+
+        try {
+            if (UHCManager.get() != null) {
+                placeHolders.put("%timer%", UHCManager.get().getTimerFormatted());
+                placeHolders.put("%gamestate%", UHCManager.get().getGameState().name());
+                placeHolders.put("%slot%", String.valueOf(UHCManager.get().getSlot()));
+                placeHolders.put("%diamond_limite%", String.valueOf(UHCManager.get().getDimamondLimit()));
+            } else {
+                placeHolders.put("%timer%", "00:00");
+                placeHolders.put("%gamestate%", "UNKNOWN");
+                placeHolders.put("%slot%", "0");
+                placeHolders.put("%diamond_limite%", "0");
+            }
+        } catch (Exception e) {
+            placeHolders.put("%timer%", "00:00");
+            placeHolders.put("%gamestate%", "UNKNOWN");
+            placeHolders.put("%slot%", "0");
+            placeHolders.put("%diamond_limite%", "0");
+        }
+
+        try {
+            if (Common.get() != null) {
+                placeHolders.put("%serveurname%", Common.get().getServername() != null ? Common.get().getServername() : "NovaUHC");
+                placeHolders.put("%main_color%", Common.get().getMainColor() != null ? Common.get().getMainColor() : "§e§l");
+                placeHolders.put("%infotag%", Common.get().getInfoTag() != null ? Common.get().getInfoTag() : "");
+                placeHolders.put("%servertag%", Common.get().getServertag() != null ? Common.get().getServertag() : "");
+                placeHolders.put("%servername%", Common.get().getServername() != null ? Common.get().getServername() : "NovaUHC");
+            } else {
+                placeHolders.put("%serveurname%", "NovaUHC");
+                placeHolders.put("%main_color%", "§e§l");
+                placeHolders.put("%infotag%", "");
+                placeHolders.put("%servertag%", "");
+                placeHolders.put("%servername%", "NovaUHC");
+            }
+        } catch (Exception e) {
+            placeHolders.put("%serveurname%", "NovaUHC");
+            placeHolders.put("%main_color%", "§e§l");
+            placeHolders.put("%infotag%", "");
+            placeHolders.put("%servertag%", "");
+            placeHolders.put("%servername%", "NovaUHC");
+        }
+
+        try {
+            if (UHCPlayerManager.get() != null) {
+                placeHolders.put("%players%", String.valueOf(UHCPlayerManager.get().getPlayingOnlineUHCPlayers().size()));
+            } else {
+                placeHolders.put("%players%", "0");
+            }
+        } catch (Exception e) {
+            placeHolders.put("%players%", "0");
+        }
+
+        try {
+            placeHolders.put("%host%", PlayerConnectionEvent.getHost() != null ? PlayerConnectionEvent.getHost().getName() : "Aucun");
+        } catch (Exception e) {
+            placeHolders.put("%host%", "Aucun");
+        }
+
+        return placeHolders;
+    }
+
+    public static Map<String, Object> getPlaceHolders(UHCPlayer uhcPlayer) {
+        Map<String, Object> placeHolders = getPlaceHolders();
+
+        if (uhcPlayer != null && uhcPlayer.getPlayer() != null) {
+            placeHolders.put("%player%", uhcPlayer.getPlayer().getName());
+            placeHolders.put("%kills%", uhcPlayer.getKill());
+            placeHolders.put("%team%", uhcPlayer.getTeam().isPresent() ? uhcPlayer.getTeam().get().getName() : "Solo");
+            placeHolders.put("%state%", uhcPlayer.isPlaying() ? "En jeu" : "Mort");
+            placeHolders.put("%health%", uhcPlayer.getPlayer().getHealth());
+            placeHolders.put("%mined_diamond%", uhcPlayer.getMinedDiamond());
+            placeHolders.put("%killer%", uhcPlayer.getKiller() != null ? uhcPlayer.getKiller().getName() : "Aucun");
+
+            try {
+                if (ScenarioManager.get() != null) {
+                    String role = ScenarioManager.get().getActiveSpecialScenarios().stream()
+                            .filter(scenario -> scenario instanceof ScenarioRole)
+                            .findFirst()
+                            .map(scenario -> ((ScenarioRole<?>) scenario).getRoleByUHCPlayer(uhcPlayer).getName())
+                            .orElse("Aucun");
+                    placeHolders.put("%role%", role);
+                } else {
+                    placeHolders.put("%role%", "Aucun");
+                }
+            } catch (Exception e) {
+                placeHolders.put("%role%", "Aucun");
+            }
+
+            // Safe arrow direction
+            try {
+                if (Common.get() != null && Common.get().getArena() != null) {
+                    String arrow = uhcPlayer.getArrowDirection(
+                            uhcPlayer.getPlayer().getLocation(),
+                            new Location(Common.get().getArena(), 0, 100, 0),
+                            uhcPlayer.getPlayer().getLocation().getYaw()
+                    );
+                    placeHolders.put("%arrow%", arrow);
+                } else {
+                    placeHolders.put("%arrow%", "→");
+                }
+            } catch (Exception e) {
+                placeHolders.put("%arrow%", "→");
+            }
+        } else {
+            placeHolders.put("%player%", "Unknown");
+            placeHolders.put("%kills%", "0");
+            placeHolders.put("%team%", "Solo");
+            placeHolders.put("%state%", "Unknown");
+            placeHolders.put("%health%", "0");
+            placeHolders.put("%role%", "Aucun");
+            placeHolders.put("%arrow%", "→");
+            placeHolders.put("%mined_diamond%", "0");
+            placeHolders.put("%killer%", "Aucun");
+        }
         placeHolders.put("%host%", PlayerConnectionEvent.getHost() != null ? PlayerConnectionEvent.getHost().getName() : "Aucun");
         placeHolders.put("%infotag%", Common.get().getInfoTag());
         placeHolders.put("%servertag%", Common.get().getServertag());
@@ -165,11 +325,19 @@ public enum CommonString {
     }
 
     public String getMessage() {
-        String message = TRANSLATIONS.getOrDefault(this, DEFAULT_MESSAGE);
-        for (Map.Entry<String, Object> entry : getPlaceHolders().entrySet()) {
-            message = message.replace(entry.getKey(), entry.getValue() != null ? entry.getValue().toString() : "");
+        try {
+            String message = TRANSLATIONS.getOrDefault(this, DEFAULT_MESSAGE);
+            for (Map.Entry<String, Object> entry : getPlaceHolders().entrySet()) {
+                message = message.replace(entry.getKey(), entry.getValue() != null ? entry.getValue().toString() : "");
+            }
+            return message;
+        } catch (Exception e) {
+            return getRawMessage();
         }
-        return message;
+    }
+
+    public String getRawMessage() {
+        return TRANSLATIONS.getOrDefault(this, DEFAULT_MESSAGE);
     }
 
     public void send(Player player) {

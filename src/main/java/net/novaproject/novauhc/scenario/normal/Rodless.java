@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.scenario.normal;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Material;
@@ -30,7 +31,7 @@ public class Rodless extends Scenario {
         ItemStack item = event.getItem();
         if (item != null && item.getType() == Material.FISHING_ROD) {
             event.setCancelled(true);
-            player.sendMessage("§cLes cannes à pêche sont désactivées !");
+            CommonString.DISABLE_ACTION.send(player);
         }
     }
 
@@ -39,7 +40,7 @@ public class Rodless extends Scenario {
         ItemStack item = event.getRecipe().getResult();
         if (item.getType() == Material.FISHING_ROD) {
             event.setCancelled(true);
-            event.getWhoClicked().sendMessage("§cLa fabrication de cannes à pêche est désactivée dans ce scénario !");
+            CommonString.BLOCKED_CRAFT_ITEM.send((Player) event.getWhoClicked());
         }
     }
 }

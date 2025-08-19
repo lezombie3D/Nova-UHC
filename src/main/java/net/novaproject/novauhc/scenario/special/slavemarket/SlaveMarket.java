@@ -6,6 +6,7 @@ import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
@@ -65,7 +66,7 @@ public class SlaveMarket extends Scenario {
         super.setup();
         owners = new ArrayList<>();
         slaveMarket = this;
-        team_place = loadTeamPlacesFromConfig();
+
     }
 
     @Override
@@ -141,6 +142,7 @@ public class SlaveMarket extends Scenario {
     @Override
     public void toggleActive() {
         super.toggleActive();
+        this.team_place = loadTeamPlacesFromConfig();
         this.center = ConfigUtils.getLocation(getConfig(), "enchere_place");
         Location wait = ConfigUtils.getLocation(getConfig(), "wait_place");
         if (isActive()) {
@@ -150,7 +152,7 @@ public class SlaveMarket extends Scenario {
 
             int teamCount = team_place.size();
             if (teamCount == 0) {
-                Bukkit.getLogger().warning("Aucune équipe configurée pour SlaveMarket! Utilisation de 9 équipes par défaut.");
+                Bukkit.getLogger().warning("Aucune équipe configurée pour SlaveMarket! Utilisation de 8 équipes par défaut.");
                 teamCount = 8;
             }
             for (int i = 0; i < teamCount; i++) {
@@ -173,7 +175,9 @@ public class SlaveMarket extends Scenario {
     public boolean addOwner(UHCPlayer player) {
         if (!owners.contains(player)) {
             owners.add(player);
-            Bukkit.broadcastMessage(ChatColor.GOLD + player.getPlayer().getName() + ChatColor.YELLOW + " a été ajouté comme propriétaire d'équipe!");
+            Map<String, Object> placeholders = new HashMap<>();
+            placeholders.put("%player%", player.getPlayer().getName());
+            Bukkit.broadcastMessage(ScenarioLangManager.get(SlaveMarketLang.OWNER_ADDED, player, placeholders));
             return true;
         }
         return false;
@@ -182,7 +186,9 @@ public class SlaveMarket extends Scenario {
     public boolean removeOwner(UHCPlayer player) {
         if (owners.contains(player)) {
             owners.remove(player);
-            Bukkit.broadcastMessage(ChatColor.GOLD + player.getPlayer().getName() + ChatColor.YELLOW + " a été retiré des propriétaires d'équipe!");
+            Map<String, Object> placeholders = new HashMap<>();
+            placeholders.put("%player%", player.getPlayer().getName());
+            Bukkit.broadcastMessage(ScenarioLangManager.get(SlaveMarketLang.OWNER_REMOVED, player, placeholders));
             return true;
         }
         return false;

@@ -15,7 +15,7 @@ public class ChatPvP extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Les joueurs peuvent s'infliger des dégâts via des commandes de chat.";
+        return "A l'arrivée du PVP, le chat est désactivé.";
     }
 
     @Override

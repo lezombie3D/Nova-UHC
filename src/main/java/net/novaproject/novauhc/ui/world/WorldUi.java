@@ -37,7 +37,7 @@ public class WorldUi extends CustomInventory {
                 .addLore("  §8┃ §fPermet de configurer les")
                 .addLore("  §8┃ §fparamètres des boosts des §2minerais§r.")
                 .addLore("")
-                .addLore(CommonString.CLICK_TO_ACCESS.getMessage())
+                .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
         ItemCreator world = new ItemCreator(Material.ENDER_PEARL)
                 .setName("§8┃ §fRecréer l'Arena")
@@ -47,7 +47,7 @@ public class WorldUi extends CustomInventory {
                 .addLore("  §8┃ §fPermet de recréer l'arène.")
                 .addLore("  §8┃ §c§lAttention, cela effacera l'arène existante.")
                 .addLore("")
-                .addLore(CommonString.CLICK_TO_ACCESS.getMessage())
+                .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
 
         ItemCreator pregen = new ItemCreator(Material.GRASS)
@@ -57,7 +57,7 @@ public class WorldUi extends CustomInventory {
                 .addLore("")
                 .addLore("  §8┃ §fPermet de redémarrer la prégénération.")
                 .addLore("")
-                .addLore(CommonString.CLICK_TO_ACCESS.getMessage())
+                .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
 
         String name = getPlayer().getWorld().getName().equals(Common.get().getArenaName())
@@ -75,7 +75,7 @@ public class WorldUi extends CustomInventory {
                 .addLore("")
                 .addLore("  §8┃ §fPermet de " + destination + ".")
                 .addLore("")
-                .addLore(CommonString.CLICK_TO_ACCESS.getMessage())
+                .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
 
         addItem(new ActionItem(22, prev) {

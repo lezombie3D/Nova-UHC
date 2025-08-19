@@ -11,19 +11,20 @@ import java.util.EnumSet;
 import java.util.Set;
 
 public class HasteyAlpha extends Scenario {
+
     @Override
     public String getName() {
-        return "HasteyAlpha";
+        return "HasteyBabie";
     }
 
     @Override
     public String getDescription() {
-        return "Version réduite de HasteyBoy - seulement Efficacité I sur les outils.";
+        return "Version extrême de HasteyBoy - Efficacité VII et Solidité V sur tous les outils.";
     }
 
     @Override
     public ItemCreator getItem() {
-        return new ItemCreator(Material.IRON_PICKAXE);
+        return new ItemCreator(Material.GOLD_PICKAXE);
     }
 
     @Override
@@ -49,10 +50,9 @@ public class HasteyAlpha extends Scenario {
         );
 
         if (validTools.contains(item.getType())) {
-            item.addUnsafeEnchantment(Enchantment.DIG_SPEED, 1);
+            item.addUnsafeEnchantment(Enchantment.DIG_SPEED, 7);
+            item.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
             event.getInventory().setResult(item);
         }
-
     }
-
 }

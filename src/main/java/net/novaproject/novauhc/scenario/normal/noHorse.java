@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.scenario.normal;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Material;
@@ -26,8 +27,8 @@ public class noHorse extends Scenario {
     @Override
     public void onPlayerInteractonEntity(Player player, PlayerInteractEntityEvent event) {
         if (event.getRightClicked().getType() == EntityType.HORSE) {
-            player.sendMessage("§cTu ne peux pas monter sur un cheval !");
             event.setCancelled(true);
+            CommonString.DISABLE_ACTION.send(player);
         }
     }
 

@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.scenario.normal;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
@@ -35,7 +36,7 @@ public class FinalHeal extends Scenario {
             for (UHCPlayer player : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
                 player.getPlayer().setHealth(player.getPlayer().getMaxHealth());
             }
-            Bukkit.broadcastMessage("§aFinal Heal effectuer !");
+            Bukkit.broadcastMessage(CommonString.FINAL_HEAL_BROADCAST.getMessage());
         }
     }
 }

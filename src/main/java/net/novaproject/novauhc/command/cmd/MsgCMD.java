@@ -10,6 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MsgCMD implements CommandExecutor {
     @Override
@@ -19,19 +21,19 @@ public class MsgCMD implements CommandExecutor {
         Player player = (Player) sender;
 
         if (args.length < 2) {
-            player.sendMessage("§cUsage: /msg <joueur> <message>");
+            CommonString.MSG_USAGE.send(player);
             return true;
         }
 
         Player target = Bukkit.getPlayerExact(args[0]);
 
         if (target == null || !target.isOnline()) {
-            player.sendMessage("§cCe joueur est hors ligne.");
+            CommonString.MSG_PLAYER_OFFLINE.send(player);
             return true;
         }
 
         if (target == player) {
-            player.sendMessage("§cTu ne peux pas t'envoyer de message !");
+            CommonString.MSG_CANNOT_MESSAGE_SELF.send(player);
             return true;
         }
 
@@ -42,8 +44,17 @@ public class MsgCMD implements CommandExecutor {
 
         String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
-        player.sendMessage("§8│ §7§lMoi §7→ §7§l" + target.getName() + " §f" + message);
-        target.sendMessage("§8│ §7§l" + player.getName() + " → Moi §f" + message);
+        // Envoyer le message au sender
+        Map<String, Object> senderPlaceholders = new HashMap<>();
+        senderPlaceholders.put("%target%", target.getName());
+        senderPlaceholders.put("%message%", message);
+        CommonString.MSG_SENT_FORMAT.send(player, senderPlaceholders);
+
+        // Envoyer le message au destinataire
+        Map<String, Object> targetPlaceholders = new HashMap<>();
+        targetPlaceholders.put("%sender%", player.getName());
+        targetPlaceholders.put("%message%", message);
+        CommonString.MSG_RECEIVED_FORMAT.send(target, targetPlaceholders);
 
         MessageManager.setLastMessage(player.getUniqueId(), target.getUniqueId());
         return true;

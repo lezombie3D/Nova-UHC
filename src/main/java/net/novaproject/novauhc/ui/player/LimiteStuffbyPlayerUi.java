@@ -33,8 +33,8 @@ public class LimiteStuffbyPlayerUi extends CustomInventory {
                 .addLore("")
                 .addLore(" §8» §fActuel : §3§l" + targetPlayer.getDiamondArmor())
                 .addLore("")
-                .addLore(CommonString.CLICK_LEFT.getMessage() + "§8» §a§l+1")
-                .addLore(CommonString.CLICK_RIGHT.getMessage() + "§8» §c§l-1")
+                .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
+                .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
                 .addLore("");
         addItem(new ActionItem(3, diamond.setAmount(targetPlayer.getDiamondArmor())) {
             @Override
@@ -55,8 +55,8 @@ public class LimiteStuffbyPlayerUi extends CustomInventory {
                 .addLore("")
                 .addLore(" §8» §fActuel : §3§l" + targetPlayer.getProtectionMax())
                 .addLore("")
-                .addLore(CommonString.CLICK_LEFT.getMessage() + "§8» §a§l+1")
-                .addLore(CommonString.CLICK_RIGHT.getMessage() + "§8» §c§l-1")
+                .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
+                .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
                 .addLore("");
         addItem(new ActionItem(5, protection.setAmount(targetPlayer.getProtectionMax())) {
             @Override
@@ -85,8 +85,8 @@ public class LimiteStuffbyPlayerUi extends CustomInventory {
                     .addLore("")
                     .addLore(" §8» §fActuel : §3§l" + getUHCPlayer().getEnchantLimits().get(enchants))
                     .addLore("")
-                    .addLore(CommonString.CLICK_LEFT.getMessage() + "§8» §a§l+1")
-                    .addLore(CommonString.CLICK_RIGHT.getMessage() + "§8» §c§l-1")
+                    .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
+                    .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
                     .addLore("")) {
                 @Override
                 public void onClick(InventoryClickEvent e) {

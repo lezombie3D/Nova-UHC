@@ -28,8 +28,8 @@ public class LimiteStuffUi extends CustomInventory {
                 .addLore("")
                 .addLore(" §8» §fActuel : §3§l" + UHCManager.get().getDiamondArmor())
                 .addLore("")
-                .addLore(CommonString.CLICK_LEFT.getMessage() + "§8» §a§l+1")
-                .addLore(CommonString.CLICK_RIGHT.getMessage() + "§8» §c§l-1")
+                .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
+                .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
                 .addLore("");
         addItem(new ActionItem(3, diamond.setAmount(UHCManager.get().getDiamondArmor())) {
             @Override
@@ -50,8 +50,8 @@ public class LimiteStuffUi extends CustomInventory {
                 .addLore("")
                 .addLore(" §8» §fActuel : §3§l" + UHCManager.get().getProtectionMax())
                 .addLore("")
-                .addLore(CommonString.CLICK_LEFT.getMessage() + "§8» §a§l+1")
-                .addLore(CommonString.CLICK_RIGHT.getMessage() + "§8» §c§l-1")
+                .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
+                .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
                 .addLore("");
         addItem(new ActionItem(5, protection.setAmount(UHCManager.get().getProtectionMax())) {
             @Override
@@ -74,8 +74,8 @@ public class LimiteStuffUi extends CustomInventory {
                     .addLore("")
                     .addLore(" §8» §fActuel : §3§l" + enchants.getConfigValue())
                     .addLore("")
-                    .addLore(CommonString.CLICK_LEFT.getMessage() + "§8» §a§l+1")
-                    .addLore(CommonString.CLICK_RIGHT.getMessage() + "§8» §c§l-1")
+                    .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
+                    .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
                     .addLore("")) {
 
 

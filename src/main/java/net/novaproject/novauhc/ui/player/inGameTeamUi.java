@@ -12,7 +12,6 @@ import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.TeamsTagsManager;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
 import net.novaproject.novauhc.utils.ui.item.ActionItem;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -31,7 +30,7 @@ public class inGameTeamUi extends CustomInventory {
         addClose(8);
 
 
-        addItem(new ActionItem(0, new ItemCreator(Material.PAPER).setName(ChatColor.WHITE + "Equipes aléatoire")) {
+        addItem(new ActionItem(0, new ItemCreator(Material.PAPER).setName(CommonString.RANDOM_TEAMS_BUTTON.getRawMessage())) {
             @Override
             public void onClick(InventoryClickEvent e) {
                 getUHCPlayer().setTeam(Optional.empty());

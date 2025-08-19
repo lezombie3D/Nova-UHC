@@ -60,7 +60,7 @@ public abstract class ConfigVarUi extends CustomInventory {
                 "  §8┃ §fPermet d'augmenter la valeur",
                 "  §8┃ §fde §a" + value + "§f.",
                 "",
-                CommonString.CLICK_TO_MODIFY.getMessage()
+                CommonString.CLICK_HERE_TO_MODIFY.getMessage()
         ), label)) {
             @Override
             public void onClick(InventoryClickEvent e) {
@@ -77,7 +77,7 @@ public abstract class ConfigVarUi extends CustomInventory {
                 "  §8┃ §fPermet de diminuer la valeur",
                 "  §8┃ §fde " + Common.get().getMainColor() + value + "§f.",
                 "",
-                CommonString.CLICK_TO_MODIFY.getMessage()
+                CommonString.CLICK_HERE_TO_MODIFY.getMessage()
         ), label)) {
             @Override
             public void onClick(InventoryClickEvent e) {

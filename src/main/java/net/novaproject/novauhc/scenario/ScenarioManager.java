@@ -39,11 +39,10 @@ public class ScenarioManager {
         addScenario(new FIreLess());
         addScenario(new BloodDiamonds());
         addScenario(new NoFall());
-        addScenario(new PotionLess());
+
         addScenario(new WooltoString());
         addScenario(new BetaZombie());
         addScenario(new CatEye());
-        addScenario(new FIreEnchantLess());
         addScenario(new Meetup());
         //addScenario(new LoupGarouUHC());
         addScenario(new StarterTools());
@@ -52,7 +51,7 @@ public class ScenarioManager {
         addScenario(new FinalHeal());
         addScenario(new BlackArrow());
         addScenario(new NoFood());
-        addScenario(new Vanilla_plus());
+
         addScenario(new BatRoulette());
         addScenario(new WebCage());
         addScenario(new TimeBombe());

@@ -13,17 +13,17 @@ import java.util.Set;
 public class HasteyBabie extends Scenario {
     @Override
     public String getName() {
-        return "HasteyBabie";
+        return "HasteyAlpha";
     }
 
     @Override
     public String getDescription() {
-        return "Version extrême de HasteyBoy - Efficacité VII et Solidité V sur tous les outils.";
+        return "Version réduite de HasteyBoy - seulement Efficacité I sur les outils.";
     }
 
     @Override
     public ItemCreator getItem() {
-        return new ItemCreator(Material.GOLD_PICKAXE);
+        return new ItemCreator(Material.IRON_PICKAXE);
     }
 
     @Override
@@ -49,8 +49,7 @@ public class HasteyBabie extends Scenario {
         );
 
         if (validTools.contains(item.getType())) {
-            item.addUnsafeEnchantment(Enchantment.DIG_SPEED, 7);
-            item.addUnsafeEnchantment(Enchantment.DURABILITY, 5);
+            item.addUnsafeEnchantment(Enchantment.DIG_SPEED, 1);
             event.getInventory().setResult(item);
         }
 
