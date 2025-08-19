@@ -63,11 +63,11 @@ public class Common {
 
     public void loadItems() {
         configItem = (new ItemCreator(Material.REDSTONE_COMPARATOR))
-                .setName(CommonString.ITEM_CONFIG_NAME.getMessage()).setGlow(true);
-        teamItem = (new ItemCreator(Material.BANNER)).setName(CommonString.ITEM_TEAM_NAME.getMessage());
-        activeScenario = (new ItemCreator(Material.BOOK)).setName(CommonString.ITEM_ACTIVE_SCENARIO_NAME.getMessage());
-        activeRole = (new ItemCreator(Material.PAPER)).setName(CommonString.ITEM_ACTIVE_ROLE_NAME.getMessage());
-        reglesItem = (new ItemCreator(Material.NETHER_STAR)).setName(CommonString.ITEM_TELEPORTATION_NAME.getMessage());
+                .setName("§b§lConfigurer la partie §8§l▪ §f§lClic-droit").setGlow(true);
+        teamItem = (new ItemCreator(Material.BANNER)).setName("§f§lChoisir une équipe " + Common.get().getMainColor() + "§l▪ §f§lClic-droit");
+        activeScenario = (new ItemCreator(Material.BOOK)).setName("§f§lScénarios actifs " + Common.get().getMainColor() + "§l▪ §f§lClic-droit");
+        activeRole = (new ItemCreator(Material.PAPER)).setName("§f§lMode de Jeu actifs " + Common.get().getMainColor() + "§l▪ §f§lClic-droit");
+        reglesItem = (new ItemCreator(Material.NETHER_STAR)).setName("§f§lTéléportation " + Common.get().getMainColor() + "§l▪ §f§lClic-droit");
     }
 
     public World getArena() {

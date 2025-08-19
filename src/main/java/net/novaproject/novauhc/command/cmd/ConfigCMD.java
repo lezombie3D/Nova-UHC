@@ -116,7 +116,8 @@ public class ConfigCMD implements CommandExecutor {
                 diamant,
                 limiteD,
                 protection,
-                stuff
+                stuff,
+                null // potionStates will be handled by the UHCConfigManager
         );
 
         Main.getDatabaseManager().saveUHCConfig(playerUUID, config);
@@ -152,6 +153,11 @@ public class ConfigCMD implements CommandExecutor {
         uhc.setDiamondArmor(config.getLimiteD());
         uhc.applyLimitsFromList(config.getLimite());
         uhc.setProtectionMax(config.getProtection());
+
+        // Apply potion states from the configuration
+        if (config.getPotionStates() != null && !config.getPotionStates().isEmpty()) {
+            Main.getDatabaseManager().getConfigManager().applyPotionStatesToEnum(config.getPotionStates());
+        }
 
         player.sendMessage(ChatColor.GREEN + "Configuration " + ChatColor.GOLD + configName + ChatColor.GREEN + " chargée!");
         System.out.println();

@@ -1,79 +1,24 @@
 main_color: "§e§l"
-start_canceled:
-  title: "§3Nova-§fUHC"
-  subtitle: "§3Dommage :c"
-  duration: 20
-menu:
-  main:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  preconfig:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  game:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  teams:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-    ingame:
-      title: "§f(§c!§f)§c Configuration"
-      color: 4
-  whitelist:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  enchant:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  potion:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  scenario:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-    ig:
-      title: "§f(§c!§f)§c Configuration"
-      color: 4
-    special:
-      title: "§f(§c!§f)§c Configuration"
-      color: 4
-      ig:
-        title: "§f(§c!§f)§c Configuration"
-        color: 4
-  border:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  mumble:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  drop:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  stuff:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-  world:
-    title: "§f(§c!§f)§c Configuration"
-    color: 4
-    oreboost:
-      title: "§f(§c!§f)§c Configuration"
-      color: 4
-      lapis_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWMwZTkxNDQ3NmUxYjE1ZGEyYTkxZjQ1Njk2ZGQyMTc2NjlkNGRhYzRmYTYyMTY1MDkyOWJhY2UwM2RlMjI1NCJ9fX0="
-      iron_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzFhNzg1OTE2ZDJkMTdjYTBlYTJhZDIzZDgwMjQ3YzdjNTAyMTQ0MzkwM2JiYWI3YjI0Yjc5MzRiNmEzNjFhYiJ9fX0="
-      gold_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDFiNWZkZWZmZmZmYTcwODM4MWU3MGYzNTAzYTI3NTc3MmI0NTI5NmNmOWYxNjI1YTg3ZWRjNmI2MjU0OWVmNiJ9fX0="
-      diams_texture: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGJmYzdmYTRlNzRiNmU0MDFhZTA2NDE0OGFlNWU3NjhiODkzZjFkOTI5N2Y4NzQ3NTEwMWY3MjI1YTJhNWE2YSJ9fX0"
-
 message:
-  CLICK_HERE_TO_APPLY: " §8» §fCliquez pour §a§lappliquer§f."
-  CLICK_HERE_TO_ACTIVATE: " §8» §fCliquez pour §a§lactiver§f."
-  CLICK_HERE_TO_DESACTIVATE: " §8» §fCliquez pour §c§ldésactiver§f."
-  CLICK_HERE_TO_MODIFY: " §8» §fCliquez pour §6§lmodifier§f."
-  CLICK_HERE_TO_ACCESS: " §8» §fCliquez pour y %main_color% accéder§f."
+  # === COMMON UI ELEMENTS ===
+  CLICK_TO_APPLY: " §8» §fCliquez pour §a§lappliquer§f."
+  CLICK_TO_ACTIVATE: " §8» §fCliquez pour §a§lactiver§f."
+  CLICK_TO_DEACTIVATE: " §8» §fCliquez pour §c§ldésactiver§f."
+  CLICK_TO_MODIFY: " §8» §fCliquez pour §6§lmodifier§f."
+  CLICK_TO_ACCESS: " §8» §fCliquez pour y %main_color% accéder§f."
+  CLICK_TO_TOGGLE: " §8» §fCliquez ici pour §6§lactiver/désactiver§f."
+  CLICK_TO_CONFIRM: "§7Clique pour confirmer"
+  CLICK_TO_CANCEL: "§7Clique pour annuler"
+  CLICK_LEFT: " §8» §fCliquez gauche pour §f"
+  CLICK_RIGHT: " §8» §fCliquez droite pour §f"
+
+  # Common UI texts
+  ACCESS_HOST_ONLY: " §8» §fAccès §f: §6§lHost"
+  STATUS_ENABLED: "§2Activé"
+  STATUS_DISABLED: "§cDésactivé"
+  TITLE_CONFIRMATION: "§6§lConfirmation"
   BAR: "§f§m                                                                           §r"
   NO_PERMISSION: "§cI'm sorry but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error."
-  CLICK_GAUCHE: " §8» §fCliquez gauche pour §f"
-  CLICK_DROITE: " §8» §fCliquez droite pour §f"
-  CLICK_HERE_TO_TOGGLE: " §8» §fCliquez ici pour §6§lactiver/désactiver§f."
 
   KICKED: "Vous avez été kick par l'host"
   KICKED_MESSAGE: "Le joueur %player% a été kick par l'host !"
@@ -126,17 +71,21 @@ message:
   TEAM_DESACTIVATED_MESSAGE: "§cLes équipes ont été désactivées !"
   TEAM_REDFINIED_AUTO: "§6Les équipes ont été redéfinies automatiquement !"
 
-  # Command messages
+  # === COMMANDS ===
+  # Common command messages
+  COMMAND_PLAYERS_ONLY: "Cette commande est réservée aux joueurs !"
+  COMMAND_UNKNOWN: "§cCommande inconnue. Essayez /h pour plus d'informations."
+  PLAYER_OFFLINE: "§cCe joueur est hors ligne."
+
+  # Message command
   MSG_USAGE: "§cUsage: /msg <joueur> <message>"
-  MSG_PLAYER_OFFLINE: "§cCe joueur est hors ligne."
   MSG_CANNOT_MESSAGE_SELF: "§cTu ne peux pas t'envoyer de message !"
   MSG_SENT_FORMAT: "§8│ §7§lMoi §7→ §7§l%target% §f%message%"
   MSG_RECEIVED_FORMAT: "§8│ §7§l%sender% → Moi §f%message%"
+
+  # Reply command
   REP_USAGE: "§cUsage: /r <message>"
   REP_NO_ONE_TO_REPLY: "§cPersonne à qui répondre."
-  REP_PLAYER_OFFLINE: "§cCe joueur est hors ligne."
-  COMMAND_PLAYERS_ONLY: "Cette commande est réservée aux joueurs !"
-  COMMAND_UNKNOWN: "§cCommande inconnue. Essayez /h pour plus d'informations."
 
   # Host command messages
   HOST_SAY_USAGE: "§cUsage : /h say <message>"
@@ -169,20 +118,134 @@ message:
   PLAYER_HELPOP_USAGE: "§cUsage: /p helpop <message>"
   PLAYER_HELP_MESSAGE: "§5Utilisation de la commande : \n/p helpop : Envoie un message anonyme au Host/cohost de la partie."
 
-  # UI/Menu messages
-  CONFIRM_TITLE: "§6§lConfirmation"
-  CONFIRM_BUTTON: "§aConfirmer"
-  CONFIRM_BUTTON_LORE: "§7Clique pour confirmer"
-  CANCEL_BUTTON_LORE: "§7Clique pour annuler"
+  # === UI COMPONENTS ===
+  # Mumble UI
   MUMBLE_TITLE: "§7Mumble"
   MUMBLE_CLICK_TO_JOIN: "§7Cliquez pour rejoindre le mumble"
   MUMBLE_SERVER_INFO: "§7Mumble serveurIp : §6%ip%\n§7Mumble port : §6%port%"
   MUMBLE_PORT_LABEL: "§7Port : §6%port%"
   MUMBLE_IP_LABEL: "§7Ip : §6%ip%"
+
+  # Team UI
   RANDOM_TEAMS: "Equipes aléatoire"
 
-  # Menu descriptions
+  # === MAIN MENU ===
+  # Border menu
+  MENU_BORDER_TITLE: "§8┃ §fGestion de la %main_color%bordure"
+  MENU_BORDER_DESC_1: "  §8┃ §fPermet de modifer la §ataille"
+  MENU_BORDER_DESC_2: "  §8┃ §fet la §bvitesse§f de la %main_color%bordure§f."
 
+  # Teams menu
+  MENU_TEAMS_TITLE: "§8┃ §fGestion des %main_color%équipes"
+  MENU_TEAMS_DESC_1: "  §8┃ §fPermet de gérer les"
+  MENU_TEAMS_DESC_2: "  §8┃ %main_color%options §fdes équipes."
+
+  # Stop server
+  MENU_STOP_TITLE: "§8┃ §fStopper le serveur"
+  MENU_STOP_DESC_1: "  §8┃ §fPermet de stopper"
+  MENU_STOP_DESC_2: "  §8┃ §fle %main_color%serveur"
+  MENU_STOP_CONFIRM: "Etes-vous sûr de vouloir stopper le serveur ?"
+
+  # Scenarios menu
+  MENU_SCENARIOS_TITLE: "§8┃ §fGestion des %main_color%scénarios"
+  MENU_SCENARIOS_DESC_1: "  §8┃ §fVous permet de gérer les"
+  MENU_SCENARIOS_DESC_2: "  §8┃ %main_color%scénarios §fde la partie."
+
+  # Game mode menu
+  MENU_GAMEMODE_TITLE: "§8┃ §fMode de %main_color%jeu"
+  MENU_GAMEMODE_DESC_1: "  §8┃ §fPermet de modifer les options"
+  MENU_GAMEMODE_DESC_2: "  §8┃ %main_color%liées§f au mode de jeu §aactif§f."
+
+  # World menu
+  MENU_WORLD_TITLE: "§8┃ §fMonde"
+  MENU_WORLD_DESC_1: "  §8┃ §fPermet de configurer les"
+  MENU_WORLD_DESC_2: "  §8┃ §paramètres de la §2map§f."
+
+  # Teleportation
+  MENU_TP_LOBBY_TITLE: "§8┃ §fTéléportation au §alobby"
+  MENU_TP_RULES_TITLE: "§8┃ §fTéléportation à la §asalle des règles"
+  MENU_TP_LOBBY_DEST: "au point d'apparition"
+  MENU_TP_RULES_DEST: "dans la salle des règles"
+  MENU_TP_DESC_1: "  §8┃ §fVous permet de vous téléporter"
+  MENU_TP_DESC_2: "  §8┃ %destination%."
+
+  # Slots
+  MENU_SLOTS_TITLE: "§8┃ §fSlots"
+  MENU_SLOTS_DESC_1: "  §8┃ §fVous permet de modifier le"
+  MENU_SLOTS_DESC_2: "  §8┃ §fnombre de %main_color%slots §fdu serveur."
+
+  # Launch game
+  MENU_LAUNCH_START_TITLE: "§aLancer la partie"
+  MENU_LAUNCH_CANCEL_TITLE: "§cAnnuler le lancement"
+  MENU_LAUNCH_READY_QUESTION: "§8➤ §fTout est §aprêt §f?"
+  MENU_LAUNCH_CANCEL_QUESTION: "§8➤ §fPas sûr ? §cArrête§f !"
+  MENU_LAUNCH_START_DESC_1: "§7Permet de lancer la %main_color%partie §7si"
+  MENU_LAUNCH_START_DESC_2: "§7vous avez fini la config de la %main_color%partie§7."
+  MENU_LAUNCH_CANCEL_DESC_1: "§7Permet d'arrêter la %main_color%partie §7si"
+  MENU_LAUNCH_CANCEL_DESC_2: "§7vous avez mal fait la config de la %main_color%partie§7."
+
+  # === LOBBY ITEMS ===
+  ITEM_CONFIG: "§b§lConfigurer la partie §8§l▪ §f§lClic-droit"
+  ITEM_TEAM: "§f§lChoisir une équipe %main_color%§l▪ §f§lClic-droit"
+  ITEM_SCENARIOS: "§f§lScénarios actifs %main_color%§l▪ §f§lClic-droit"
+  ITEM_GAMEMODE: "§f§lMode de Jeu actifs %main_color%§l▪ §f§lClic-droit"
+  ITEM_TELEPORTATION: "§f§lTéléportation %main_color%§l▪ §f§lClic-droit"
+
+  # === GAME CONFIGURATION ===
+  # Potions
+  GAME_POTION_TITLE: "§8┃ §fLimite de §9potions"
+  GAME_POTION_DESC_1: "  §8┃ §fVous permet de limiter la"
+  GAME_POTION_DESC_2: "  §8┃ §ffabrication de certaines potions"
+
+  # PvP timing
+  GAME_PVP_TITLE: "§8┃ §fBordure (%main_color%%time%§f)"
+  GAME_PVP_DESC_1: "  §8┃ §fVous permet de §cmodifier"
+  GAME_PVP_DESC_2: "  §8┃ §fle temps avant l'§aactivation."
+  GAME_PVP_DESC_3: "  §8┃ §fdu §ePvP §fdurant la %main_color%partie§f."
+
+  # Border timing
+  GAME_BORDER_TITLE: "§8┃ §fPvP (%main_color%%time%§f)"
+  GAME_BORDER_DESC_1: "  §8┃ §fVous permet de %main_color%modifier"
+  GAME_BORDER_DESC_2: "  §8┃ §fle temps avant l'§aactivation"
+  GAME_BORDER_DESC_3: "  §8┃ §fde la reduction de la"
+  GAME_BORDER_DESC_4: "  §8┃ §ebordure §fdurant la partie."
+
+  # Diamond limit
+  GAME_DIAMOND_TITLE: "§8┃ §fLimite de §eDiamant§r (%main_color%§l%limit%§f)"
+  GAME_DIAMOND_DESC_1: "  §8┃ §fVous permet de limiter le"
+  GAME_DIAMOND_DESC_2: "  §8┃ §fnombre de §ediamants §fminables."
+
+  # Enchantments
+  GAME_ENCHANT_TITLE: "§8┃ §fLimite d'§denchantements"
+  GAME_ENCHANT_DESC_1: "  §8┃ §fVous permet de limiter"
+  GAME_ENCHANT_DESC_2: "  §8┃ §fcertains §denchantements§f."
+
+  # Starting inventory
+  GAME_START_INV_TITLE: "§8┃ §fInventaire de %main_color%départ"
+  GAME_START_INV_DESC_1: "  §8┃ §fVous permet de définir"
+  GAME_START_INV_DESC_2: "  §8┃ §fl'inventaire de %main_color%départ§f."
+
+  # Verify inventory
+  GAME_VERIFY_INV_TITLE: "§8┃ §fVérifier inventaire par défaut"
+  GAME_VERIFY_INV_DESC_1: "  §8┃ §fVous permet de vérifer"
+  GAME_VERIFY_INV_DESC_2: "  §8┃ §fl'inventaire par %main_color%défaut"
+  GAME_VERIFY_INV_DESC_3: "  §8┃ §fdonné en début de partie."
+
+  # Death inventory
+  GAME_DEATH_INV_TITLE: "§8┃ §fInventaire de %main_color%mort"
+  GAME_DEATH_INV_DESC_1: "  §8┃ §fVous permet de définir"
+  GAME_DEATH_INV_DESC_2: "  §8┃ §fl'inventaire de %main_color%mort"
+  GAME_DEATH_INV_DESC_3: "  §8┃ §fdonné lors d'une %main_color%mort§f."
+
+  # Drop rates
+  GAME_DROP_TITLE: "§8┃ §fTaux de §7drop"
+  GAME_DROP_DESC_1: "  §8┃ §fVous permet de modifier les"
+  GAME_DROP_DESC_2: "  §8┃ §ftaux de drop de certains objets."
+
+  # === SCENARIOS ===
+  SCENARIO_OPEN_CONFIG: "§8» §a§lOuvrir la configuration"
+
+  # === SYSTEM MESSAGES ===
   # MongoDB messages
   MONGODB_CONNECTED: "Successfully connected to MongoDB!"
   MONGODB_CONNECTION_FAILED: "Failed to connect to MongoDB: %error%"

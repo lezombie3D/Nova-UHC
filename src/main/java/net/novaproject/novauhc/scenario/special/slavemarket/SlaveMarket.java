@@ -62,6 +62,7 @@ public class SlaveMarket extends Scenario {
 
     @Override
     public void setup() {
+        super.setup();
         owners = new ArrayList<>();
         slaveMarket = this;
         team_place = loadTeamPlacesFromConfig();

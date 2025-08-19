@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.ui;
 
+import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.ui.config.DropUi;
@@ -16,9 +17,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class GameUi extends CustomInventory {
     public GameUi(Player player) {
         super(player);
@@ -30,93 +28,76 @@ public class GameUi extends CustomInventory {
         int limit_diamss = UHCManager.get().getDimamondLimit();
         int border_time = UHCManager.get().getTimerborder();
         int pvp_time = UHCManager.get().getTimerpvp();
-        ItemCreator potion = (new ItemCreator(Material.POTION)).setName(CommonString.GAME_POTION_TITLE.getMessage())
+        ItemCreator potion = (new ItemCreator(Material.POTION)).setName("§8┃ §fLimite de §9potions")
                 .addLore("")
-                .addLore(CommonString.GAME_POTION_DESCRIPTION_1.getMessage())
-                .addLore(CommonString.GAME_POTION_DESCRIPTION_2.getMessage())
+                .addLore("  §8┃ §fVous permet de limiter la")
+                .addLore("  §8┃ §ffabrication de certaines potions")
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
-        Map<String, Object> pvpPlaceholders = new HashMap<>();
-        pvpPlaceholders.put("%time%", UHCUtils.getFormattedTime(pvp_time));
-        String pvpTitle = CommonString.GAME_PVP_TITLE.getMessage();
-        for (Map.Entry<String, Object> entry : pvpPlaceholders.entrySet()) {
-            pvpTitle = pvpTitle.replace(entry.getKey(), entry.getValue().toString());
-        }
         ItemCreator pvp = new ItemCreator(Material.DIAMOND_SWORD)
-                .setName(pvpTitle)
+                .setName("§8┃ §fBordure (" + Common.get().getMainColor() + UHCUtils.getFormattedTime(pvp_time) + "§f)")
                 .addLore("")
-                .addLore(CommonString.GAME_PVP_DESCRIPTION_1.getMessage())
-                .addLore(CommonString.GAME_PVP_DESCRIPTION_2.getMessage())
-                .addLore(CommonString.GAME_PVP_DESCRIPTION_3.getMessage())
+                .addLore("  §8┃ §fVous permet de §cmodifier")
+                .addLore("  §8┃ §fle temps avant l'§aactivation.")
+                .addLore("  §8┃ §fdu §ePvP §fdurant la " + Common.get().getMainColor() + "partie§f.")
                 .addLore("");
-        Map<String, Object> borderPlaceholders = new HashMap<>();
-        borderPlaceholders.put("%time%", UHCUtils.getFormattedTime(border_time));
-        String borderTitle = CommonString.GAME_BORDER_TITLE.getMessage();
-        for (Map.Entry<String, Object> entry : borderPlaceholders.entrySet()) {
-            borderTitle = borderTitle.replace(entry.getKey(), entry.getValue().toString());
-        }
         ItemCreator bordure = new ItemCreator(Material.STAINED_GLASS).setDurability((short) 4)
-                .setName(borderTitle)
+                .setName("§8┃ §fPvP (" + Common.get().getMainColor() + UHCUtils.getFormattedTime(border_time) + "§f)")
                 .addLore("")
-                .addLore(CommonString.GAME_BORDER_DESCRIPTION_1.getMessage())
-                .addLore(CommonString.GAME_BORDER_DESCRIPTION_2.getMessage())
-                .addLore(CommonString.GAME_BORDER_DESCRIPTION_3.getMessage())
-                .addLore(CommonString.GAME_BORDER_DESCRIPTION_4.getMessage())
+                .addLore("  §8┃ §fVous permet de " + Common.get().getMainColor() + "modifier")
+                .addLore("  §8┃ §fle temps avant l'§aactivation")
+                .addLore("  §8┃ §fde la reduction de la")
+                .addLore("  §8┃ §ebordure §fdurant la partie.")
                 .addLore("");
-        Map<String, Object> diamondPlaceholders = new HashMap<>();
-        diamondPlaceholders.put("%limit%", String.valueOf(limit_diamss));
-        String diamondTitle = CommonString.GAME_DIAMOND_TITLE.getMessage();
-        for (Map.Entry<String, Object> entry : diamondPlaceholders.entrySet()) {
-            diamondTitle = diamondTitle.replace(entry.getKey(), entry.getValue().toString());
-        }
         ItemCreator diams = new ItemCreator(Material.DIAMOND)
-                .setName(diamondTitle)
+                .setName("§8┃ §fLimite de §eDiamant§r (" + Common.get().getMainColor() + "§l" + limit_diamss + "§f)")
                 .addLore("")
-                .addLore(CommonString.GAME_DIAMOND_DESCRIPTION_1.getMessage())
-                .addLore(CommonString.GAME_DIAMOND_DESCRIPTION_2.getMessage())
+                .addLore("  §8┃ §fVous permet de limiter le nombre")
+                .addLore("  §8┃ §fde diamants minables.")
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
-        ItemCreator enchant = (new ItemCreator(Material.ENCHANTED_BOOK)).setName(CommonString.GAME_ENCHANT_TITLE.getMessage())
+        ItemCreator enchant = (new ItemCreator(Material.ENCHANTED_BOOK)).setName("§8┃ §fLimite d'§benchantements")
                 .addLore("")
-                .addLore(CommonString.GAME_ENCHANT_DESCRIPTION_1.getMessage())
-                .addLore(CommonString.GAME_ENCHANT_DESCRIPTION_2.getMessage())
+                .addLore("  §8┃ §fVous permet de définir")
+                .addLore("  §8┃ §fla limite des tous")
+                .addLore("  §8┃ §fles enchantements.")
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
                 .addLore("");
         ItemCreator verif = UHCUtils.createCustomButon("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTkzMmI5Yzc0NGIxYTgwYjEzOTQwYjc0NmM4MTFjMTUwN2Y3YWMyMDJhYTI2OGRhMDFiMzU0ZjU0NmJlYWY0NCJ9fX0=",
-                        CommonString.GAME_VERIFY_TITLE.getMessage(), null
+                        "§8┃ §fVérifier inventaire par défaut", null
                 )
                 .addLore("")
-                .addLore(CommonString.GAME_VERIFY_DESCRIPTION_1.getMessage())
-                .addLore(CommonString.GAME_VERIFY_DESCRIPTION_2.getMessage())
-                .addLore(CommonString.GAME_VERIFY_DESCRIPTION_3.getMessage())
+                .addLore("  §8┃ §fVous permet de vérifer")
+                .addLore("  §8┃ §fl'inventaire par " + Common.get().getMainColor() + "défaut")
+                .addLore("  §8┃ §fdonné en début de partie.")
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
                 .addLore("");
         ItemCreator def = UHCUtils.createCustomButon("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmRiYmM1ODM2MDliNWYwMjUzN2NjM2NjMzZkNDBhNjBlMTM2NmEyMjJkYzU0ZjFlNzYxMTAwMGE4OTViMjMzNyJ9fX0=",
-                        CommonString.GAME_DEFAULT_TITLE.getMessage(), null)
+                        "§8┃ §fInventaire par défaut", null)
                 .addLore("")
-                .addLore(CommonString.GAME_DEFAULT_DESCRIPTION_1.getMessage())
-                .addLore(CommonString.GAME_DEFAULT_DESCRIPTION_2.getMessage())
-                .addLore(CommonString.GAME_DEFAULT_DESCRIPTION_3.getMessage())
+                .addLore("  §8┃ §fVous permet de définir")
+                .addLore("  §8┃ §fl'inventaire par défaut")
+                .addLore("  §8┃ §fdonné en début de partie.")
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
                 .addLore("");
         ItemCreator death = UHCUtils.createCustomButon("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjc4NDQ4MTljY2YyMDM1MDQ4M2Y5NDY5YjEwNTA3MmU2ZDQ1MjE0ZDdmMjZjYjg2N2YxODkxMGJjYzFkY2RiIn19fQ==",
-                        CommonString.GAME_DEATH_TITLE.getMessage(), null)
+                        "§8┃ §fInventaire de " + Common.get().getMainColor() + "mort", null)
                 .addLore("")
-                .addLore(CommonString.GAME_DEATH_DESCRIPTION_1.getMessage())
-                .addLore(CommonString.GAME_DEATH_DESCRIPTION_2.getMessage())
-                .addLore(CommonString.GAME_DEATH_DESCRIPTION_3.getMessage())
+                .addLore("  §8┃ §fVous permet de définir")
+                .addLore("  §8┃ §fl'inventaire de " + Common.get().getMainColor() + "mort")
+                .addLore("  §8┃ §fdonné lors d'une " + Common.get().getMainColor() + "mort§f.")
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
                 .addLore("");
-        ItemCreator drop = (new ItemCreator(Material.APPLE)).setName(CommonString.GAME_DROP_TITLE.getMessage())
+        ItemCreator drop = (new ItemCreator(Material.APPLE)).setName("§8┃ §fTaux de §7drop")
                 .addLore("")
-                .addLore(CommonString.GAME_DROP_DESCRIPTION_1.getMessage())
-                .addLore(CommonString.GAME_DROP_DESCRIPTION_2.getMessage())
+                .addLore("  §8┃ §fVous permet de modifier les")
+                .addLore("  §8┃ §ftaux de drop de certains objets.")
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");

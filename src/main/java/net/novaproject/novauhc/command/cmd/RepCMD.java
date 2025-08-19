@@ -9,8 +9,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class RepCMD implements CommandExecutor {
@@ -21,21 +19,21 @@ public class RepCMD implements CommandExecutor {
         Player player = (Player) sender;
 
         if (args.length < 1) {
-            CommonString.REP_USAGE.send(player);
+            player.sendMessage("§cUsage: /r <message>");
             return true;
         }
 
         UUID targetUUID = MessageManager.getLastMessage(player.getUniqueId());
 
         if (targetUUID == null) {
-            CommonString.REP_NO_ONE_TO_REPLY.send(player);
+            player.sendMessage("§cPersonne à qui répondre.");
             return true;
         }
 
         Player target = Bukkit.getPlayer(targetUUID);
 
         if (target == null || !target.isOnline()) {
-            CommonString.REP_PLAYER_OFFLINE.send(player);
+            player.sendMessage("§cCe joueur est hors ligne.");
             return true;
         }
 
@@ -46,13 +44,8 @@ public class RepCMD implements CommandExecutor {
 
         String message = String.join(" ", args);
 
-        Map<String, Object> placeholders = new HashMap<>();
-        placeholders.put("%target%", target.getName());
-        placeholders.put("%message%", message);
-        CommonString.MSG_SENT_FORMAT.send(player, placeholders);
-
-        placeholders.put("%sender%", player.getName());
-        CommonString.MSG_RECEIVED_FORMAT.send(target, placeholders);
+        player.sendMessage("§8│ §7§lMoi §7→ §7§l" + target.getName() + " §f" + message);
+        target.sendMessage("§8│ §7§l" + player.getName() + " → Moi §f" + message);
 
         MessageManager.setLastMessage(player.getUniqueId(), target.getUniqueId());
         return true;

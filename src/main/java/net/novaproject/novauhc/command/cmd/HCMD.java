@@ -27,7 +27,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Random;
 
 import static net.novaproject.novauhc.utils.UHCUtils.*;
 
@@ -75,7 +77,7 @@ public class HCMD implements CommandExecutor {
                 if (args.length >= 2) {
                     broadcastMessage(args, player);
                 } else {
-                    CommonString.HOST_SAY_USAGE.send(player);
+                    player.sendMessage(ChatColor.RED + "Usage : /h say <message>");
                 }
                 break;
             case "title":
@@ -85,7 +87,7 @@ public class HCMD implements CommandExecutor {
                 if (args.length >= 3) {
                     manageCohost(player, args[1].toLowerCase(), args[2]);
                 } else {
-                    CommonString.HOST_COHOST_USAGE.send(player);
+                    player.sendMessage(ChatColor.RED + "Usage : /h cohost <add|remove> <joueur>");
                 }
                 break;
 
@@ -105,24 +107,25 @@ public class HCMD implements CommandExecutor {
                 break;
             case "forcepvp":
                 forcepvp();
-                Bukkit.broadcastMessage(CommonString.HOST_PVP_FORCED.getMessage());
+                Bukkit.broadcastMessage(Common.get().getInfoTag() + "Le PvP vient d'etre forcé.");
                 break;
             case "forcemtp":
                 forceMTP();
-                Bukkit.broadcastMessage(CommonString.HOST_MEETUP_FORCED.getMessage());
+                Bukkit.broadcastMessage(Common.get().getInfoTag() + "Le meetup vient d'etre forcé.");
                 break;
             case "whitelist":
                 if (args.length >= 2) {
                     manageWhitelist(player, args);
                 } else {
-                    CommonString.HOST_WHITELIST_USAGE.send(player);
+                    player.sendMessage("/h whitelist add/remove <target>");
+                    player.sendMessage("/h whitelist list/clear/on/off");
                 }
                 break;
             case "stuff":
                 startSTuff(player, args);
                 break;
             default:
-                CommonString.COMMAND_UNKNOWN.send(player);
+                player.sendMessage(ChatColor.RED + "Commande inconnue. Essayez /h pour plus d'informations.");
         }
 
 
@@ -145,14 +148,13 @@ public class HCMD implements CommandExecutor {
             switch (arg) {
                 case "clear":
                     UHCManager.get().start.clear();
-                    CommonString.HOST_STUFF_CLEARED.send(player);
+                    player.sendMessage(ChatColor.RED + "Le Stuff de depart est clear.");
                     break;
                 case "list":
                     String sb = "";
                     getInventoryContentsAsString(UHCManager.get().start);
-                    Map<String, Object> placeholders = new HashMap<>();
-                    placeholders.put("%content%", sb);
-                    CommonString.HOST_STUFF_LIST.send(player, placeholders);
+                    player.sendMessage(ChatColor.RED + "Le contenu est : \n" +
+                            sb);
                     break;
                 case "modif":
                     if (UHCManager.get().isLobby()) {
@@ -248,7 +250,19 @@ public class HCMD implements CommandExecutor {
 
 
     private void sendHelpMessage(Player player) {
-        CommonString.HOST_HELP_MESSAGE.send(player);
+        player.sendMessage(ChatColor.DARK_PURPLE + "Utilisation de la commande : \n" +
+                "/h config : Ouvre le menu de configuration et donne l'item de configuration.\n" +
+                "/h bypass : Permet de se mettre en créatif/survie.\n" +
+                "/h cohost (add/remove) <target> : Ajouter ou retirer un cohost.\n" +
+                "/h whitelist (add/remove/list/clear/on/off) : Gerer la whitelist.\n" +
+                "/h say <message> : Envoie un message pour tous les joueurs.\n" +
+                "/h title <message> : Envoie un message sur leur ecrans pour tous les joueurs.\n" +
+                "/h heal : Heal tout les joueur en vie.\n" +
+                "/h forcepvp : Force le PvP.\n" +
+                "/h forcemtp : Force le Meetup.\n" +
+                "/h stuff (modif/save/clear) : Gere le stuff de depart.\n"
+
+        );
     }
 
     private void handleConfigCommand(Player player) {
@@ -270,10 +284,10 @@ public class HCMD implements CommandExecutor {
         boolean bypassed = host.isBypassed();
 
         if (bypassed) {
-            CommonString.HOST_BYPASS_ENABLED.send(player);
+            player.sendMessage(ChatColor.GREEN + "Mode bypass activé !");
             player.setGameMode(GameMode.CREATIVE);
         } else {
-            CommonString.HOST_BYPASS_DISABLED.send(player);
+            player.sendMessage(ChatColor.RED + "Mode bypass désactivé !");
             GameMode newGameMode = UHCManager.get().isGame() ? GameMode.SURVIVAL : GameMode.ADVENTURE;
             player.setGameMode(newGameMode);
         }
@@ -294,7 +308,7 @@ public class HCMD implements CommandExecutor {
     private void manageCohost(Player player, String action, String targetName) {
         Player target = Bukkit.getPlayer(targetName);
         if (target == null) {
-            CommonString.HOST_COHOST_NOT_FOUND.send(player);
+            player.sendMessage(ChatColor.RED + "Le joueur " + targetName + " est introuvable.");
             return;
         }
 
@@ -304,9 +318,7 @@ public class HCMD implements CommandExecutor {
                     return;
                 }
                 target.addAttachment(Main.get(), "novauhc.cohost", true);
-                Map<String, Object> placeholders = new HashMap<>();
-                placeholders.put("%player%", target.getName());
-                CommonString.HOST_COHOST_ADDED.send(player, placeholders);
+                player.sendMessage(ChatColor.GREEN + "Le joueur " + target.getName() + " a été ajouté comme cohost.");
                 TeamsTagsManager.setNameTag(target, "cohost", "§f[§5CoHost§f] ", "");
                 break;
 
@@ -315,9 +327,7 @@ public class HCMD implements CommandExecutor {
                     return;
                 }
                 target.addAttachment(Main.get(), "novauhc.cohost", false);
-                placeholders = new HashMap<>();
-                placeholders.put("%player%", target.getName());
-                CommonString.HOST_COHOST_REMOVED.send(player, placeholders);
+                player.sendMessage(ChatColor.GREEN + "Le joueur " + target.getName() + " a été retiré comme cohost.");
                 TeamsTagsManager.setNameTag(target, "", "", "");
                 break;
 

@@ -27,8 +27,8 @@ public class FallenUi extends CustomInventory {
                 .addLore("")
                 .addLore(" §8» §fAccès §f: §6§lHost")
                 .addLore("")
-                .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
-                .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
+                .addLore(CommonString.CLICK_LEFT.getMessage() + "§8» §a§l+1")
+                .addLore(CommonString.CLICK_RIGHT.getMessage() + "§8» §c§l-1")
                 .addLore("");
         addItem(new ActionItem(2, assaut) {
             @Override
@@ -49,8 +49,8 @@ public class FallenUi extends CustomInventory {
                 .addLore("")
                 .addLore(" §8» §fAccès §f: §6§lHost")
                 .addLore("")
-                .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
-                .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
+                .addLore(CommonString.CLICK_LEFT.getMessage() + "§8» §a§l+1")
+                .addLore(CommonString.CLICK_RIGHT.getMessage() + "§8» §c§l-1")
                 .addLore("");
         addItem(new ActionItem(4, nether) {
             @Override
@@ -71,8 +71,8 @@ public class FallenUi extends CustomInventory {
                 .addLore("")
                 .addLore(" §8» §fAccès §f: §6§lHost")
                 .addLore("")
-                .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§l+1")
-                .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§l-1")
+                .addLore(CommonString.CLICK_LEFT.getMessage() + "§8» §a§l+1")
+                .addLore(CommonString.CLICK_RIGHT.getMessage() + "§8» §c§l-1")
                 .addLore("");
         addItem(new ActionItem(6, end) {
             @Override

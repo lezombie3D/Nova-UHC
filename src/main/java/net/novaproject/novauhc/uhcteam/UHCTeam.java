@@ -80,7 +80,7 @@ public class UHCTeam {
             lore.add("§b➤ " + (getPlayers().size() < i + 1 ? "" : getPlayers().get(i).getPlayer().getName()));
         }
         lore.add("");
-        lore.add(CommonString.CLICK_HERE_TO_APPLY.getMessage());
+        lore.add(CommonString.CLICK_TO_APPLY.getMessage());
         lore.add("");
 
         ItemStack banner = new ItemStack(Material.BANNER);

@@ -2,6 +2,7 @@ package net.novaproject.novauhc.database;
 
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,8 +22,9 @@ public class UHCGameConfiguration {
     private final int limiteD;
     private final int protection;
     private final Map<String, ItemStack[]> stuff;
+    private final Map<String, Boolean> potionStates;
 
-    public UHCGameConfiguration(String name, List<String> scenarios, int teamSize, int borderSize, int pvpTime, int finalsize, int bordecactivation, int timereduc, List<Integer> limite, int slot, int diamant, int limiteD, int protection, Map<String, ItemStack[]> stuff) {
+    public UHCGameConfiguration(String name, List<String> scenarios, int teamSize, int borderSize, int pvpTime, int finalsize, int bordecactivation, int timereduc, List<Integer> limite, int slot, int diamant, int limiteD, int protection, Map<String, ItemStack[]> stuff, Map<String, Boolean> potionStates) {
         this.name = name;
         this.enabledScenarios = scenarios;
         this.teamSize = teamSize;
@@ -37,6 +39,7 @@ public class UHCGameConfiguration {
         this.limiteD = limiteD;
         this.protection = protection;
         this.stuff = stuff;
+        this.potionStates = potionStates != null ? potionStates : new HashMap<>();
     }
 
     public String getName() {
@@ -101,5 +104,9 @@ public class UHCGameConfiguration {
 
     public int getTimereduc() {
         return timereduc;
+    }
+
+    public Map<String, Boolean> getPotionStates() {
+        return potionStates;
     }
 }

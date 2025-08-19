@@ -40,7 +40,7 @@ public abstract class CustomInventory {
 
 
     public FileConfiguration getConfig() {
-        return ConfigUtils.getLangConfig();
+        return ConfigUtils.getMenuConfig();
     }
     public abstract void setup();
 

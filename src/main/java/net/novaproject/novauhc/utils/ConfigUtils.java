@@ -23,11 +23,13 @@ public class ConfigUtils {
     private static final String LOBBY_CONFIG_PATH = "api/worldconfig.yml";
     private static final String GENERAL_CONFIG_PATH = "api/generalconfig.yml";
     private static final String LANG_CONFIG = "api/lang.yml";
+    private static final String MENU_CONFIG = "api/menu.yml";
 
     public static void setup() {
         registerConfig(LOBBY_CONFIG_PATH);
         registerConfig(GENERAL_CONFIG_PATH);
         registerConfig(LANG_CONFIG);
+        registerConfig(MENU_CONFIG);
         createDefaultFiles();
         CommonString.loadMessages(getLangConfig());
     }
@@ -138,6 +140,10 @@ public class ConfigUtils {
 
     public static FileConfiguration getLangConfig() {
         return getConfig(LANG_CONFIG);
+    }
+
+    public static FileConfiguration getMenuConfig() {
+        return getConfig(MENU_CONFIG);
     }
 
 }

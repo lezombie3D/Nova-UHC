@@ -49,6 +49,10 @@ public class DatabaseManager {
         return configManager.getPlayerConfigNames(uuid);
     }
 
+    public UHCConfigManager getConfigManager() {
+        return configManager;
+    }
+
     private Document getPlayerDocument(UUID uuid) {
         try {
             return players.find(Filters.eq("uuid", uuid.toString())).first();

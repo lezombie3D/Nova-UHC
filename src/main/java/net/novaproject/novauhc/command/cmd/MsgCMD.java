@@ -10,8 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MsgCMD implements CommandExecutor {
     @Override
@@ -21,19 +19,19 @@ public class MsgCMD implements CommandExecutor {
         Player player = (Player) sender;
 
         if (args.length < 2) {
-            CommonString.MSG_USAGE.send(player);
+            player.sendMessage("§cUsage: /msg <joueur> <message>");
             return true;
         }
 
         Player target = Bukkit.getPlayerExact(args[0]);
 
         if (target == null || !target.isOnline()) {
-            CommonString.MSG_PLAYER_OFFLINE.send(player);
+            player.sendMessage("§cCe joueur est hors ligne.");
             return true;
         }
 
         if (target == player) {
-            CommonString.MSG_CANNOT_MESSAGE_SELF.send(player);
+            player.sendMessage("§cTu ne peux pas t'envoyer de message !");
             return true;
         }
 
@@ -44,13 +42,8 @@ public class MsgCMD implements CommandExecutor {
 
         String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
-        Map<String, Object> placeholders = new HashMap<>();
-        placeholders.put("%target%", target.getName());
-        placeholders.put("%message%", message);
-        CommonString.MSG_SENT_FORMAT.send(player, placeholders);
-
-        placeholders.put("%sender%", player.getName());
-        CommonString.MSG_RECEIVED_FORMAT.send(target, placeholders);
+        player.sendMessage("§8│ §7§lMoi §7→ §7§l" + target.getName() + " §f" + message);
+        target.sendMessage("§8│ §7§l" + player.getName() + " → Moi §f" + message);
 
         MessageManager.setLastMessage(player.getUniqueId(), target.getUniqueId());
         return true;

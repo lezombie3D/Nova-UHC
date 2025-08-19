@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.scenario.special.teamatfirstseigth;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
@@ -7,7 +8,6 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.utils.ItemCreator;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -52,7 +52,7 @@ public class TeamAtFirstSeigth extends Scenario {
     public void onTeamUpdate() {
         if (UHCManager.get().getTeam_size() == 1) {
             UHCManager.get().setTeam_size(2);
-            Bukkit.broadcastMessage(ChatColor.YELLOW + "La taille des équipes a été automatiquement définie à 2 pour le mode FallenKingdom.");
+            CommonString.TEAM_REDFINIED_AUTO.sendAll();
         }
 
     }

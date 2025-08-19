@@ -5,6 +5,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioManager;
+import net.novaproject.novauhc.ui.config.Potions;
 import org.bson.Document;
 import org.bson.types.Binary;
 import org.bukkit.inventory.ItemStack;
@@ -67,6 +68,171 @@ public class UHCConfigManager {
         }
     }
 
+    /**
+     * Serializes the current state of all Potions enum values to a Map
+     *
+     * @return Map containing potion names and their enabled states
+     */
+    private Map<String, Boolean> serializePotionStates() {
+        Map<String, Boolean> potionStates = new HashMap<>();
+        try {
+            for (Potions potion : Potions.values()) {
+                potionStates.put(potion.name(), potion.isEnabled());
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erreur lors de la sérialisation des états de potions", e);
+        }
+        return potionStates;
+    }
+
+    /**
+     * Deserializes potion states from a Map and applies them to the Potions enum
+     *
+     * @param potionStates Map containing potion names and their enabled states
+     * @return Map of successfully processed potion states
+     */
+    private Map<String, Boolean> deserializePotionStates(Map<String, Boolean> potionStates) {
+        try {
+            // Create a safe validated copy
+            Map<String, Boolean> safePotionStates = createSafePotionStatesCopy(potionStates);
+
+            // Apply the states to the enum instances
+            for (Potions potion : Potions.values()) {
+                Boolean enabled = safePotionStates.get(potion.name());
+                if (enabled != null && potion.isEnabled() != enabled) {
+                    potion.toggleEnabled();
+                }
+            }
+
+            return safePotionStates;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erreur lors de la désérialisation des états de potions", e);
+            // Return default states on error and reset enum states
+            Map<String, Boolean> defaultStates = new HashMap<>();
+            try {
+                resetPotionStatesToDefault();
+                for (Potions potion : Potions.values()) {
+                    defaultStates.put(potion.name(), true);
+                }
+            } catch (Exception resetError) {
+                LOGGER.log(Level.SEVERE, "Erreur lors de la réinitialisation des états de potions par défaut", resetError);
+            }
+            return defaultStates;
+        }
+    }
+
+    /**
+     * Applies potion states from a Map to the actual Potions enum instances
+     *
+     * @param potionStates Map containing potion names and their enabled states
+     */
+    public void applyPotionStatesToEnum(Map<String, Boolean> potionStates) {
+        if (potionStates == null) {
+            return;
+        }
+
+        try {
+            for (Potions potion : Potions.values()) {
+                Boolean enabled = potionStates.get(potion.name());
+                if (enabled != null && potion.isEnabled() != enabled) {
+                    potion.toggleEnabled();
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erreur lors de l'application des états de potions aux enums", e);
+        }
+    }
+
+    /**
+     * Gets the current states of all Potions enum instances
+     *
+     * @return Map containing current potion names and their enabled states
+     */
+    public Map<String, Boolean> getCurrentPotionStates() {
+        return serializePotionStates();
+    }
+
+    /**
+     * Resets all potion states to their default (enabled) state
+     */
+    public void resetPotionStatesToDefault() {
+        try {
+            for (Potions potion : Potions.values()) {
+                if (!potion.isEnabled()) {
+                    potion.toggleEnabled();
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erreur lors de la réinitialisation des états de potions", e);
+        }
+    }
+
+    /**
+     * Validates potion states and filters out invalid entries
+     *
+     * @param potionStates Map to validate
+     * @return Validated map with only valid potion names
+     */
+    private Map<String, Boolean> validatePotionStates(Map<String, Boolean> potionStates) {
+        Map<String, Boolean> validatedStates = new HashMap<>();
+
+        if (potionStates == null) {
+            return validatedStates;
+        }
+
+        try {
+            Set<String> validPotionNames = new HashSet<>();
+            for (Potions potion : Potions.values()) {
+                validPotionNames.add(potion.name());
+            }
+
+            for (Map.Entry<String, Boolean> entry : potionStates.entrySet()) {
+                String potionName = entry.getKey();
+                Boolean enabled = entry.getValue();
+
+                if (potionName != null && enabled != null && validPotionNames.contains(potionName)) {
+                    validatedStates.put(potionName, enabled);
+                } else {
+                    LOGGER.log(Level.WARNING, "État de potion invalide ignoré: " + potionName + " = " + enabled);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erreur lors de la validation des états de potions", e);
+        }
+
+        return validatedStates;
+    }
+
+    /**
+     * Creates a safe copy of potion states with validation
+     *
+     * @param potionStates Original map
+     * @return Safe validated copy
+     */
+    private Map<String, Boolean> createSafePotionStatesCopy(Map<String, Boolean> potionStates) {
+        Map<String, Boolean> safeCopy = new HashMap<>();
+
+        try {
+            Map<String, Boolean> validated = validatePotionStates(potionStates);
+            safeCopy.putAll(validated);
+
+            // Ensure all potion types are represented
+            for (Potions potion : Potions.values()) {
+                if (!safeCopy.containsKey(potion.name())) {
+                    safeCopy.put(potion.name(), true); // Default to enabled
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Erreur lors de la création d'une copie sûre des états de potions", e);
+            // Return default states on error
+            for (Potions potion : Potions.values()) {
+                safeCopy.put(potion.name(), true);
+            }
+        }
+
+        return safeCopy;
+    }
+
     public void saveConfig(UUID uuid, UHCGameConfiguration config) {
         try {
             Document existingConfig = getConfigDocument(uuid, config.getName());
@@ -78,6 +244,16 @@ public class UHCConfigManager {
                 if (serializedItems != null) {
                     stuffDoc.append(entry.getKey(), serializedItems);
                 }
+            }
+
+            // Sérialiser les états des potions avec validation
+            Map<String, Boolean> potionStates = config.getPotionStates();
+            if (potionStates == null || potionStates.isEmpty()) {
+                // Si aucun état de potion n'est fourni, utiliser les états actuels des enums
+                potionStates = serializePotionStates();
+            } else {
+                // Valider et nettoyer les états fournis
+                potionStates = createSafePotionStatesCopy(potionStates);
             }
 
             Document configDoc = new Document()
@@ -95,7 +271,8 @@ public class UHCConfigManager {
                     .append("diamant", config.getDiamant())
                     .append("limiteD", config.getLimiteD())
                     .append("protection", config.getProtection())
-                    .append("stuff", stuffDoc);
+                    .append("stuff", stuffDoc)
+                    .append("potionStates", potionStates);
 
             if (existingConfig != null) {
                 uhcConfigs.replaceOne(
@@ -149,6 +326,12 @@ public class UHCConfigManager {
                 }
             }
 
+            // Désérialiser les états des potions
+            Map<String, Boolean> potionStates = new HashMap<>();
+            @SuppressWarnings("unchecked")
+            Map<String, Boolean> storedPotionStates = (Map<String, Boolean>) configDoc.get("potionStates");
+            potionStates = deserializePotionStates(storedPotionStates);
+
             return new UHCGameConfiguration(
                     configDoc.getString("name"),
                     scenarios,
@@ -163,7 +346,8 @@ public class UHCConfigManager {
                     configDoc.getInteger("diamant"),
                     configDoc.getInteger("limiteD"),
                     configDoc.getInteger("protection"),
-                    stuff
+                    stuff,
+                    potionStates
             );
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Erreur lors de la récupération de la configuration UHC", e);
