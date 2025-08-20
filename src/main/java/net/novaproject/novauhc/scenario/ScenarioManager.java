@@ -87,6 +87,41 @@ public class ScenarioManager {
         addScenario(new BuffKiller());
         addScenario(new TeamArrow());
         //addScenario(new FireForceUHC());
+
+        // Nouveaux scénarios de combat
+        addScenario(new Vampire());
+        addScenario(new Gladiator());
+        addScenario(new BloodLust());
+        addScenario(new WeakestLink());
+
+
+        // Nouveaux scénarios de ressources
+        addScenario(new OreSwap());
+        addScenario(new OreRoulette());
+        addScenario(new Magnet());
+        addScenario(new LuckyOre());
+        addScenario(new Transmutation());
+
+        addScenario(new AcidRain());
+        addScenario(new Blizzard());
+
+        addScenario(new ParkourMaster());
+        addScenario(new SimonSays());
+        addScenario(new Democracy());
+
+        addScenario(new Inventors());
+        addScenario(new BlockRush());
+
+        addScenario(new NineSlot());
+        addScenario(new Fallout());
+
+        addScenario(new SoulBrother());
+        addScenario(new MysteryTeam());
+
+        addScenario(new Genie());
+        addScenario(new PotentialPermanent());
+        addScenario(new LootCrate());
+
         addScenario(new BeatTheSanta());
         addScenario(new FallenKingdom());
         addScenario(new FlowerPower());

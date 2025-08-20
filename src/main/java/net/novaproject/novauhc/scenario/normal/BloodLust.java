@@ -138,14 +138,4 @@ public class BloodLust extends Scenario {
         return activeEffects.containsKey(player.getUniqueId());
     }
 
-    // Get remaining blood lust time for a player
-    public int getBloodLustTimeLeft(Player player) {
-        BukkitRunnable task = activeEffects.get(player.getUniqueId());
-        if (task != null) {
-            // This is a simplified version - in a real implementation you'd track the time more precisely
-            return player.hasPotionEffect(PotionEffectType.SPEED) ?
-                    player.getPotionEffect(PotionEffectType.SPEED).getDuration() / 20 : 0;
-        }
-        return 0;
-    }
 }

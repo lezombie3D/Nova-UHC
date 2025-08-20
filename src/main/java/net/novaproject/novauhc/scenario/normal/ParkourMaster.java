@@ -42,13 +42,6 @@ public class ParkourMaster extends Scenario {
         return new ItemCreator(Material.FEATHER);
     }
 
-    @Override
-    public void enable() {
-        super.enable();
-        if (isActive()) {
-            startParkourTask();
-        }
-    }
 
     @Override
     public void toggleActive() {
@@ -71,7 +64,6 @@ public class ParkourMaster extends Scenario {
         if (challenge != null) {
             Location playerLoc = player.getLocation();
 
-            // Check if player reached the next checkpoint
             if (challenge.isAtCheckpoint(playerLoc)) {
                 challenge.nextCheckpoint();
 
@@ -135,7 +127,6 @@ public class ParkourMaster extends Scenario {
 
         if (playingPlayers.isEmpty()) return;
 
-        // Choose a random player to spawn parkour near
         UHCPlayer targetPlayer = playingPlayers.get(random.nextInt(playingPlayers.size()));
         Player player = targetPlayer.getPlayer();
 

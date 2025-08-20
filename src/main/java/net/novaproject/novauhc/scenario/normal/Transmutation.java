@@ -112,7 +112,7 @@ public class Transmutation extends Scenario {
                 org.bukkit.Sound.LEVEL_UP, 1.0f, 1.5f);
 
         // Create particle effect (if available)
-        try {
+        /*try {
             player.getWorld().spawnParticle(
                     org.bukkit.Particle.SPELL_WITCH,
                     player.getLocation().add(0, 1, 0),
@@ -120,7 +120,7 @@ public class Transmutation extends Scenario {
             );
         } catch (Exception e) {
             // Particle effects not available in this version
-        }
+        }*/
     }
 
     private void initializeTransmutationRecipes() {
