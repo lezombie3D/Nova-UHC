@@ -2,6 +2,7 @@ package net.novaproject.novauhc.scenario;
 
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.normal.*;
+import net.novaproject.novauhc.scenario.special.SoulBrother;
 import net.novaproject.novauhc.scenario.special.beatthesanta.BeatTheSanta;
 import net.novaproject.novauhc.scenario.special.fallenkigdom.FallenKingdom;
 import net.novaproject.novauhc.scenario.special.flowerpower.FlowerPower;

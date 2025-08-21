@@ -53,22 +53,17 @@ public class LuckyOre extends Scenario {
         Material blockType = block.getType();
 
         if (oreTypes.contains(blockType)) {
-            // Check for lucky chance
             if (random.nextInt(100) < LUCKY_CHANCE) {
-                // Player got lucky!
                 LuckyReward reward = getLuckyReward();
 
                 if (reward != null) {
-                    // Give the reward
                     giveReward(player, reward);
 
-                    // Announce the lucky find
                     String oreName = getOreName(blockType);
                     Bukkit.broadcastMessage("§6§l[LuckyOre] §f" + player.getName() +
                             " §fa trouvé " + reward.getDescription() +
                             " §fen minant du " + oreName + " !");
 
-                    // Special effects
                     player.getWorld().strikeLightning(player.getLocation());
                     player.sendMessage("§6§l[LuckyOre] §fVOUS AVEZ EU DE LA CHANCE !");
                 }
@@ -78,7 +73,6 @@ public class LuckyOre extends Scenario {
 
     private LuckyReward getLuckyReward() {
         List<LuckyReward> rewards = Arrays.asList(
-                // Weapons and Tools
                 new LuckyReward(RewardType.ITEM, "une épée en diamant enchantée",
                         createEnchantedItem(Material.DIAMOND_SWORD,
                                 Arrays.asList(Enchantment.DAMAGE_ALL, Enchantment.FIRE_ASPECT),
@@ -94,7 +88,6 @@ public class LuckyOre extends Scenario {
                                 Arrays.asList(Enchantment.ARROW_DAMAGE, Enchantment.ARROW_INFINITE),
                                 Arrays.asList(4, 1))),
 
-                // Armor
                 new LuckyReward(RewardType.ITEM, "un casque en diamant enchanté",
                         createEnchantedItem(Material.DIAMOND_HELMET,
                                 Arrays.asList(Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.DURABILITY),
@@ -105,7 +98,6 @@ public class LuckyOre extends Scenario {
                                 Arrays.asList(Enchantment.PROTECTION_ENVIRONMENTAL, Enchantment.DURABILITY),
                                 Arrays.asList(3, 3))),
 
-                // Resources
                 new LuckyReward(RewardType.ITEM, "un stack de diamants",
                         new ItemStack(Material.DIAMOND, 64)),
 
@@ -118,7 +110,6 @@ public class LuckyOre extends Scenario {
                 new LuckyReward(RewardType.ITEM, "des flèches",
                         new ItemStack(Material.ARROW, 64)),
 
-                // Effects
                 new LuckyReward(RewardType.EFFECT, "des effets de chance",
                         Arrays.asList(
                                 new PotionEffect(PotionEffectType.SPEED, 6000, 1),
@@ -194,17 +185,6 @@ public class LuckyOre extends Scenario {
         }
     }
 
-    public int getLuckyChance() {
-        return LUCKY_CHANCE;
-    }
-
-    // Admin methods
-    public void setLuckyChance(int newChance) {
-        // This would require making LUCKY_CHANCE non-final
-        // For now, it's fixed at 10%
-    }
-
-    // Inner classes for reward system
     private enum RewardType {
         ITEM, EFFECT
     }

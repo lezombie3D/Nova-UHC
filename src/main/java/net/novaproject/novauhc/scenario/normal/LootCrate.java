@@ -240,14 +240,12 @@ public class LootCrate extends Scenario {
     }
 
     private void createBeaconEffect(Location location) {
-        // Create a temporary beacon beam effect
         Location beaconLoc = location.clone().subtract(0, 1, 0);
         beaconLoc.getBlock().setType(Material.IRON_BLOCK);
 
         Location beaconTop = location.clone().add(0, 1, 0);
         beaconTop.getBlock().setType(Material.BEACON);
 
-        // Remove beacon after 30 seconds
         new BukkitRunnable() {
             @Override
             public void run() {

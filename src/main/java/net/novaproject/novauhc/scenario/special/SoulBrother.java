@@ -1,5 +1,6 @@
-package net.novaproject.novauhc.scenario.normal;
+package net.novaproject.novauhc.scenario.special;
 
+import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
@@ -53,6 +54,8 @@ public class SoulBrother extends Scenario {
     public void toggleActive() {
         super.toggleActive();
         if (isActive()) {
+            new WorldGenerator(Main.get(), "world1");
+            new WorldGenerator(Main.get(), "world2");
             setupSoulBrothers();
         } else {
             reuniteAllPlayers();
@@ -65,7 +68,6 @@ public class SoulBrother extends Scenario {
 
         int currentTime = UHCManager.get().getTimer();
 
-        // Check if it's time for reunion
         if (!reunionTime && currentTime >= REUNION_TIME) {
             startReunion();
         }
@@ -83,8 +85,7 @@ public class SoulBrother extends Scenario {
             Bukkit.broadcastMessage("§d[SoulBrother] §cAucune équipe trouvée ! Le scénario ne peut pas démarrer.");
             return;
         }
-        new WorldGenerator(Main.get(), "world1");
-        new WorldGenerator(Main.get(), "world2");
+
         World world1 = Bukkit.getWorld("world1");
         World world2 = Bukkit.getWorld("world2");
 
@@ -93,12 +94,18 @@ public class SoulBrother extends Scenario {
             return;
         }
 
-        // Copy world seed to ensure identical terrain
         world2.getWorldFolder().mkdirs();
 
-        Bukkit.broadcastMessage("§d§l[SoulBrother] §fLes âmes sœurs sont séparées dans des mondes parallèles !");
 
-        // Separate team members
+    }
+
+
+    @Override
+    public void scatter(UHCPlayer uhcPlayer, Location location, HashMap<UHCTeam, Location> teamloc) {
+        Bukkit.broadcastMessage("§d§l[SoulBrother] §fLes âmes sœurs sont séparées dans des mondes parallèles !");
+        List<UHCTeam> teams = UHCTeamManager.get().getTeams();
+        World world1 = Bukkit.getWorld("world1");
+        World world2 = Bukkit.getWorld("world2");
         for (UHCTeam team : teams) {
             List<UHCPlayer> members = team.getPlayers();
 
@@ -109,15 +116,12 @@ public class SoulBrother extends Scenario {
                     Player player = member.getPlayer();
 
                     if (i % 2 == 0) {
-                        // Even index players go to world 1
                         playerWorlds.put(player.getUniqueId(), world1);
                         teleportToWorld(player, world1);
                     } else {
-                        // Odd index players go to world 2
                         playerWorlds.put(player.getUniqueId(), world2);
                         teleportToWorld(player, world2);
 
-                        // Link soul brothers
                         if (i > 0) {
                             UUID brother1 = members.get(i - 1).getPlayer().getUniqueId();
                             UUID brother2 = player.getUniqueId();
@@ -145,7 +149,7 @@ public class SoulBrother extends Scenario {
 
         player.teleport(spawnLoc);
 
-        String worldName = targetWorld.getName().equals("world") ? "Alpha" : "Beta";
+        String worldName = targetWorld.getName().equals("world1") ? "Alpha" : "Beta";
         player.sendMessage("§d[SoulBrother] §fVous êtes dans le monde " + worldName + " !");
     }
 
@@ -179,8 +183,7 @@ public class SoulBrother extends Scenario {
 
         Bukkit.broadcastMessage("§d§l[SoulBrother] §fLES ÂMES SŒURS SE RETROUVENT !");
 
-        // Create reunion world (use main world)
-        World reunionWorld = Bukkit.getWorld("world");
+        World reunionWorld = Common.get().getArena();
 
         // Teleport all players to reunion world
         for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
