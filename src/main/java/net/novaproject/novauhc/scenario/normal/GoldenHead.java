@@ -1,6 +1,5 @@
 package net.novaproject.novauhc.scenario.normal;
 
-import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -77,7 +76,7 @@ public class GoldenHead extends Scenario {
         ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
         SkullMeta meta = (SkullMeta) skull.getItemMeta();
         meta.setOwner(uhcPlayer.getPlayer().getName());
-        meta.setDisplayName(CommonString.getMessage(CommonString.GOLDEN_HEAD_NAME.getRawMessage(), uhcPlayer));
+        meta.setDisplayName("§6✦ Tête de " + uhcPlayer.getPlayer().getName());
         skull.setItemMeta(meta);
         uhcPlayer.getPlayer().getWorld().dropItemNaturally(uhcPlayer.getPlayer().getLocation(), skull);
     }

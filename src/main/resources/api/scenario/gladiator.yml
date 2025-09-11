@@ -1,0 +1,14 @@
+arena_size: 15
+arena_height: 10
+arena_wall_material: "BEDROCK"
+arena_floor_material: "STONE"
+teleport_delay: 3
+combat_timeout: 300  # 5 minutes max combat time
+min_distance_for_arena: 50
+messages:
+  ARENA_CREATED: "§4[Gladiator] §fArène créée ! Combat entre %player1% et %player2% !"
+  TELEPORTING: "§4[Gladiator] §fTéléportation dans l'arène dans %seconds% secondes..."
+  COMBAT_STARTED: "§4[Gladiator] §fQue le combat commence ! Bonne chance !"
+  COMBAT_TIMEOUT: "§4[Gladiator] §fTemps écoulé ! Les deux combattants sont téléportés."
+  WINNER_ANNOUNCED: "§4[Gladiator] §f%winner% remporte le duel !"
+  ARENA_CLEANUP: "§4[Gladiator] §fArène nettoyée."

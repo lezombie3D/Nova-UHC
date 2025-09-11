@@ -219,7 +219,7 @@ public class LegendsUtils {
 
     public static void setDragon(Player player) {
         player.sendMessage(ChatColor.GOLD + "Vous avez reçu la classe Dragons !\n" +
-                "§8§m------" + ChatColor.LIGHT_PURPLE + " Le Dragon " + "§8§m------§r\n" +
+                "§8§m------" + ChatColor.LIGHT_PURPLE + " Le DragonRole " + "§8§m------§r\n" +
                 ChatColor.LIGHT_PURPLE + "Pouvoirs :\n" +
                 "§fAu début de la partie, vous bénéficiez d'un pouvoir passif ainsi que de §aFire Resistance II §fpermanent.\n\n" +
                 "§f• Votre pouvoir passif fonctionne comme suit :\n" +

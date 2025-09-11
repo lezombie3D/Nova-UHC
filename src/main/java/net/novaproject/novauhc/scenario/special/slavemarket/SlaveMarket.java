@@ -30,7 +30,7 @@ public class SlaveMarket extends Scenario {
     private Location center;
     private final Random random = new Random();
     private final HashMap<UHCPlayer, Integer> diams = new HashMap<>();
-    private List<UHCPlayer> owners = new ArrayList<>();
+    private final List<UHCPlayer> owners = new ArrayList<>();
     private List<TeamPlace> team_place = new ArrayList<>();
     private UHCPlayer lastBuyer;
     private UHCPlayer choosen;
@@ -64,7 +64,6 @@ public class SlaveMarket extends Scenario {
     @Override
     public void setup() {
         super.setup();
-        owners = new ArrayList<>();
         slaveMarket = this;
 
     }
@@ -236,6 +235,11 @@ public class SlaveMarket extends Scenario {
         if (owners.size() < 2) {
             canBuy = false;
             Bukkit.broadcastMessage(ChatColor.RED + "Il n'y a pas assez de propriétaires pour commencer l'enchère!");
+            return;
+        }
+
+        if (UHCPlayerManager.get().getOnlineUHCPlayers().size() - owners.size() <= 0) {
+            Bukkit.broadcastMessage(ChatColor.RED + "Il n'y a pas assez de joueur pour commencer l'enchère!");
             return;
         }
 
@@ -457,5 +461,6 @@ public class SlaveMarket extends Scenario {
     public CustomInventory getMenu(Player player) {
         return new SlaveMarketUi(player);
     }
+
 
 }

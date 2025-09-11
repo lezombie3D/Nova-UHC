@@ -2,9 +2,12 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.GenieLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
+import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -19,7 +22,7 @@ public class Genie extends Scenario {
 
     private final Map<UUID, Integer> playerWishes = new HashMap<>();
     private final Map<UUID, Integer> playerKills = new HashMap<>();
-    private final int MAX_WISHES = 3;
+
 
     @Override
     public String getName() {
@@ -37,14 +40,26 @@ public class Genie extends Scenario {
     }
 
     @Override
+    public String getPath() {
+        return "genie";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return GenieLang.values();
+    }
+
+    @Override
     public void onStart(Player player) {
         if (!isActive()) return;
 
         // Initialize player wishes
-        playerWishes.put(player.getUniqueId(), MAX_WISHES);
+        int maxWishes = getConfig().getInt("max_wishes", 3);
+        playerWishes.put(player.getUniqueId(), maxWishes);
         playerKills.put(player.getUniqueId(), 0);
 
-        player.sendMessage("§6[Genie] §fVous avez 3 souhaits ! Utilisez /wish pour voir vos options.");
+        UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
+        ScenarioLangManager.send(uhcPlayer, GenieLang.WISHES_RECEIVED);
     }
 
     @Override
@@ -66,7 +81,8 @@ public class Genie extends Scenario {
         int wishesLeft = playerWishes.getOrDefault(playerUuid, 0);
 
         if (wishesLeft <= 0) {
-            player.sendMessage("§6[Genie] §cVous n'avez plus de souhaits !");
+            UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
+            ScenarioLangManager.send(uhcPlayer, GenieLang.NO_WISHES_LEFT);
             return false;
         }
 
@@ -74,7 +90,8 @@ public class Genie extends Scenario {
 
         // Check if player can make this wish based on kills
         if (!canMakeWish(wishType, kills)) {
-            player.sendMessage("§6[Genie] §cVous n'avez pas assez de kills pour ce souhait !");
+            UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
+            ScenarioLangManager.send(uhcPlayer, GenieLang.NOT_ENOUGH_KILLS);
             return false;
         }
 
@@ -83,10 +100,16 @@ public class Genie extends Scenario {
 
         if (success) {
             playerWishes.put(playerUuid, wishesLeft - 1);
-            player.sendMessage("§6[Genie] §fSouhait exaucé ! Il vous reste " + (wishesLeft - 1) + " souhait(s).");
+
+            UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
+            Map<String, Object> placeholders = new HashMap<>();
+            placeholders.put("%remaining%", String.valueOf(wishesLeft - 1));
+            ScenarioLangManager.send(uhcPlayer, GenieLang.WISH_GRANTED, placeholders);
 
             // Announce to all players
-            Bukkit.broadcastMessage("§6[Genie] §f" + player.getName() + " a utilisé un souhait !");
+            Map<String, Object> broadcastPlaceholders = new HashMap<>();
+            broadcastPlaceholders.put("%player%", player.getName());
+            ScenarioLangManager.sendAll(GenieLang.WISH_ANNOUNCED, broadcastPlaceholders);
         }
 
         return success;
@@ -97,25 +120,25 @@ public class Genie extends Scenario {
             case "heal":
             case "food":
             case "speed":
-                return true;
+                return kills >= getConfig().getInt("wish_requirements.basic", 0);
 
             case "strength":
             case "resistance":
             case "invisibility":
             case "arrows":
-                return kills >= 1;
+                return kills >= getConfig().getInt("wish_requirements.medium", 1);
 
             case "diamond":
             case "enchanted_book":
             case "golden_apple":
             case "teleport":
-                return kills >= 2;
+                return kills >= getConfig().getInt("wish_requirements.advanced", 2);
 
             case "full_diamond":
             case "enchanted_sword":
             case "notch_apple":
             case "flight":
-                return kills >= 3;
+                return kills >= getConfig().getInt("wish_requirements.legendary", 3);
 
             default:
                 return false;
@@ -127,24 +150,34 @@ public class Genie extends Scenario {
             // Basic wishes
             case "heal":
                 player.setHealth(player.getMaxHealth());
-                player.sendMessage("§6[Genie] §fVous avez été soigné !");
+                UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
+                ScenarioLangManager.send(uhcPlayer, GenieLang.HEAL_GRANTED);
                 return true;
 
             case "food":
                 player.setFoodLevel(20);
                 player.setSaturation(20);
-                player.sendMessage("§6[Genie] §fVotre faim a été restaurée !");
+                UHCPlayer uhcPlayer2 = UHCPlayerManager.get().getPlayer(player);
+                ScenarioLangManager.send(uhcPlayer2, GenieLang.FOOD_GRANTED);
                 return true;
 
             case "speed":
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 6000, 1)); // 5 minutes Speed II
-                player.sendMessage("§6[Genie] §fVous avez reçu Speed II pendant 5 minutes !");
+                int speedDuration = getConfig().getInt("wish_effects.speed_duration", 6000);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, speedDuration, 1));
+                UHCPlayer uhcPlayer3 = UHCPlayerManager.get().getPlayer(player);
+                Map<String, Object> speedPlaceholders = new HashMap<>();
+                speedPlaceholders.put("%duration%", String.valueOf(speedDuration / 20 / 60));
+                ScenarioLangManager.send(uhcPlayer3, GenieLang.SPEED_GRANTED, speedPlaceholders);
                 return true;
 
             // Medium wishes
             case "strength":
-                player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 6000, 0)); // 5 minutes Strength I
-                player.sendMessage("§6[Genie] §fVous avez reçu Strength I pendant 5 minutes !");
+                int strengthDuration = getConfig().getInt("wish_effects.strength_duration", 6000);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, strengthDuration, 0));
+                UHCPlayer uhcPlayer4 = UHCPlayerManager.get().getPlayer(player);
+                Map<String, Object> strengthPlaceholders = new HashMap<>();
+                strengthPlaceholders.put("%duration%", String.valueOf(strengthDuration / 20 / 60));
+                ScenarioLangManager.send(uhcPlayer4, GenieLang.STRENGTH_GRANTED, strengthPlaceholders);
                 return true;
 
             case "resistance":
@@ -294,14 +327,14 @@ public class Genie extends Scenario {
     public void giveWishes(Player player, int amount) {
         UUID playerUuid = player.getUniqueId();
         int current = playerWishes.getOrDefault(playerUuid, 0);
-        playerWishes.put(playerUuid, Math.min(MAX_WISHES, current + amount));
+        playerWishes.put(playerUuid, Math.min(getConfig().getInt("max_wishes", 3), current + amount));
 
         player.sendMessage("§6[Genie] §fVous avez reçu " + amount + " souhait(s) !");
     }
 
     // Reset player wishes (admin command)
     public void resetWishes(Player player) {
-        playerWishes.put(player.getUniqueId(), MAX_WISHES);
+        playerWishes.put(player.getUniqueId(), getConfig().getInt("max_wishes", 3));
         playerKills.put(player.getUniqueId(), 0);
         player.sendMessage("§6[Genie] §fVos souhaits ont été réinitialisés !");
     }

@@ -1,0 +1,191 @@
+# ========================================
+# Configuration Death Note UHC
+# Mode de jeu par équipe inspiré de l'anime Death Note
+# Chaque équipe contient des gentils ET des traîtres
+# Victoire : dernière équipe survivante
+# ========================================
+
+# Configuration des équipes et rôles
+teams:
+  min_team_size: 3       # Taille minimale d'équipe (forcée automatiquement)
+  traitor_ratio: 0.33    # Ratio de traîtres par équipe (33% = 1/3)
+
+# Configuration des rôles
+roles:
+  # Répartition automatique des rôles selon les équipes
+  auto_scaling:
+    enabled: true        # Active l'ajustement automatique
+
+  # Répartition des traîtres (par rapport au total de traîtres)
+  traitor_distribution:
+    kira_ratio: 0.5      # 50% des traîtres sont Kira
+    shinigami_ratio: 0.25 # 25% des traîtres sont Shinigami
+    mello_ratio: 0.25    # 25% des traîtres sont Mello
+
+  # Répartition des gentils (par rapport au total de gentils)
+  gentil_distribution:
+    enqueteur_ratio: 0.17 # 1 Enquêteur pour 6 gentils (17%)
+    near_ratio: 0.125    # 1 Near pour 8 gentils (12.5%)
+
+# Configuration du Death Note
+death_note:
+  # Timer avant la mort (en secondes)
+  damage_timer: 40       # Délai avant que la victime meure
+  
+  # Cooldown entre utilisations (en secondes)
+  cooldown: 600          # 10 minutes de cooldown
+  
+  # Dégâts selon l'épisode (en cœurs)
+  episode_2_damage: 5    # Dégâts à l'épisode 2
+  episode_3_damage: 4    # Dégâts à l'épisode 3
+  episode_4_damage: 3    # Dégâts à l'épisode 4 et plus
+  
+  # Réduction des dégâts pour la deuxième utilisation sur la même cible
+  second_use_reduction: 0.5  # 50% de réduction
+  
+  # Pouvoir d'abandon
+  abandon_duration: 1200 # Durée du mode abandon (20 minutes)
+  
+  # Révélation publique
+  reveal_rewards:
+    golden_apple: true   # Donne une pomme en or
+    target_all: true     # Peut cibler tous les joueurs
+
+# Configuration du système d'épisodes
+episodes:
+  # Durée d'un épisode (en secondes)
+  duration: 1200         # 20 minutes par épisode
+  
+  # Régénération de vie
+  heart_regen: 1         # Cœurs régénérés par épisode pour les victimes Death Note
+  
+  # Annonces
+  warnings:
+    5_minutes: true      # Annonce à 5 minutes restantes
+    1_minute: true       # Annonce à 1 minute restante
+    10_seconds: true     # Annonce à 10 secondes restantes
+
+# Configuration du pacte Shinigami
+shinigami_pact:
+  # Coût pour Kira
+  kira_heart_cost: 3     # Cœurs permanents perdus par Kira
+  
+  # Récompenses pour Shinigami
+  tracker_uses: 3        # Nombre d'utilisations du tracker
+  
+  # Régénération
+  kira_regen_per_episode: 1  # Cœurs régénérés par épisode pour Kira
+
+# Configuration des capacités spéciales
+special_abilities:
+  # Enquêteur
+  enqueteur:
+    max_investigations: 3    # Nombre maximum d'enquêtes
+    see_death_timers: true   # Peut voir les timers Death Note
+  
+  # Near
+  near:
+    max_analysis: 2          # Nombre maximum d'analyses
+    kira_detector_uses: 1    # Utilisations du détecteur Kira
+    death_note_resistance: 0.5  # 50% de chances de résister
+  
+  # Mello
+  mello:
+    max_form_changes: 1      # Nombre de changements de forme
+    initial_form_random: true  # Forme initiale aléatoire
+
+# Configuration du chat Kira
+kira_chat:
+  enabled: true          # Active le chat Kira
+  command: "k"           # Commande pour le chat (/k)
+  log_messages: false    # Log les messages pour les admins
+  
+  # Format des messages
+  format: "§8[§cKira§8] §c%player% §7(%role%)§8: §f%message%"
+
+# Restrictions et règles
+restrictions:
+  # Cibles du Death Note
+  no_teammates: true     # Ne peut pas cibler les coéquipiers
+  only_alive_players: true  # Ne peut cibler que les joueurs vivants
+  no_self_target: true   # Ne peut pas se cibler soi-même
+  
+  # Immunités
+  shinigami_immunity: true   # Shinigami immunisé au Death Note
+
+# Configuration des conditions de victoire
+win_conditions:
+  # Victoire par équipe (mode principal)
+  last_team_standing: true  # Dernière équipe survivante gagne
+
+  # Annonces de victoire
+  announce_winners: true
+  show_roles_on_win: true   # Révèle les rôles à la fin
+  show_team_composition: true # Montre la composition des équipes
+
+# Messages personnalisables
+messages:
+  # Messages de base
+  DEATH_NOTE_RECEIVED: "§c[Death Note] §fVous avez reçu un Death Note ! Utilisez /ff dnote pour voir les commandes."
+  DEATH_NOTE_USED: "§c[Death Note] §fVous avez écrit le nom de §e%target% §fdans le Death Note !"
+  DEATH_NOTE_COOLDOWN: "§c[Death Note] §fCooldown actif ! Temps restant : §e%time%"
+  DEATH_NOTE_READY: "§c[Death Note] §fVotre Death Note est prêt à être utilisé !"
+  
+  # Messages de validation
+  TARGET_INVALID: "§c[Death Note] §fCible invalide : §e%target%"
+  TARGET_NOT_FOUND: "§c[Death Note] §fJoueur introuvable : §e%target%"
+  TARGET_TEAMMATE: "§c[Death Note] §fVous ne pouvez pas cibler un coéquipier !"
+  TARGET_ALREADY_DEAD: "§c[Death Note] §fCe joueur est déjà mort !"
+  TARGET_SELF: "§c[Death Note] §fVous ne pouvez pas vous cibler vous-même !"
+  
+  # Messages de compte à rebours
+  DEATH_COUNTDOWN_START: "§c[Death Note] §f%target% mourra dans §c%timer% secondes §f!"
+  DEATH_COUNTDOWN_WARNING_30: "§c[Death Note] §fVous mourrez dans §c30 secondes §f!"
+  DEATH_COUNTDOWN_WARNING_10: "§c[Death Note] §fVous mourrez dans §c10 secondes §f!"
+  DEATH_COUNTDOWN_WARNING_5: "§c[Death Note] §fVous mourrez dans §c5 secondes §f!"
+  DEATH_COUNTDOWN_FINAL: "§c[Death Note] §fVotre heure est venue..."
+  
+  # Messages de mort
+  DEATH_BY_DEATH_NOTE: "§c%victim% §fest mort à cause du Death Note de §c%killer% §f!"
+  DEATH_ANNOUNCEMENT: "§c[Death Note] §f%victim% §fa succombé au pouvoir du Death Note !"
+  DEATH_CANCELLED: "§c[Death Note] §fLe Death Note de %target% a été annulé (mort prématurée)."
+  
+  # Messages d'épisodes
+  EPISODE_START: "§3§l✦ ÉPISODE %episode% ✦"
+  EPISODE_REGEN: "§a[Épisode %episode%] §fVous récupérez §c%hearts% cœur(s) §f!"
+  EPISODE_TIME_LEFT: "§e[Épisode %episode%] §fTemps restant : §c%time%"
+  
+  # Messages de chat Kira
+  KIRA_CHAT_FORMAT: "§8[§cKira§8] §c%player% §7(%role%)§8: §f%message%"
+  KIRA_TEAM_FORMED: "§c[Équipe Kira] §fVous pouvez communiquer avec /k <message>"
+  KIRA_MEMBER_JOINED: "§c[Kira Chat] §a%player% §7(%role%) §aa rejoint l'équipe !"
+  KIRA_MEMBER_LEFT: "§c[Kira Chat] §c%player% §7(%role%) §ca quitté l'équipe !"
+  KIRA_MEMBER_DIED: "§c[Kira Chat] §c%player% §7(%role%) §fest mort !"
+  
+  # Messages de victoire par équipe
+  WIN_TEAM: "§6§lVICTOIRE DE L'ÉQUIPE %team% !"
+  WIN_GENTILS_TEAM: "§a§lVICTOIRE DES GENTILS"
+  WIN_TRAITORS_TEAM: "§c§lVICTOIRE DES TRAÎTRES"
+  WIN_MIXED_TEAM: "§6§lVICTOIRE MIXTE"
+  WIN_EQUALITY: "§7§lÉGALITÉ"
+
+  # Messages d'équipe
+  TEAM_TRAITORS_ELIMINATED: "§a[Death Note] §fTous les traîtres de votre équipe ont été éliminés ! Votre équipe est maintenant unie."
+  TEAM_SIZE_ADJUSTED: "§c[Death Note UHC] §fTaille d'équipe ajustée à %size% minimum pour ce mode de jeu."
+  
+  # Messages d'erreur
+  ERROR_NO_PERMISSION: "§c[Death Note] §fVous n'avez pas la permission d'utiliser cette commande !"
+  ERROR_SCENARIO_DISABLED: "§c[Death Note] §fLe scénario Death Note n'est pas actif !"
+  ERROR_INVALID_INPUT: "§c[Death Note] §fEntrée invalide : %input%"
+  ERROR_BOOK_NOT_FOUND: "§c[Death Note] §fVous n'avez pas de Death Note !"
+
+# Configuration avancée
+advanced:
+  # Debug
+  debug_mode: false      # Active les messages de debug
+  
+  # Performance
+  timer_precision: 20    # Précision des timers (en ticks)
+  
+  # Compatibilité
+  team_integration: true # Intégration avec le système d'équipes UHC

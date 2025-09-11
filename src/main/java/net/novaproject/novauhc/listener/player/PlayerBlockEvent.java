@@ -39,8 +39,8 @@ public class PlayerBlockEvent implements Listener {
         Material type = block.getType();
 
         if (type == Material.DIAMOND_ORE
-                && (UHCManager.get().getDimamondLimit() != 0 || uhcPlayer.getLimite() != 0)) {
-            if (uhcPlayer.getDiamondmined() < uhcPlayer.getLimite()) {
+                && (UHCManager.get().getDimamondLimit() != 0 || uhcPlayer.getDimamondLimit() != 0)) {
+            if (uhcPlayer.getDiamondmined() < uhcPlayer.getDimamondLimit()) {
                 uhcPlayer.setMinedDiamond(uhcPlayer.getDiamondmined() + 1);
                 new Titles().sendActionText(player, CommonString.DIAMOND_LIMIT_INCREASED.getMessage(uhcPlayer.getPlayer()));
             } else {

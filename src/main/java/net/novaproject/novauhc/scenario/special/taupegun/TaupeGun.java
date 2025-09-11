@@ -1,6 +1,5 @@
 package net.novaproject.novauhc.scenario.special.taupegun;
 
-import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
@@ -13,6 +12,7 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.MessageUtils;
 import net.novaproject.novauhc.utils.TeamsTagsManager;
 import net.novaproject.novauhc.utils.Titles;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
@@ -70,6 +70,7 @@ public class TaupeGun extends Scenario {
 
     @Override
     public void setup() {
+        super.setup();
         instance = this;
         taupeTeam.clear();
         taupePlayer.clear();
@@ -111,6 +112,13 @@ public class TaupeGun extends Scenario {
             CommonString.TEAM_REDFINIED_AUTO.sendAll();
         }
 
+    }
+
+    @Override
+    public void toggleActive() {
+        super.toggleActive();
+        UHCManager.get().setTeam_size(2);
+        CommonString.TEAM_REDFINIED_AUTO.sendAll();
     }
 
     @Override
@@ -181,10 +189,10 @@ public class TaupeGun extends Scenario {
             if (uhcPlayer.getTeam().isPresent() && uhcPlayer.isPlaying() && UHCManager.get().getGameState() == UHCManager.GameState.INGAME) {
                 player.openInventory(TeamInv.inventory.get(team));
             } else {
-                player.sendMessage(ChatColor.RED + "Vous n'avez pas d'équipe, vous êtes mort ou la partie n'a pas commencé !");
+                MessageUtils.sendNotStarted(player);
             }
         } else {
-            player.sendMessage(Common.get().getInfoTag() + "TeamInventory est désactivée durant cette partie.");
+            CommonString.DISABLE_ACTION.send(player);
         }
     }
 
@@ -195,14 +203,21 @@ public class TaupeGun extends Scenario {
             int x = player.getLocation().getBlockX();
             int y = player.getLocation().getBlockY();
             int z = player.getLocation().getBlockZ();
-            String message = ChatColor.GREEN + "Coord : x: " + x + " y: " + y + " z: " + z;
 
-            team.getPlayers().forEach(teamPlayer ->
-                    teamPlayer.getPlayer().sendMessage(ChatColor.DARK_PURPLE + "❖ Team ❖ " + ChatColor.DARK_GRAY + player.getName() + " » " + message));
-            player.sendMessage(ChatColor.DARK_PURPLE + "❖ Team ❖ " + ChatColor.DARK_GRAY + player.getName() + " » " + message);
+            String coords = ChatColor.GREEN + "Coord : x: " + x + " y: " + y + " z: " + z;
+            Map<String, Object> placeholders = new HashMap<>();
+            placeholders.put("%co%", coords);
+
+            String teamMessage = ScenarioLangManager.get(TaupeGunLang.TEAM_COORDS_FORMAT, uhcPlayer, placeholders);
+
+            if (team != null) {
+                team.getPlayers().forEach(teamPlayer ->
+                        teamPlayer.getPlayer().sendMessage(teamMessage));
+            }
+
+            player.sendMessage(teamMessage);
         } else {
-
-            player.sendMessage(ChatColor.RED + "Vous n'avez pas d'équipe ou la partie n'a pas commencé !");
+            MessageUtils.sendNotStarted(player);
         }
 
     }
@@ -294,8 +309,7 @@ public class TaupeGun extends Scenario {
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
 
         Map<String, Object> placeholders = new HashMap<>();
-        placeholders.put("%player%", player.getName());
-        placeholders.put("%message%", coordsMessage);
+        placeholders.put("%co%", coordsMessage);
 
         if (getTeamsTaupe().contains(uhcPlayer.getTeam().get())) {
             String taupeMessage = ScenarioLangManager.get(TaupeGunLang.TAUPE_COORDS_FORMAT, uhcPlayer, placeholders);
@@ -414,7 +428,7 @@ public class TaupeGun extends Scenario {
                 kitLang = TaupeGunLang.KIT_DESCRIPTION_6;
                 break;
             default:
-                return; // Pas de description pour ce kit
+                return;
         }
 
         ScenarioLangManager.send(chosenPlayer.getPlayer(), kitLang);
@@ -443,79 +457,92 @@ public class TaupeGun extends Scenario {
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
 
         if (UHCManager.get().getGameState() != UHCManager.GameState.INGAME) {
-            for (UHCPlayer lobby : UHCPlayerManager.get().getOnlineUHCPlayers()) {
-                Map<String, Object> placeholders = new HashMap<>();
-                placeholders.put("%player%", player.getName());
-                placeholders.put("%message%", message);
-                lobby.getPlayer().sendMessage(ScenarioLangManager.get(TaupeGunLang.LOBBY_CHAT_FORMAT, uhcPlayer, placeholders));
-            }
+            event.setFormat(CommonString.LOBBY_CHAT_FORMAT.getMessage(player));
             return;
         }
 
         if (!uhcPlayer.isPlaying()) {
-            ScenarioLangManager.send(player, TaupeGunLang.DEAD_CANNOT_SPEAK);
+            CommonString.CANT_TALK_DEATH.send(player);
+            event.setCancelled(true);
             return;
         }
 
-        if (!uhcPlayer.getTeam().isPresent()) return;
+        if (UHCManager.get().isChatdisbale()) {
+            CommonString.CHAT_DISABLED.send(player);
+            event.setCancelled(true);
+            return;
+        }
 
         if (message.startsWith("!")) {
-            for (UHCPlayer lobby : UHCPlayerManager.get().getOnlineUHCPlayers()) {
+            event.setMessage(message.substring(1));
+            event.setFormat(CommonString.CHAT_GLOBAL_FORMAT.getMessage(player));
+            return;
+        }
+
+        if (message.startsWith("?")) {
+            if (!TeamsTaupe.contains(uhcPlayer.getTeam().get())) {
+                ScenarioLangManager.send(player, TaupeGunLang.NOT_TAUPE_ERROR);
+                event.setCancelled(true);
+                return;
+            }
+
+            if (taupeTeam.containsKey(uhcPlayer)) {
+                UHCTeam taupeTeamGroup = taupeTeam.get(uhcPlayer);
+
+                event.getRecipients().removeIf(p ->
+                        taupeTeamGroup.getPlayers().stream().noneMatch(u -> u.getPlayer().equals(p))
+                );
+
+                event.getRecipients().add(player);
+
+                event.setMessage(message.substring(1));
                 Map<String, Object> placeholders = new HashMap<>();
                 placeholders.put("%player%", player.getName());
                 placeholders.put("%message%", message.substring(1));
-                lobby.getPlayer().sendMessage(ScenarioLangManager.get(TaupeGunLang.GLOBAL_CHAT_FORMAT, uhcPlayer, placeholders));
+                event.setFormat(ScenarioLangManager.get(TaupeGunLang.TAUPE_CHAT_FORMAT, uhcPlayer, placeholders));
+                return;
             }
-            return;
         }
 
-        if (message.startsWith("?") && !TeamsTaupe.contains(uhcPlayer.getTeam().get())) {
-            ScenarioLangManager.send(player, TaupeGunLang.NOT_TAUPE_ERROR);
-            return;
-        }
+        UHCTeam currentTeam = uhcPlayer.getTeam().get();
 
         if (taupeTeam.containsKey(uhcPlayer)) {
-            if (message.startsWith("?")) {
-                UHCTeam taupeTeamGroup = uhcPlayer.getTeam().get();
-                for (UHCPlayer taupePlayer : taupeTeamGroup.getPlayers()) {
-                    taupePlayer.getPlayer().sendMessage(ChatColor.RED + "❖ Taupe ❖ "
-                            + ChatColor.DARK_GRAY + player.getName() + " » "
-                            + ChatColor.WHITE + message.substring(1));
-                }
-            } else {
-                UHCTeam originalTeam = getOldTeamforPlayer(uhcPlayer);
-                if (originalTeam != null) {
-                    String teamMessage = ChatColor.DARK_PURPLE + "❖ Team ❖ "
-                            + ChatColor.DARK_GRAY + player.getName() + " » "
-                            + ChatColor.WHITE + message;
+            UHCTeam originalTeam = getOldTeamforPlayer(uhcPlayer);
+            if (originalTeam != null) {
+                event.getRecipients().removeIf(p ->
+                        originalTeam.getPlayers().stream().noneMatch(u -> u.getPlayer().equals(p))
+                );
 
-                    for (UHCPlayer teamPlayer : originalTeam.getPlayers()) {
-                        teamPlayer.getPlayer().sendMessage(teamMessage);
+                for (Map.Entry<UHCPlayer, UHCTeam> entry : taupeTeam.entrySet()) {
+                    if (entry.getValue().equals(originalTeam) && !entry.getKey().equals(uhcPlayer)) {
+                        event.getRecipients().add(entry.getKey().getPlayer());
                     }
-                    uhcPlayer.getPlayer().sendMessage(teamMessage);
                 }
+
+                event.getRecipients().add(player);
+
+                Map<String, Object> placeholders = new HashMap<>();
+                placeholders.put("%player%", player.getName());
+                placeholders.put("%message%", message);
+                event.setFormat(ScenarioLangManager.get(TaupeGunLang.TEAM_CHAT_FORMAT, uhcPlayer, placeholders));
+                return;
             }
-            return;
         }
 
-        UHCTeam team = uhcPlayer.getTeam().get();
-        String teamMessage = ChatColor.DARK_PURPLE + "❖ Team ❖ "
-                + ChatColor.DARK_GRAY + player.getName() + " » "
-                + ChatColor.WHITE + message;
-
-        for (UHCPlayer teamPlayer : team.getPlayers()) {
-            teamPlayer.getPlayer().sendMessage(teamMessage);
-        }
+        event.getRecipients().removeIf(p ->
+                currentTeam.getPlayers().stream().noneMatch(u -> u.getPlayer().equals(p))
+        );
 
         for (Map.Entry<UHCPlayer, UHCTeam> entry : oldTeam.entrySet()) {
-            if (entry.getValue().equals(team)) {
-                UHCPlayer taupe = entry.getKey();
-                taupe.getPlayer().sendMessage(teamMessage);
-                break;
+            if (entry.getValue().equals(currentTeam)) {
+                event.getRecipients().add(entry.getKey().getPlayer());
             }
         }
 
+        event.getRecipients().add(player);
+        event.setFormat(ScenarioLangManager.get(TaupeGunLang.TEAM_CHAT_FORMAT, uhcPlayer));
     }
+
 
     @Override
     public void scatter(UHCPlayer uhcPlayer, Location location, HashMap<UHCTeam, Location> teamloc) {
@@ -559,5 +586,4 @@ public class TaupeGun extends Scenario {
         return oldTeam;
     }
 }
-
 

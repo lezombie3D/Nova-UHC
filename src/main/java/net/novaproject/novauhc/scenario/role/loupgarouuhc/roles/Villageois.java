@@ -1,17 +1,16 @@
 package net.novaproject.novauhc.scenario.role.loupgarouuhc.roles;
 
+import net.novaproject.novauhc.scenario.role.loupgarouuhc.LGCamps;
 import net.novaproject.novauhc.scenario.role.loupgarouuhc.LoupGarouRole;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
-import java.util.Collections;
-import java.util.List;
-
 public class Villageois extends LoupGarouRole {
 
+
     public Villageois() {
-        super();
+        setCamp(LGCamps.VILLAGE);
     }
 
     @Override
@@ -29,20 +28,6 @@ public class Villageois extends LoupGarouRole {
         return message;
     }
 
-    @Override
-    public String getCamps() {
-        return "village";
-    }
-
-    @Override
-    public ChatColor getColor() {
-        return ChatColor.GREEN;
-    }
-
-    @Override
-    public List<Integer> getPowerUse() {
-        return Collections.emptyList();
-    }
 
     @Override
     public ItemCreator getItem() {

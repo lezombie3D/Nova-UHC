@@ -18,6 +18,7 @@ import net.novaproject.novauhc.ui.player.LimiteStuffbyPlayerUi;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.TeamsTagsManager;
 import net.novaproject.novauhc.utils.Titles;
+import net.novaproject.novauhc.utils.UHCUtils;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -206,14 +207,7 @@ public class HCMD implements CommandExecutor {
                         player.setGameMode(GameMode.ADVENTURE);
                         player.setOp(false);
                         clearPlayerInventory(player);
-                        ItemCreator menuconf = new ItemCreator(Material.REDSTONE_COMPARATOR)
-                                .setName(ChatColor.YELLOW + "Configurer");
-                        ItemCreator item = new ItemCreator(Material.NETHER_STAR).setName(ChatColor.GOLD + "Salle des règles");
-                        player.getInventory().setItem(8, item.getItemstack());
-                        player.getInventory().setItem(4, menuconf.getItemstack());
-                        ItemCreator team = new ItemCreator(Material.BANNER).setName(ChatColor.DARK_PURPLE + "Team");
-                        player.getInventory().setItem(0, team.getItemstack());
-                        player.sendMessage(ChatColor.GOLD + "La sauvegarde de l'inventaire de depart a bien été annulé ! ");
+                        UHCUtils.giveLobbyItems(player);
                         if (player == PlayerConnectionEvent.getHost()) {
                             player.setOp(true);
                         }
@@ -436,7 +430,7 @@ public class HCMD implements CommandExecutor {
             target.getPlayer().teleport(location);
         }
 
-        for (ItemStack item : target.getDeathIteam()) {
+        for (ItemStack item : target.getDeathItem()) {
             if (item == null || item.getType() == Material.AIR) continue; // Ignore les items vides
 
             PlayerInventory inventory = target.getPlayer().getInventory();

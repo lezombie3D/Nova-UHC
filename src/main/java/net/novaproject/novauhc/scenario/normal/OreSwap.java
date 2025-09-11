@@ -2,6 +2,9 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.OreSwapLang;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -53,6 +56,16 @@ public class OreSwap extends Scenario {
     @Override
     public ItemCreator getItem() {
         return new ItemCreator(Material.DIAMOND_ORE);
+    }
+
+    @Override
+    public String getPath() {
+        return "oreswap";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return OreSwapLang.values();
     }
 
 
@@ -144,12 +157,13 @@ public class OreSwap extends Scenario {
                 // Shuffle the ore mapping
                 initializeOreMapping();
 
-                Bukkit.broadcastMessage("§6[OreSwap] §fLes minerais ont été mélangés !");
+                ScenarioLangManager.sendAll(OreSwapLang.SWAP_ANNOUNCEMENT);
             }
         };
 
-        // Run every 15 minutes (18000 ticks)
-        swapTask.runTaskTimer(Main.get(), 18000, 18000);
+        // Run based on config interval
+        int interval = getConfig().getInt("swap_interval", 900) * 20; // Convert seconds to ticks
+        swapTask.runTaskTimer(Main.get(), interval, interval);
     }
 
     private void stopSwapTask() {
@@ -160,7 +174,7 @@ public class OreSwap extends Scenario {
     }
 
     private void broadcastOreMapping() {
-        Bukkit.broadcastMessage("§6[OreSwap] §fNouveau mapping des minerais :");
+        ScenarioLangManager.sendAll(OreSwapLang.NEW_MAPPING);
 
         for (Map.Entry<Material, Material> entry : currentOreMapping.entrySet()) {
             Material original = entry.getKey();
@@ -168,11 +182,13 @@ public class OreSwap extends Scenario {
 
             String originalName = getOreName(original);
             String swappedName = getOreName(swapped);
-
+            Map<String, Object> placeholders = new HashMap<>();
+            placeholders.put("%original%", originalName);
+            placeholders.put("%swapped%", swappedName);
             if (!original.equals(swapped)) {
-                Bukkit.broadcastMessage("§6[OreSwap] §f" + originalName + " §7→ §f" + swappedName);
+                ScenarioLangManager.sendAll(OreSwapLang.MAPPING_LINE, placeholders);
             } else {
-                Bukkit.broadcastMessage("§6[OreSwap] §f" + originalName + " §7→ §f" + swappedName + " §7(inchangé)");
+                ScenarioLangManager.sendAll(OreSwapLang.MAPPING_UNCHANGED, placeholders);
             }
         }
     }

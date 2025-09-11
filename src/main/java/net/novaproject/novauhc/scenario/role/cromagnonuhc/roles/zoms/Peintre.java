@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.scenario.role.cromagnonuhc.roles.zoms;
 
+import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonCamps;
 import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonRole;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -13,6 +14,10 @@ import java.util.List;
 public class Peintre extends CromagnonRole {
     private UHCPlayer playerRole;
     private final List<Integer> list = new ArrayList<>();
+
+    public Peintre() {
+        setCamp(CromagnonCamps.ZOMS);
+    }
 
     @Override
     public String getName() {
@@ -28,21 +33,6 @@ public class Peintre extends CromagnonRole {
                 "§fDescription du role : " + ChatColor.GREEN + "Vous êtes un Zoms de base sans autres particularitées .\n" +
 
                 "§8§m--------------------------";
-    }
-
-    @Override
-    public String getCamps() {
-        return "zoms";
-    }
-
-    @Override
-    public ChatColor getColor() {
-        return ChatColor.GREEN;
-    }
-
-    @Override
-    public List<Integer> getPowerUse() {
-        return list;
     }
 
     @Override

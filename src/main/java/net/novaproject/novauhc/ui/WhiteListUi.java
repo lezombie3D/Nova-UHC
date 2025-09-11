@@ -1,8 +1,6 @@
 package net.novaproject.novauhc.ui;
 
 import net.novaproject.novauhc.CommonString;
-import net.novaproject.novauhc.uhcplayer.UHCPlayer;
-import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ui.AnvilUi;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
@@ -107,24 +105,23 @@ public class WhiteListUi extends CustomInventory {
                 @Override
                 public void onClick(InventoryClickEvent e) {
                     if (p.isWhitelisted()) {
-                        p.setWhitelisted(false);
-                        UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(p.getPlayer());
-                        if (uhcPlayer == null) {
-                            return;
-                        }
                         new ConfirmMenu(getPlayer(),
                                 "§cÊtes-vous sûr de vouloir retirer " + p.getName() + " de la Whitelist ?",
                                 () -> {
                                     p.setWhitelisted(false);
-                                    p.getPlayer().kickPlayer(CommonString.KICKED_MESSAGE.getMessage());
+
+                                    if (p.isOnline() && p.getPlayer() != null) {
+                                        Player onlinePlayer = p.getPlayer();
+                                        String kickMessage = CommonString.KICKED.getMessage();
+                                        onlinePlayer.kickPlayer(kickMessage);
+                                        Bukkit.broadcastMessage(CommonString.KICKED_MESSAGE.getMessage().replace("%player%", p.getName()));
+                                    }
+
                                     openAll();
                                 },
                                 () -> {
-
                                     openAll();
                                 }, new WhiteListUi(getPlayer())).open();
-                        Bukkit.broadcastMessage(CommonString.KICKED_MESSAGE.getMessage());
-                        openAll();
                     }
                 }
             });

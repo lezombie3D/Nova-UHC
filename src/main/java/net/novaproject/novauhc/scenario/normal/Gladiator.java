@@ -2,6 +2,9 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.GladiatorLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -38,6 +41,16 @@ public class Gladiator extends Scenario {
     @Override
     public ItemCreator getItem() {
         return new ItemCreator(Material.IRON_SWORD);
+    }
+
+    @Override
+    public String getPath() {
+        return "gladiator";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return GladiatorLang.values();
     }
 
     @Override
@@ -96,10 +109,16 @@ public class Gladiator extends Scenario {
         player2.teleport(pos2);
 
         // Send messages
-        player1.sendMessage("§c[Gladiator] §fCombat en arène contre " + player2.getName() + " !");
-        player2.sendMessage("§c[Gladiator] §fCombat en arène contre " + player1.getName() + " !");
+        UHCPlayer uhcPlayer1 = UHCPlayerManager.get().getPlayer(player1);
+        UHCPlayer uhcPlayer2 = UHCPlayerManager.get().getPlayer(player2);
 
-        Bukkit.broadcastMessage("§c[Gladiator] §f" + player1.getName() + " §fet §f" + player2.getName() + " §fsont en combat d'arène !");
+        ScenarioLangManager.send(uhcPlayer1, GladiatorLang.COMBAT_STARTED);
+        ScenarioLangManager.send(uhcPlayer2, GladiatorLang.COMBAT_STARTED);
+
+        Map<String, Object> placeholders = new HashMap<>();
+        placeholders.put("%player1%", player1.getName());
+        placeholders.put("%player2%", player2.getName());
+        ScenarioLangManager.sendAll(GladiatorLang.ARENA_CREATED, placeholders);
 
         // Start arena cleanup timer (5 minutes max)
         new BukkitRunnable() {

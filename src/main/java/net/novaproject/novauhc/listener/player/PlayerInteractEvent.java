@@ -40,18 +40,6 @@ public class PlayerInteractEvent implements Listener {
                         new DefaultUi(player).open();
                         return;
                     }
-                    if (item.isSimilar(Common.get().getTeamItem().getItemstack())) {
-                        new inGameTeamUi(player).open();
-                        return;
-                    }
-                    if (item.isSimilar(Common.get().getActiveRole().getItemstack())) {
-                        new inGameScenario(player, true).open();
-                        return;
-                    }
-                    if (item.isSimilar(Common.get().getActiveScenario().getItemstack())) {
-                        new inGameScenario(player).open();
-                        return;
-                    }
                     if (item.isSimilar(Common.get().getReglesItem().getItemstack())) {
                         if (UHCManager.get().getWaitState().equals(UHCManager.WaitState.WAIT_STATE)) {
                             UHCManager.get().setWaitState(UHCManager.WaitState.LOBBY_STATE);
@@ -66,6 +54,18 @@ public class PlayerInteractEvent implements Listener {
                         }
                         return;
                     }
+                }
+                if (item.isSimilar(Common.get().getTeamItem().getItemstack())) {
+                    new inGameTeamUi(player).open();
+                    return;
+                }
+                if (item.isSimilar(Common.get().getActiveRole().getItemstack())) {
+                    new inGameScenario(player, true).open();
+                    return;
+                }
+                if (item.isSimilar(Common.get().getActiveScenario().getItemstack())) {
+                    new inGameScenario(player).open();
+                    return;
                 }
             }
         }

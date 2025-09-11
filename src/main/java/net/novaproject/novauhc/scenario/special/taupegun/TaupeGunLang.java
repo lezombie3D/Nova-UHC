@@ -1,7 +1,9 @@
 package net.novaproject.novauhc.scenario.special.taupegun;
 
 import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
+import net.novaproject.novauhc.uhcteam.UHCTeam;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
@@ -9,12 +11,9 @@ import java.util.Map;
 public enum TaupeGunLang implements ScenarioLang {
 
     // Messages de chat
-    GLOBAL_CHAT_FORMAT,
     NOT_TAUPE_ERROR,
     TAUPE_CHAT_FORMAT,
     TEAM_CHAT_FORMAT,
-    LOBBY_CHAT_FORMAT,
-    DEAD_CANNOT_SPEAK,
     TAUPE_COORDS_FORMAT,
     TEAM_COORDS_FORMAT,
 
@@ -60,7 +59,18 @@ public enum TaupeGunLang implements ScenarioLang {
     @Override
     public Map<String, Object> getScenarioPlaceholders(UHCPlayer player) {
         Map<String, Object> placeholders = ScenarioLang.super.getScenarioPlaceholders(player);
-        // Ajouter des placeholders spécifiques à TaupeGun si nécessaire
+
+        // Ajoute le placeholder %oldteam%
+        TaupeGun taupeGun = ScenarioManager.get().getScenario(TaupeGun.class);
+        if (taupeGun != null) {
+            UHCTeam oldTeam = taupeGun.getOldTeamforPlayer(player);
+            if (oldTeam != null) {
+                placeholders.put("%oldteam%", oldTeam.getName());
+            } else {
+                placeholders.put("%oldteam%", "");
+            }
+        }
+
         return placeholders;
     }
 }

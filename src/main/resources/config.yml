@@ -1,14 +1,14 @@
 mongodb:
   connectionString: "mongodb://uhcnova:UNPmuIhCl8F2ybZy@minecraft-shard-00-00.ljf2r.mongodb.net:27017,minecraft-shard-00-01.ljf2r.mongodb.net:27017,minecraft-shard-00-02.ljf2r.mongodb.net:27017/?ssl=true&replicaSet=atlas-tt3bwt-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Minecraft"
 
-  name: "uhc"
+  name: "playerdata"
 serverinfo:
   servertag:
     "§f[§6SERV§f] "
   info:
     "§f[§6INFO§f] "
   ip:
-    "1234"
+    "play.novauhc.fr"
   servername:
     "§cSERVER"
   helpop:
@@ -16,5 +16,7 @@ serverinfo:
 mumble:
   port: ""
   ip: ""
+doc: "https://mystouille.gitbook.io/nova-code"
+discord: "https://discord.gg/TGMM7bPwTb"
 ## PlaceHolder utilisable :
 

@@ -3,11 +3,11 @@ package net.novaproject.novauhc.ui;
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
-import net.novaproject.novauhc.task.LoadingChunkTask;
 import net.novaproject.novauhc.ui.config.ScenariosUi;
 import net.novaproject.novauhc.ui.config.TeamConfigUi;
 import net.novaproject.novauhc.ui.world.BorderConfig;
 import net.novaproject.novauhc.ui.world.WorldUi;
+import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.Titles;
 import net.novaproject.novauhc.utils.UHCUtils;
@@ -231,7 +231,6 @@ public class DefaultUi extends CustomInventory {
             @Override
             public void onClick(InventoryClickEvent e) {
 
-                if (!LoadingChunkTask.get().isFinished()) return;
                 boolean started = UHCManager.get().isStarted();
                 if (!started) {
                     UHCManager.get().setCanceled(false);
@@ -245,7 +244,7 @@ public class DefaultUi extends CustomInventory {
                     getPlayer().closeInventory();
                     UHCManager.get().setStarted(false);
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        new Titles().sendTitle(player, getConfig().getString("start_canceled.title"), getConfig().getString("start_canceled.subtitle"), getConfig().getInt("start_canceled.duration"));
+                        new Titles().sendTitle(player, ConfigUtils.getLangConfig().getString("start_canceled.title"), ConfigUtils.getLangConfig().getString("start_canceled.subtitle"), ConfigUtils.getLangConfig().getInt("start_canceled.duration"));
                         player.setLevel(0);
                         player.setExp(0f);
                     }

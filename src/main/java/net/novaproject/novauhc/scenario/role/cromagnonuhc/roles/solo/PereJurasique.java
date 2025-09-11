@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.scenario.role.cromagnonuhc.roles.solo;
 
+import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonCamps;
 import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonRole;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -9,11 +10,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Collections;
-import java.util.List;
-
 public class PereJurasique extends CromagnonRole {
     private UHCPlayer playerRole;
+
+    public PereJurasique() {
+        setCamp(CromagnonCamps.DINOS);
+    }
 
     @Override
     public String getName() {
@@ -30,20 +32,6 @@ public class PereJurasique extends CromagnonRole {
                 "§8§m--------------------------";
     }
 
-    @Override
-    public String getCamps() {
-        return "solo1";
-    }
-
-    @Override
-    public ChatColor getColor() {
-        return ChatColor.GOLD;
-    }
-
-    @Override
-    public List<Integer> getPowerUse() {
-        return Collections.emptyList();
-    }
 
     @Override
     public ItemCreator getItem() {

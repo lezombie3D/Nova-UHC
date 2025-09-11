@@ -1,12 +1,12 @@
 package net.novaproject.novauhc.scenario.role.cromagnonuhc.roles.zoms;
 
+import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonCamps;
 import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonRole;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -19,6 +19,10 @@ import java.util.Random;
 public class Patriarche extends CromagnonRole {
     private UHCPlayer playerRole;
     private final List<Integer> list = new ArrayList<>();
+
+    public Patriarche() {
+        setCamp(CromagnonCamps.ZOMS);
+    }
 
     @Override
     public String getName() {
@@ -34,21 +38,6 @@ public class Patriarche extends CromagnonRole {
                 "§8§m--------------------------";
     }
 
-    @Override
-    public String getCamps() {
-        return "zoms";
-    }
-
-    @Override
-    public ChatColor getColor() {
-        return ChatColor.GREEN;
-    }
-
-    @Override
-    public List<Integer> getPowerUse() {
-        return list;
-    }
-
 
     @Override
     public ItemCreator getItem() {
@@ -61,11 +50,6 @@ public class Patriarche extends CromagnonRole {
         list.clear();
         playerRole = uhcPlayer;
         list.add(1);
-    }
-
-    @Override
-    public void onDeath(UHCPlayer uhcPlayer, UHCPlayer killer, PlayerDeathEvent event) {
-
     }
 
     @Override

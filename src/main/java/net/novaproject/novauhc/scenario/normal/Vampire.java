@@ -2,6 +2,9 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.VampireLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -12,6 +15,9 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Vampire extends Scenario {
 
@@ -33,6 +39,16 @@ public class Vampire extends Scenario {
     }
 
     @Override
+    public String getPath() {
+        return "vampire";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return VampireLang.values();
+    }
+
+    @Override
     public void toggleActive() {
         super.toggleActive();
         if (isActive()) {
@@ -49,16 +65,20 @@ public class Vampire extends Scenario {
         if (killer != null) {
             Player killerPlayer = killer.getPlayer();
 
+            double healAmount = getConfig().getDouble("heal_amount", 2.0);
             double currentHealth = killerPlayer.getHealth();
             double maxHealth = killerPlayer.getMaxHealth();
-            double newHealth = Math.min(maxHealth, currentHealth + 2.0);
+            double newHealth = Math.min(maxHealth, currentHealth + healAmount);
 
             killerPlayer.setHealth(newHealth);
 
-            killerPlayer.sendMessage("§c[Vampire] §fVous avez récupéré 1 cœur en tuant " + uhcPlayer.getPlayer().getName() + " !");
+            Map<String, Object> placeholders = new HashMap<>();
+            placeholders.put("%victim%", uhcPlayer.getPlayer().getName());
+            placeholders.put("%heal_hearts%", String.valueOf(healAmount / 2));
+            ScenarioLangManager.send(killerPlayer, VampireLang.KILL_HEAL, placeholders);
 
-            // Give night vision effect for 30 seconds
-            killerPlayer.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 600, 0));
+            int nightVisionDuration = getConfig().getInt("night_vision_duration", 600);
+            killerPlayer.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, nightVisionDuration, 0));
         }
     }
 
@@ -91,8 +111,11 @@ public class Vampire extends Scenario {
                                     player.getInventory().getHelmet().getType() == Material.AIR) {
 
                                 // Damage player
-                                player.damage(1.0);
-                                player.sendMessage("§c[Vampire] §fVous brûlez au soleil ! Équipez un casque ou trouvez de l'ombre !");
+                                double sunDamage = getConfig().getDouble("sun_damage_amount", 1.0);
+                                player.damage(sunDamage);
+                                Map<String, Object> sunPlaceholders = new HashMap<>();
+                                sunPlaceholders.put("%sun_damage%", String.valueOf(sunDamage));
+                                ScenarioLangManager.send(uhcPlayer.getPlayer(), VampireLang.SUN_DAMAGE, sunPlaceholders);
 
                                 // Add fire effect for visual
                                 player.setFireTicks(40);
@@ -103,8 +126,9 @@ public class Vampire extends Scenario {
             }
         };
 
-        // Run every 2 seconds (40 ticks)
-        sunDamageTask.runTaskTimerAsynchronously(Main.get(), 0, 40);
+        // Run based on config interval
+        int interval = getConfig().getInt("sun_damage_interval", 40);
+        sunDamageTask.runTaskTimer(Main.get(), 0, interval);
     }
 
     private void stopSunDamageTask() {

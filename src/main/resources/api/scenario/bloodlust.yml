@@ -1,0 +1,7 @@
+speed_duration: 600  # 30 seconds in ticks
+strength_duration: 600  # 30 seconds in ticks
+speed_level: 1  # Speed II (level 1 = Speed II)
+strength_level: 0  # Strength I (level 0 = Strength I)
+messages:
+  KILL_BOOST: "§c[BloodLust] §fVous ressentez la soif de sang ! Speed II et Strength I pendant 30 secondes !"
+  BOOST_EXPIRED: "§c[BloodLust] §fVotre soif de sang s'estompe..."

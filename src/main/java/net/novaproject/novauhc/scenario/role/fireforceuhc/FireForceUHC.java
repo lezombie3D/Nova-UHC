@@ -5,6 +5,7 @@ import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.role.Role;
 import net.novaproject.novauhc.scenario.role.ScenarioRole;
+import net.novaproject.novauhc.scenario.role.camps.Camps;
 import net.novaproject.novauhc.scenario.role.fireforceuhc.role.Sho;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
@@ -101,6 +102,11 @@ public class FireForceUHC extends ScenarioRole<FireForceRole> {
     }
 
     @Override
+    public Camps[] getCamps() {
+        return new Camps[0];
+    }
+
+    @Override
     public void onSec(Player p) {
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(p);
         List<UHCPlayer> hommes = getPlayersByCamps("homme");
@@ -125,7 +131,7 @@ public class FireForceUHC extends ScenarioRole<FireForceRole> {
 
         for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
             Role role = getRoleByUHCPlayer(uhcPlayer);
-            String playerCamp = role.getCamps();
+            String playerCamp = role.getCamp().toString();
             campCounts.put(playerCamp, campCounts.getOrDefault(playerCamp, 0) + 1);
         }
         if (campCounts.size() == 1) {
@@ -215,7 +221,7 @@ public class FireForceUHC extends ScenarioRole<FireForceRole> {
         List<UHCPlayer> players = UHCPlayerManager.get().getPlayingOnlineUHCPlayers();
         List<UHCPlayer> playersByCamps = UHCPlayerManager.get().getPlayingOnlineUHCPlayers();
         for (UHCPlayer player : players) {
-            if (!getRoleByUHCPlayer(player).getCamps().equals(camps)) {
+            if (!getRoleByUHCPlayer(player).getCamp().equals(camps)) {
                 playersByCamps.remove(player);
             }
         }

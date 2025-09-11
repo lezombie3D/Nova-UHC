@@ -1,19 +1,19 @@
 messages:
   # Messages de chat
-  GLOBAL_CHAT_FORMAT: "§a✦ Global ✦ §8%player% §7» §f%message%"
+  GLOBAL_CHAT_FORMAT: "§a✦ Global ✦ §8%s §7» §f%s"
   NOT_TAUPE_ERROR: "§c[TaupeGun] Vous n'êtes pas une taupe, vous ne pouvez pas utiliser le chat taupe !"
-  TAUPE_CHAT_FORMAT: "§c❖ Taupe ❖ §8%player% §7» §f%message%"
-  TEAM_CHAT_FORMAT: "§9❖ Team ❖ §8%player% §7» §f%message%"
-  LOBBY_CHAT_FORMAT: "§8❯ %player% §7» §f%message%"
+  TAUPE_CHAT_FORMAT: "§7[§6Taupe %oldteam%§7] §f%s §8» §f%s"
+  TEAM_CHAT_FORMAT: "§7[§6Team§7] §f%s §8» §f%s"
+  LOBBY_CHAT_FORMAT: "§8❯ %s §7» §f%s"
   DEAD_CANNOT_SPEAK: "§c✗ Vous n'avez pas le droit de parler car vous êtes mort !"
-  TAUPE_COORDS_FORMAT: "§c❖ Taupe ❖ §8%player% §7» %message%"
-  TEAM_COORDS_FORMAT: "§9❖ Team ❖ §8%player% §7» %message%"
+  TAUPE_COORDS_FORMAT: "§7[§6Taupe %oldteam%§7] §f%player% §8» %co%"
+  TEAM_COORDS_FORMAT: "§7[§6Team§7] §f%player% §8» %co%"
 
   # Messages de commandes
   NOT_TAUPE_COMMAND_ERROR: "§c[TaupeGun] Vous n'êtes pas une taupe !"
   UNKNOWN_COMMAND: "§c✗ Commande inconnue. Utilisez /t pour voir les commandes disponibles."
   KIT_RECEIVED: "§a[TaupeGun] ✓ Vous avez bien reçu votre kit !"
-  REVEAL_SUCCESS: "§c⚠ La Taupe %player% s'est révélée !"
+  REVEAL_SUCCESS: "§c⚠ La Taupe %player% de l'équipe %oldteam% s'est révélée !"
   REVEAL_NOT_TAUPE: "§c✗ Vous ne pouvez pas vous révéler car vous n'êtes pas une Taupe !"
 
   # Messages d'assignation

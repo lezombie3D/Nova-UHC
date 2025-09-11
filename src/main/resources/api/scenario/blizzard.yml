@@ -1,0 +1,12 @@
+blizzard_duration_min: 1800  # 1.5 minutes minimum
+blizzard_duration_max: 4800  # 4 minutes maximum
+blizzard_cooldown_min: 3600  # 3 minutes minimum cooldown
+blizzard_cooldown_max: 7200  # 6 minutes maximum cooldown
+slowness_level: 1  # Slowness II
+blindness_level: 0  # Blindness I
+effect_duration: 100  # 5 seconds effect duration
+messages:
+  BLIZZARD_START: "§b[Blizzard] §fTempête de neige ! Visibilité réduite et ralentissement !"
+  BLIZZARD_END: "§b[Blizzard] §fLa tempête de neige se calme."
+  BLIZZARD_WARNING: "§b[Blizzard] §fTempête de neige dans %time% secondes !"
+  IN_BLIZZARD: "§b[Blizzard] §fVous êtes dans la tempête !"

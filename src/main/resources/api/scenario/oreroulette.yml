@@ -1,0 +1,12 @@
+roulette_enabled: true
+ore_weights:
+  COAL_ORE: 30
+  IRON_ORE: 25
+  GOLD_ORE: 15
+  DIAMOND_ORE: 8
+  EMERALD_ORE: 5
+  LAPIS_ORE: 12
+  REDSTONE_ORE: 20
+  QUARTZ_ORE: 10
+messages:
+  ORE_TRANSFORMED: "§6[OreRoulette] §f%original_ore% → %new_ore% !"

@@ -1,21 +1,25 @@
 package net.novaproject.novauhc.scenario.special;
 
 import net.novaproject.novauhc.Common;
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.SoulBrotherLang;
+import net.novaproject.novauhc.task.ShadowLoadingChunkTask;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
-import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.utils.ItemCreator;
-import net.novaproject.novauhc.world.generation.WorldGenerator;
+import net.novaproject.novauhc.world.utils.LobbyCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +30,10 @@ public class SoulBrother extends Scenario {
 
     private final Map<UUID, World> playerWorlds = new HashMap<>();
     private final Map<UUID, UUID> soulBrothers = new HashMap<>();
-    private final int REUNION_TIME = 60 * 60; // 1 hour in seconds
+    private int REUNION_TIME;
     private boolean reunionTime = false;
+    private BukkitTask soulBrotherTask;
+    private boolean scatterInitialized = false;
 
     @Override
     public String getName() {
@@ -54,11 +60,25 @@ public class SoulBrother extends Scenario {
     public void toggleActive() {
         super.toggleActive();
         if (isActive()) {
-            new WorldGenerator(Main.get(), "world1");
-            new WorldGenerator(Main.get(), "world2");
-            setupSoulBrothers();
-        } else {
-            reuniteAllPlayers();
+            UHCManager.get().setTeam_size(2);
+            LobbyCreator.cloneWorld(Common.get().getArenaName(), "world1");
+            LobbyCreator.cloneWorld(Common.get().getArenaName(), "world2");
+            REUNION_TIME = getConfig().getInt("reunion_time");
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    new ShadowLoadingChunkTask(Bukkit.getWorld("world1"), 1000);
+                    new ShadowLoadingChunkTask(Bukkit.getWorld("world2"), 1000);
+                }
+            }.runTaskLater(Main.get(), 20 * 5);
+        }
+    }
+
+    @Override
+    public void onTeamUpdate() {
+        if (UHCManager.get().getTeam_size() == 1) {
+            UHCManager.get().setTeam_size(2);
+            CommonString.TEAM_REDFINIED_AUTO.sendAll();
         }
     }
 
@@ -72,89 +92,87 @@ public class SoulBrother extends Scenario {
             startReunion();
         }
 
-        // Send periodic updates to soul brothers
-        if (currentTime % 300 == 0 && !reunionTime) { // Every 5 minutes
+        if (currentTime % 300 == 0 && !reunionTime) {
             sendSoulBrotherUpdate(p);
         }
     }
 
-    private void setupSoulBrothers() {
-        List<UHCTeam> teams = UHCTeamManager.get().getTeams();
 
-        if (teams.isEmpty()) {
-            Bukkit.broadcastMessage("§d[SoulBrother] §cAucune équipe trouvée ! Le scénario ne peut pas démarrer.");
-            return;
+    @Override
+    public String getPath() {
+        return "special/soulbrother";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return SoulBrotherLang.values();
+    }
+
+    @Override
+    public void scatter(UHCPlayer uhcPlayer, Location location, HashMap<UHCTeam, Location> teamloc) {
+        if (!scatterInitialized) {
+            scatterInitialized = true;
+            Bukkit.broadcastMessage("§d§l[SoulBrother] §fLes âmes sœurs sont séparées dans des mondes parallèles !");
+            startSoulBrotherTask();
         }
 
         World world1 = Bukkit.getWorld("world1");
         World world2 = Bukkit.getWorld("world2");
 
         if (world1 == null || world2 == null) {
-            Bukkit.broadcastMessage("§d[SoulBrother] §cMondes non disponibles ! Utilisation du monde principal.");
+            Bukkit.broadcastMessage("§c[SoulBrother] Erreur: Les mondes parallèles ne sont pas disponibles !");
             return;
         }
 
-        world2.getWorldFolder().mkdirs();
+        Player player = uhcPlayer.getPlayer();
+        if (player == null) return;
 
-
-    }
-
-
-    @Override
-    public void scatter(UHCPlayer uhcPlayer, Location location, HashMap<UHCTeam, Location> teamloc) {
-        Bukkit.broadcastMessage("§d§l[SoulBrother] §fLes âmes sœurs sont séparées dans des mondes parallèles !");
-        List<UHCTeam> teams = UHCTeamManager.get().getTeams();
-        World world1 = Bukkit.getWorld("world1");
-        World world2 = Bukkit.getWorld("world2");
-        for (UHCTeam team : teams) {
-            List<UHCPlayer> members = team.getPlayers();
-
-            if (members.size() >= 2) {
-                // Split team members between worlds
-                for (int i = 0; i < members.size(); i++) {
-                    UHCPlayer member = members.get(i);
-                    Player player = member.getPlayer();
-
-                    if (i % 2 == 0) {
-                        playerWorlds.put(player.getUniqueId(), world1);
-                        teleportToWorld(player, world1);
-                    } else {
-                        playerWorlds.put(player.getUniqueId(), world2);
-                        teleportToWorld(player, world2);
-
-                        if (i > 0) {
-                            UUID brother1 = members.get(i - 1).getPlayer().getUniqueId();
-                            UUID brother2 = player.getUniqueId();
-                            soulBrothers.put(brother1, brother2);
-                            soulBrothers.put(brother2, brother1);
-                        }
-                    }
-                }
-            }
+        UHCTeam team = uhcPlayer.getTeam().orElse(null);
+        if (team == null || team.getPlayers().size() < 2) {
+            player.teleport(location);
+            return;
         }
 
-        startSoulBrotherTask();
+        Location teamLocation = teamloc.get(team);
+        if (teamLocation == null) {
+            teamLocation = location;
+        }
+
+        List<UHCPlayer> members = team.getPlayers();
+        int playerIndex = members.indexOf(uhcPlayer);
+
+        if (playerIndex % 2 == 0) {
+            playerWorlds.put(player.getUniqueId(), world1);
+            teleportToWorld(player, world1, teamLocation);
+        } else {
+            playerWorlds.put(player.getUniqueId(), world2);
+            teleportToWorld(player, world2, teamLocation);
+
+            if (playerIndex > 0) {
+                UHCPlayer previousMember = members.get(playerIndex - 1);
+                UUID brother1 = previousMember.getPlayer().getUniqueId();
+                UUID brother2 = player.getUniqueId();
+                soulBrothers.put(brother1, brother2);
+                soulBrothers.put(brother2, brother1);
+            }
+        }
     }
 
-    private void teleportToWorld(Player player, World targetWorld) {
-        Location spawnLoc = targetWorld.getSpawnLocation();
+    private void teleportToWorld(Player player, World targetWorld, Location location) {
+        Location targetLocation = new Location(targetWorld, location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
 
-        spawnLoc.add(
-                (Math.random() - 0.5) * 1000,
-                0,
-                (Math.random() - 0.5) * 1000
-        );
-
-        spawnLoc.setY(targetWorld.getHighestBlockYAt(spawnLoc) + 1);
-
-        player.teleport(spawnLoc);
+        player.teleport(targetLocation);
 
         String worldName = targetWorld.getName().equals("world1") ? "Alpha" : "Beta";
         player.sendMessage("§d[SoulBrother] §fVous êtes dans le monde " + worldName + " !");
     }
 
     private void startSoulBrotherTask() {
-        new BukkitRunnable() {
+        if (soulBrotherTask != null) {
+            return;
+        }
+        this.soulBrotherTask = new BukkitRunnable() {
+
             @Override
             public void run() {
                 if (!isActive()) {
@@ -185,30 +203,25 @@ public class SoulBrother extends Scenario {
 
         World reunionWorld = Common.get().getArena();
 
-        // Teleport all players to reunion world
         for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
             Player player = uhcPlayer.getPlayer();
 
-            // Find a safe reunion location
             Location reunionLoc = findReunionLocation(reunionWorld);
             player.teleport(reunionLoc);
 
             player.sendMessage("§d[SoulBrother] §fVous avez été réuni avec votre âme sœur !");
 
-            // Notify about soul brother
             UUID brotherUuid = soulBrothers.get(player.getUniqueId());
             if (brotherUuid != null) {
                 Player brother = Bukkit.getPlayer(brotherUuid);
                 if (brother != null) {
                     player.sendMessage("§d[SoulBrother] §fVotre âme sœur est §d" + brother.getName() + " §f!");
 
-                    // Give reunion bonus
                     giveReunionBonus(player);
                 }
             }
         }
 
-        // Play reunion sound
         for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
             Player player = uhcPlayer.getPlayer();
             player.getWorld().playSound(player.getLocation(),
@@ -219,7 +232,6 @@ public class SoulBrother extends Scenario {
     private Location findReunionLocation(World world) {
         Location spawn = world.getSpawnLocation();
 
-        // Random location within 500 blocks of spawn
         int x = spawn.getBlockX() + (int) ((Math.random() - 0.5) * 1000);
         int z = spawn.getBlockZ() + (int) ((Math.random() - 0.5) * 1000);
         int y = world.getHighestBlockYAt(x, z) + 1;
@@ -243,13 +255,11 @@ public class SoulBrother extends Scenario {
         if (brotherUuid != null) {
             Player brother = Bukkit.getPlayer(brotherUuid);
             if (brother != null && brother.isOnline()) {
-                // Send location update
                 Location brotherLoc = brother.getLocation();
                 player.sendMessage("§d[SoulBrother] §fVotre âme sœur " + brother.getName() +
                         " est en " + brotherLoc.getBlockX() + ", " + brotherLoc.getBlockZ() +
                         " (Vie: " + (int) brother.getHealth() + "/20)");
 
-                // Send to brother too
                 Location playerLoc = player.getLocation();
                 brother.sendMessage("§d[SoulBrother] §fVotre âme sœur " + player.getName() +
                         " est en " + playerLoc.getBlockX() + ", " + playerLoc.getBlockZ() +
@@ -306,7 +316,7 @@ public class SoulBrother extends Scenario {
         World playerWorld = playerWorlds.get(player.getUniqueId());
         if (playerWorld == null) return "Non assigné";
 
-        return playerWorld.getName().equals("world") ? "Alpha" : "Beta";
+        return playerWorld.getName().equals("world1") ? "Alpha" : "Beta";
     }
 
     // Check if two players are soul brothers

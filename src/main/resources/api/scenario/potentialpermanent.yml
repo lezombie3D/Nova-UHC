@@ -1,0 +1,10 @@
+starting_permanent_health: 20.0  # 10 hearts
+starting_absorption_health: 20.0  # 10 absorption hearts
+kill_reward: 4.0  # 2 hearts per kill
+max_permanent_health: 60.0  # 30 hearts maximum
+messages:
+  HEALTH_STATUS: "§e[PotentialPermanent] §fVie permanente : %permanent_hearts% cœurs | Absorption : %absorption_hearts% cœurs"
+  KILL_CONVERSION: "§e[PotentialPermanent] §fKill ! %converted_hearts% cœur(s) d'absorption convertis en vie permanente !"
+  KILL_ANNOUNCEMENT: "§e[PotentialPermanent] §f%player% a maintenant %permanent_hearts% cœurs permanents !"
+  STARTING_HEALTH: "§e[PotentialPermanent] §fVous commencez avec %permanent_hearts% cœurs permanents + %absorption_hearts% cœurs d'absorption !"
+  CONVERSION_INFO: "§e[PotentialPermanent] §fTuez des joueurs pour convertir l'absorption en vie permanente !"

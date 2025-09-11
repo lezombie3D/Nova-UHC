@@ -1,10 +1,12 @@
 package net.novaproject.novauhc.scenario.special.slavemarket;
 
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.ui.config.ScenariosUi;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.MessageUtils;
 import net.novaproject.novauhc.utils.Titles;
 import net.novaproject.novauhc.utils.ui.AnvilUi;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
@@ -39,19 +41,19 @@ public class SlaveMarketUi extends CustomInventory {
                         String enteredText = event.getName();
                         Player player = Bukkit.getPlayer(enteredText);
                         if (player == null) {
-                            getPlayer().sendMessage(ChatColor.RED + "Joueur invalide");
+                            MessageUtils.sendInvalidArgument(getPlayer(), "Player introuvable");
                             return;
                         }
                         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
                         if (slave.getOwners().size() + 1 <= slave.getTeamPlaces().size()) {
                             slave.addOwner(uhcPlayer);
                         } else {
-                            getPlayer().sendMessage(ChatColor.RED + "Impossible, il y a déjà 8 propriétaires !");
+                            CommonString.DISABLE_ACTION.send(getPlayer());
                         }
 
 
                     }
-                    new SlaveMarketUi(getPlayer()).open();
+
                 }).setSlot("Nom du joueur").open();
 
             }

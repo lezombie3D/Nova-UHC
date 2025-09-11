@@ -8,8 +8,8 @@ import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.role.Role;
-import net.novaproject.novauhc.scenario.role.RoleConfigManager;
 import net.novaproject.novauhc.scenario.role.ScenarioRole;
+import net.novaproject.novauhc.scenario.role.camps.Camps;
 import net.novaproject.novauhc.scenario.role.cromagnonuhc.roles.mamouth.GagGag;
 import net.novaproject.novauhc.scenario.role.cromagnonuhc.roles.mamouth.Many;
 import net.novaproject.novauhc.scenario.role.cromagnonuhc.roles.mamouth.Poilu;
@@ -20,16 +20,11 @@ import net.novaproject.novauhc.scenario.role.cromagnonuhc.roles.zoms.*;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
-import net.novaproject.novauhc.utils.LongCooldownManager;
-import net.novaproject.novauhc.utils.TeamsTagsManager;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -38,7 +33,6 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
 
     private final HashMap<UHCPlayer, Boolean> meurt = new HashMap<>();
     private boolean listsend;
-    private final RoleConfigManager roleConfigManager = new RoleConfigManager(Main.get().getDataFolder());
 
 
     @Override
@@ -102,7 +96,7 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
         player.sendMessage(ChatColor.RED + "Vous êtes mort, mais vous pouvez toujours être ressuscité.");
 
         List<UHCPlayer> putri = getPlayersByRoleName("Putride");
-        if (getRoleByUHCPlayer(killer).getCamps() == "mamouth" && killer != null) {
+        if (getRoleByUHCPlayer(killer).getCamp() == CromagnonCamps.MAMOUT && killer != null) {
             for (UHCPlayer p : putri) {
                 if (p.getPlayer() != null) {
                     TextComponent base = new TextComponent("[§aPrivée§f] Un joueur est mort vous pouvez le ");
@@ -203,8 +197,8 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
         List<UHCPlayer> list = new ArrayList<>();
         for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
             Role role = getRoleByUHCPlayer(uhcPlayer);
-            String playerCamp = role.getCamps();
-            if (playerCamp != null && playerCamp.equals("mamouth")) {
+            Camps playerCamp = role.getCamp();
+            if (playerCamp != null && playerCamp.equals(CromagnonCamps.MAMOUT)) {
                 list.add(uhcPlayer);
             }
         }
@@ -214,38 +208,22 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
 
 
     @Override
-    public CromagnonRole getRoleByUHCPlayer(UHCPlayer player) {
-        return super.getRoleByUHCPlayer(player);
-    }
-
-    @Override
     public List<UHCPlayer> getPlayersByRoleName(String name) {
         return super.getPlayersByRoleName(name);
     }
 
     public boolean isWin() {
-        Map<String, Integer> campCounts = new HashMap<>();
+        Map<Camps, Integer> campCounts = new HashMap<>();
 
         for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
             Role role = getRoleByUHCPlayer(uhcPlayer);
-            String playerCamp = role.getCamps();
-            campCounts.put(playerCamp, campCounts.getOrDefault(playerCamp, 0) + 1);
-        }
-        if (campCounts.size() == 1) {
-            String remainingCamp = campCounts.keySet().iterator().next();
+            if (role == null) continue;
 
-            if (isDuoCamp(remainingCamp)) {
-                return campCounts.get(remainingCamp) == 2;
-            }
-            return true;
+            Camps camp = role.getCamp();
+            campCounts.put(camp, campCounts.getOrDefault(camp, 0) + 1);
         }
 
-        for (String camp : campCounts.keySet()) {
-            if (isSoloCamp(camp) && campCounts.get(camp) == 1) {
-                return true;
-            }
-        }
-        return false;
+        return campCounts.size() == 1;
     }
 
 
@@ -260,6 +238,11 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
     @Override
     public void onPlayerInteract(Player player, PlayerInteractEvent event) {
         super.onPlayerInteract(player, event);
+    }
+
+    @Override
+    public Camps[] getCamps() {
+        return new Camps[0];
     }
 
     @Override
@@ -293,8 +276,9 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
 
         }
     }
+}
 
-    @Override
+   /* @Override
     public void onCroCMD(Player player, String subCommand, String[] args) {
         UHCPlayer p = UHCPlayerManager.get().getPlayer(player);
         switch (subCommand) {
@@ -363,7 +347,7 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
             return;
         }
         Role targetrole = getRoleByUHCPlayer(target);
-        targetrole.getCamps().replace(targetrole.getCamps(), "mamouth");
+        targetrole.setCamp();
         role.getPowerUse().set(0, role.getPowerUse().get(0) - 1);
 
         meurt.replace(target, false);
@@ -388,7 +372,7 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
         target.getPlayer().setGameMode(GameMode.SURVIVAL);
         target.getPlayer().teleport(location);
         PlayerInventory inventory = target.getPlayer().getInventory();
-        for (ItemStack item : target.getDeathIteam()) {
+        for (ItemStack item : target.getDeathItem()) {
             if (item != null && item.getType() != Material.AIR) {
                 if (isHelmet(item) && inventory.getHelmet() == null) {
                     inventory.setHelmet(item);
@@ -426,11 +410,11 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
         Role role = getRoleByUHCPlayer(UHCPlayerManager.get().getPlayer(player));
         Role targetRole = getRoleByUHCPlayer(target);
 
-        if (Objects.equals(role.getCamps(), targetRole.getCamps())) {
+        if (Objects.equals(role.getCamp(), targetRole.getCamp())) {
             if (LongCooldownManager.get(player.getUniqueId(), "renif") == -1) {
                 LongCooldownManager.put(player.getUniqueId(), "renif", 30 * 1000);
 
-                if (Objects.equals(role.getCamps(), targetRole.getCamps())) {
+                if (Objects.equals(role.getCamp(), targetRole.getCamp())) {
                     player.sendMessage("Vous etes dans meme camps");
                 } else {
                     player.sendMessage("pas dans le meme camps");
@@ -471,7 +455,7 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
             LongCooldownManager.put(player.getUniqueId(), "peintre", 30 * 1000);
             role.getPowerUse().set(0, role.getPowerUse().get(0) - 1);
 
-            if (role1.getCamps().equals(role2.getCamps()) || role2.getCamps().equals(role1.getCamps())) {
+            if (role1.getCamp().equals(role2.getCamp()) || role2.getCamp().equals(role1.getCamp())) {
                 player.sendMessage("les 2 joueur ont le meme camps");
                 player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60, 1, false, false));
             } else {
@@ -533,7 +517,7 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
         target.getPlayer().setGameMode(GameMode.SURVIVAL);
         target.getPlayer().teleport(location);
         PlayerInventory inventory = target.getPlayer().getInventory();
-        for (ItemStack item : target.getDeathIteam()) {
+        for (ItemStack item : target.getDeathItem()) {
             if (item != null && item.getType() != Material.AIR) {
                 if (isHelmet(item) && inventory.getHelmet() == null) {
                     inventory.setHelmet(item);
@@ -581,4 +565,4 @@ public class CromagnonUHC extends ScenarioRole<CromagnonRole> {
                 type == Material.CHAINMAIL_BOOTS || type == Material.IRON_BOOTS ||
                 type == Material.DIAMOND_BOOTS;
     }
-}
+}*/

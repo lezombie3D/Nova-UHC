@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.scenario.role.loupgarouuhc.roles;
 
+import net.novaproject.novauhc.scenario.role.loupgarouuhc.LGCamps;
 import net.novaproject.novauhc.scenario.role.loupgarouuhc.LoupGarouRole;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.ChatColor;
@@ -7,10 +8,11 @@ import org.bukkit.Material;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Renard extends LoupGarouRole {
+
+    public Renard() {
+        setCamp(LGCamps.VILLAGE);
+    }
 
     @Override
     public ItemCreator getItem() {
@@ -37,22 +39,6 @@ public class Renard extends LoupGarouRole {
         return message;
     }
 
-    @Override
-    public String getCamps() {
-        return "village";
-    }
-
-    @Override
-    public ChatColor getColor() {
-        return ChatColor.GREEN;
-    }
-
-    @Override
-    public List<Integer> getPowerUse() {
-        List<Integer> list = new ArrayList<>();
-        list.add(3);
-        return list;
-    }
 
     @Override
     public PotionEffect[] getNightEffects() {

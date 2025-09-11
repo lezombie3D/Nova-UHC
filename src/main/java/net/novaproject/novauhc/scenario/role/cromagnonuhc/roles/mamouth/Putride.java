@@ -1,9 +1,9 @@
 package net.novaproject.novauhc.scenario.role.cromagnonuhc.roles.mamouth;
 
+import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonCamps;
 import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonRole;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -16,6 +16,10 @@ public class Putride extends CromagnonRole {
     private final List<Integer> list = new ArrayList<>();
     private UHCPlayer playerRole;
 
+    public Putride() {
+        setCamp(CromagnonCamps.MAMOUT);
+    }
+
     @Override
     public String getName() {
         return "Putride";
@@ -24,21 +28,6 @@ public class Putride extends CromagnonRole {
     @Override
     public String getDescription() {
         return "";
-    }
-
-    @Override
-    public String getCamps() {
-        return "mamouth";
-    }
-
-    @Override
-    public ChatColor getColor() {
-        return ChatColor.RED;
-    }
-
-    @Override
-    public List<Integer> getPowerUse() {
-        return list;
     }
 
     @Override

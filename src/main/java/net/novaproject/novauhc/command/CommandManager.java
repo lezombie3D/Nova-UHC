@@ -26,6 +26,10 @@ public class CommandManager {
         COMMANDS.put("h", new HCMD());
         COMMANDS.put("msg", new MsgCMD());
         COMMANDS.put("r", new RepCMD());
+        COMMANDS.put("dnote", new DeathNoteCMD());
+        COMMANDS.put("k", new KiraChatCMD());
+        COMMANDS.put("ds", new DiscordCMD());
+        COMMANDS.put("doc", new DocumentCMD());
     }
 
     public static void setup() {

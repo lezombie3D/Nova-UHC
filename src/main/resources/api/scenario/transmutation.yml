@@ -1,0 +1,7 @@
+iron_to_gold_ratio: 8  # 8 iron = 1 gold
+gold_to_diamond_ratio: 8  # 8 gold = 1 diamond
+messages:
+  TRANSMUTATION_SUCCESS: "§e[Transmutation] §fTransmutation réussie ! %input% → %output%"
+  NOT_ENOUGH_ITEMS: "§e[Transmutation] §cPas assez d'objets pour la transmutation !"
+  IRON_TO_GOLD: "§e[Transmutation] §f8 Fer → 1 Or"
+  GOLD_TO_DIAMOND: "§e[Transmutation] §f8 Or → 1 Diamant"

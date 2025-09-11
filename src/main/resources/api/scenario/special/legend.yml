@@ -96,7 +96,7 @@ messages:
   class_chosen_princesse: "&6[Princesse] &aVous êtes maintenant une Princesse !"
   class_chosen_cavalier: "&6[Cavalier] &aVous êtes maintenant un Cavalier !"
   class_chosen_ogre: "&6[Ogre] &aVous êtes maintenant un Ogre !"
-  class_chosen_dragon: "&6[Dragon] &aVous êtes maintenant un Dragon !"
+  class_chosen_dragon: "&6[DragonRole] &aVous êtes maintenant un DragonRole !"
   class_chosen_medecin: "&6[Médecin] &aVous êtes maintenant un Médecin !"
   class_chosen_prisonnier: "&6[Prisonnier] &aVous êtes maintenant un Prisonnier !"
   class_chosen_corne: "&6[Corne] &aVous êtes maintenant une Corne !"

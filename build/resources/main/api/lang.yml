@@ -1,8 +1,8 @@
-main_color: "§e§l"
+main_color: "§2§l"
 start_canceled:
   title: "§3Nova-§fUHC"
   subtitle: "§3Dommage :c"
-  duration: 20 # en tick 20 tick = 1 seconde
+  duration: 20
 message:
   CLICK_HERE_TO_APPLY: " §8» §fCliquez pour §a§lappliquer§f."
   CLICK_HERE_TO_ACTIVATE: " §8» §fCliquez pour §a§lactiver§f."
@@ -18,7 +18,13 @@ message:
   KICKED: "§cVous avez été exclu de la partie par l'host"
   KICKED_MESSAGE: "§c» Le joueur §f%player% §ca été exclu de la partie par l'host !"
   WELCOME: "§a§lBienvenue §fsur la partie de §6%host%§f !"
-  WELCOME_HOST: "§a§lBienvenue §fsur votre partie §6%host%§f !\n\n§c⚠ Attention §f: Vous êtes l'host de cette partie, vous devez la configurer avant de commencer !"
+  WELCOME_HOST: "\n§8§l«§8§m--------------------------------------------------§8§l»\n
+    §f 
+    §6│ §fBienvenue §6§l%player% sur votre partie §f!\n
+    §f 
+    §6│ §fVous pouvez dès à présent configurer : §l§c /h config§f!\n
+    §f 
+    §8§l«§8§m--------------------------------------------------§8§l»\n"
   WELCOME_SPECTATOR: "§7Bienvenue en tant que §espectateur §fsur la partie de §6%host%§f !"
   ORE_BOOST: "§aModification enregistrée §f! N'oubliez pas de recréer l'arène pour appliquer les changements."
   KICK_SPEC: "§cConnexion refusée : L'host a désactivé le mode spectateur"
@@ -31,7 +37,7 @@ message:
   CHAT_GLOBAL_FORMAT: "§7[§6Global§7] §f%s §8» §f%s"   #1er %s = Nom du joueur, 2eme %s = Message
   LOBBY_CHAT_FORMAT: "§7[§6Lobby§7] §f%s §8» §f%s"
   SOLO_CHAT_FORMAT: "§7[§6Solo§7] §f%s §8» §f%s"
-  TEAM_CHAT_FORMAT: "§7[§6Équipe§7] §f%s §8» §f%s"
+  TEAM_CHAT_FORMAT: "§7[§6%team%§7] §f%s §8» §f%s"
   HELPOP_MESSAGE: "%helpop% §2» "
   BLOCKED_ENCHANT: "§cVous ne pouvez pas appliquer cet enchantement"
   BLOCKED_POTION: "§cVous ne pouvez pas créer cette potion"
@@ -52,9 +58,9 @@ message:
   REVIVE_MESSAGE: "§a✦ §f%player% §aa été ressuscité par §6%host%§a !"
   INVULNERABLE_OFF: "§c⚠ Vous n'êtes plus invulnérable !"
   MEETUP_START: "§c§l♦ MEETUP ACTIVÉ ! §r§cAttention, la bordure se réduit !"
-  MEETUP_START_IN: "§e⌚ Le Meetup sera activé dans §a%time_before%"
+  MEETUP_START_IN: "§e⚡ Le Meetup sera activé dans §a%time_before%"
   PVP_START: "§c⚔ Le PVP est maintenant activé !"
-  PVP_START_IN: "§e⌚ Le PVP sera activé dans §a%time_before%"
+  PVP_START_IN: "§e⚡ Le PVP sera activé dans §a%time_before%"
   DISABLE_ACTION: "§cVous ne pouvez pas effectuer cette action !"
   SUCCESSFUL_ACTIVATION: "§a✓ Activation effectuée avec succès !"
   SUCCESSFUL_DESACTIVATION: "§c✓ Désactivation effectuée avec succès !"
@@ -72,6 +78,13 @@ message:
   MSG_CANNOT_MESSAGE_SELF: "§c✗ Vous ne pouvez pas vous envoyer un message à vous-même !"
   MSG_SENT_FORMAT: "§8│ §7§lMoi §7→ §7§l%target% §f%message%"
   MSG_RECEIVED_FORMAT: "§8│ §7§l%sender% §7→ §7§lMoi §f%message%"
+
+  DISCORD_MESSAGE: "§9│ §f§lDiscord §8» "
+  DISCORD_MESSAGE_HOVER: "%main_color% » Clique ici pour ouvrir le Discord !"
+
+  DOCUMENT_MESSAGE: "§9│ §f§lDocument §8» "
+  DOCUMENT_MESSAGE_HOVER: "%main_color% » Clique ici pour ouvrir le Document !"
+
 
   # Messages d'interface
   WHITELIST_ENABLE_BUTTON: "§a✓ Activer la Whitelist"

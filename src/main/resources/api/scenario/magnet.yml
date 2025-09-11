@@ -1,0 +1,5 @@
+magnet_radius: 5.0
+magnet_speed: 0.3
+magnet_delay: 10  # ticks before magnetizing
+messages:
+  MAGNET_ACTIVATED: "§6[Magnet] §fMinerais attirés dans un rayon de %radius% blocs !"

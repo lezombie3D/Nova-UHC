@@ -3,17 +3,14 @@ package net.novaproject.novauhc.scenario.special.superheros;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
-import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.utils.ItemCreator;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -76,56 +73,6 @@ public class SuperHeros extends Scenario {
     @Override
     public boolean isSpecial() {
         return true;
-    }
-
-    @Override
-    public void onChatSpeek(Player player, String message, AsyncPlayerChatEvent event) {
-        UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
-
-        if (UHCManager.get().getGameState() != UHCManager.GameState.INGAME) {
-            for (UHCPlayer lobby : UHCPlayerManager.get().getOnlineUHCPlayers()) {
-                lobby.getPlayer().sendMessage(ChatColor.DARK_GRAY + "❯ "
-                        + player.getName() + " » "
-                        + ChatColor.WHITE + message);
-            }
-            return;
-        }
-
-        if (!uhcPlayer.isPlaying()) {
-            player.sendMessage(ChatColor.RED + "Vous n'avez pas le droit de parler !");
-            return;
-        }
-
-        if (UHCManager.get().isChatdisbale()) return;
-
-        if (message.startsWith("!")) {
-            for (UHCPlayer lobby : UHCPlayerManager.get().getOnlineUHCPlayers()) {
-                lobby.getPlayer().sendMessage(ChatColor.GREEN + "✦ Global ✦ "
-                        + ChatColor.DARK_GRAY + player.getName() + " » "
-                        + ChatColor.WHITE + message.substring(1));
-            }
-            return;
-        }
-
-        if (UHCManager.get().getTeam_size() == 1) {
-            for (UHCPlayer lobby : UHCPlayerManager.get().getOnlineUHCPlayers()) {
-                lobby.getPlayer().sendMessage(ChatColor.DARK_GRAY + "❯ "
-                        + player.getName() + " » "
-                        + ChatColor.WHITE + message);
-            }
-            return;
-        }
-
-        if (!uhcPlayer.getTeam().isPresent()) return;
-
-        UHCTeam team = uhcPlayer.getTeam().get();
-        for (UHCPlayer teamPlayer : team.getPlayers()) {
-            teamPlayer.getPlayer().sendMessage(ChatColor.DARK_PURPLE + "❖ Team ❖ "
-                    + ChatColor.DARK_GRAY + player.getName() + " » "
-                    + ChatColor.WHITE + message);
-        }
-
-
     }
 
 

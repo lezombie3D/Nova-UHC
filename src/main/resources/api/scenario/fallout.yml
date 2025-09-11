@@ -1,0 +1,15 @@
+fallout_start_time: 2700  # 45 minutes in seconds
+safe_y_level: 60
+radiation_damage_base: 0.5
+radiation_damage_increment: 0.1
+radiation_damage_max: 2.0
+warning_times: [ 300, 60, 10 ]  # Warning times before fallout starts
+messages:
+  FALLOUT_STARTED: "§c§l[Fallout] §fLES RADIATIONS COMMENCENT !"
+  FALLOUT_INSTRUCTION: "§c[Fallout] §fDescendez sous Y=%safe_y% pour éviter les radiations !"
+  FALLOUT_WARNING: "§c[Fallout] §fRadiations dans %time% !"
+  FALLOUT_PREPARE: "§c[Fallout] §fPréparez vos abris souterrains !"
+  RADIATION_LIGHT: "§c[Fallout] §fVous êtes exposé aux radiations !"
+  RADIATION_MODERATE: "§c[Fallout] §fRadiation modérée ! Trouvez un abri !"
+  RADIATION_SEVERE: "§c[Fallout] §fRadiation SÉVÈRE ! Descendez immédiatement !"
+  FALLOUT_FORCED: "§c[Fallout] §fRadiations forcées par un administrateur !"

@@ -27,7 +27,7 @@ public class LimiteStuffbyPlayerUi extends CustomInventory {
         UHCPlayer targetPlayer = UHCPlayerManager.get().getPlayer(target);
         fillCorner(getConfig().getInt("menu.stuff.color"));
 
-        ItemCreator diamondlimite = new ItemCreator(Material.DIAMOND).setAmount(getUHCPlayer().getLimite()).setName(ChatColor.AQUA + "Diamond Limit : " + formatValue(getUHCPlayer().getLimite()));
+        ItemCreator diamondlimite = new ItemCreator(Material.DIAMOND).setAmount(getUHCPlayer().getDimamondLimit()).setName(ChatColor.AQUA + "Diamond Limit : " + formatValue(getUHCPlayer().getDimamondLimit()));
         ItemCreator diamond = new ItemCreator(Material.DIAMOND_CHESTPLATE)
                 .setName("§8┃ §f" + Common.get().getMainColor() + "Limite de pièce en Diamant")
                 .addLore("")
@@ -72,10 +72,10 @@ public class LimiteStuffbyPlayerUi extends CustomInventory {
             }
 
         });
-        addMenu(49, diamondlimite, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, getUHCPlayer().getLimite(), 0, 0, this) {
+        addMenu(49, diamondlimite, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, getUHCPlayer().getDimamondLimit(), 0, 0, this) {
             @Override
             public void onChange(int newValue) {
-                targetPlayer.setLimite(newValue);
+                targetPlayer.setDimamondLimit(newValue);
             }
         });
         int i = 10;

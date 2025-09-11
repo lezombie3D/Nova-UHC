@@ -41,8 +41,8 @@ public class TeamCordCMD implements CommandExecutor {
             });
         } else if (UHCManager.get().getTeam_size() > 1) {
 
-            String teamMessage = ChatColor.DARK_PURPLE + "❖ Team ❖ " +
-                    ChatColor.DARK_GRAY + player.getName() + " » " + coordsMessage;
+            String teamMessage =
+                    "§7[§6%team%§7] §f" + player.getName() + " §8» §f " + coordsMessage;
 
             uhcPlayer.getTeam().get().getPlayers().forEach(teamPlayer ->
                     teamPlayer.getPlayer().sendMessage(teamMessage));

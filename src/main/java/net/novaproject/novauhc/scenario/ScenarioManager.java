@@ -2,6 +2,9 @@ package net.novaproject.novauhc.scenario;
 
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.normal.*;
+import net.novaproject.novauhc.scenario.role.loupgarouuhc.LoupGarouUHC;
+import net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.DragonFall;
+import net.novaproject.novauhc.scenario.special.MysteryTeam;
 import net.novaproject.novauhc.scenario.special.SoulBrother;
 import net.novaproject.novauhc.scenario.special.beatthesanta.BeatTheSanta;
 import net.novaproject.novauhc.scenario.special.fallenkigdom.FallenKingdom;
@@ -12,6 +15,7 @@ import net.novaproject.novauhc.scenario.special.legend.Legend;
 import net.novaproject.novauhc.scenario.special.netheribus.NetheriBus;
 import net.novaproject.novauhc.scenario.special.random.RandomCraft;
 import net.novaproject.novauhc.scenario.special.random.RandomDrop;
+import net.novaproject.novauhc.scenario.special.skydef.SkyDef;
 import net.novaproject.novauhc.scenario.special.skyhigt.SkyHigh;
 import net.novaproject.novauhc.scenario.special.slavemarket.SlaveMarket;
 import net.novaproject.novauhc.scenario.special.superheros.SuperHeros;
@@ -45,7 +49,7 @@ public class ScenarioManager {
         addScenario(new BetaZombie());
         addScenario(new CatEye());
         addScenario(new Meetup());
-        //addScenario(new LoupGarouUHC());
+        addScenario(new LoupGarouUHC());
         addScenario(new StarterTools());
         addScenario(new InfiniteEnchanter());
 
@@ -63,7 +67,7 @@ public class ScenarioManager {
         addScenario(new LongShoot());
         addScenario(new BloodCycle());
         addScenario(new GapRoulette());
-        //addScenario(new SkyDef());
+        addScenario(new SkyDef());
         addScenario(new NoWoodenTool());
         addScenario(new AutoRevive());
         addScenario(new FastFurnace());
@@ -89,14 +93,12 @@ public class ScenarioManager {
         addScenario(new TeamArrow());
         //addScenario(new FireForceUHC());
 
-        // Nouveaux scénarios de combat
         addScenario(new Vampire());
         addScenario(new Gladiator());
         addScenario(new BloodLust());
         addScenario(new WeakestLink());
 
 
-        // Nouveaux scénarios de ressources
         addScenario(new OreSwap());
         addScenario(new OreRoulette());
         addScenario(new Magnet());
@@ -137,6 +139,9 @@ public class ScenarioManager {
         addScenario(new SuperHeros());
         addScenario(new TaupeGun());
         addScenario(new TeamAtFirstSeigth());
+
+        //addScenario(new DeathNote());
+        addScenario(new DragonFall());
     }
 
 

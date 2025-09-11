@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.scenario.role.cromagnonuhc.roles.zoms;
 
+import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonCamps;
 import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonRole;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -8,11 +9,12 @@ import org.bukkit.Material;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Collections;
-import java.util.List;
-
 public class Caillou extends CromagnonRole {
     private UHCPlayer playerRole;
+
+    public Caillou() {
+        setCamp(CromagnonCamps.ZOMS);
+    }
 
     @Override
     public String getName() {
@@ -28,20 +30,6 @@ public class Caillou extends CromagnonRole {
                 "§8§m--------------------------";
     }
 
-    @Override
-    public String getCamps() {
-        return "zoms";
-    }
-
-    @Override
-    public ChatColor getColor() {
-        return ChatColor.GREEN;
-    }
-
-    @Override
-    public List<Integer> getPowerUse() {
-        return Collections.emptyList();
-    }
 
     @Override
     public PotionEffect[] getNightEffects() {

@@ -2,6 +2,9 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.WeakestLinkLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -36,6 +39,16 @@ public class WeakestLink extends Scenario {
     @Override
     public ItemCreator getItem() {
         return new ItemCreator(Material.IRON_CHESTPLATE);
+    }
+
+    @Override
+    public String getPath() {
+        return "weakestlink";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return WeakestLinkLang.values();
     }
 
 
@@ -76,11 +89,15 @@ public class WeakestLink extends Scenario {
 
         // Check if victim is the weakest link
         if (isWeakestLink(victim)) {
-            // Double the damage
+            // Apply damage multiplier from config
             double originalDamage = event.getDamage();
-            event.setDamage(originalDamage * 2.0);
+            double multiplier = getConfig().getDouble("damage_multiplier", 2.0);
+            event.setDamage(originalDamage * multiplier);
 
-            victim.sendMessage("§c[WeakestLink] §fVous êtes le maillon faible ! Dégâts doublés !");
+            UHCPlayer uhcVictim = UHCPlayerManager.get().getPlayer(victim);
+            Map<String, Object> placeholders = new HashMap<>();
+            placeholders.put("%multiplier%", String.valueOf(multiplier));
+            ScenarioLangManager.send(uhcVictim, WeakestLinkLang.DAMAGE_TAKEN, placeholders);
         }
     }
 

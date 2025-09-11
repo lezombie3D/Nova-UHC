@@ -8,10 +8,7 @@ import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.TravelAgent;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -114,13 +111,43 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-
         Player player = event.getPlayer();
+
         ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
             scenario.onMove(player, event);
         });
 
+        if (player.getGameMode() == GameMode.SPECTATOR) {
+            Location loc = player.getLocation();
+            if (loc.getBlockY() < 0) {
+                Location newLoc = loc.clone();
+                newLoc.setY(0);
+                player.teleport(newLoc);
+            }
+
+            WorldBorder border = player.getWorld().getWorldBorder();
+            double size = border.getSize() / 2.0;
+            Location center = border.getCenter();
+
+            double minX = center.getX() - size;
+            double maxX = center.getX() + size;
+            double minZ = center.getZ() - size;
+            double maxZ = center.getZ() + size;
+
+            double x = loc.getX();
+            double z = loc.getZ();
+
+            if (x < minX || x > maxX || z < minZ || z > maxZ) {
+                double newX = Math.max(minX + 0.5, Math.min(x, maxX - 0.5));
+                double newZ = Math.max(minZ + 0.5, Math.min(z, maxZ - 0.5));
+                Location newLoc = loc.clone();
+                newLoc.setX(newX);
+                newLoc.setZ(newZ);
+                player.teleport(newLoc);
+            }
+        }
     }
+
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
@@ -129,16 +156,14 @@ public class PlayerListener implements Listener {
 
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
 
-        System.out.println(player.getDisplayName() + " " + message);
-
         if (UHCManager.get().getGameState() != UHCManager.GameState.INGAME) {
-            event.setFormat(CommonString.LOBBY_CHAT_FORMAT.getMessage(uhcPlayer.getPlayer()));
+            event.setFormat(CommonString.LOBBY_CHAT_FORMAT.getMessage(player));
             return;
-
         }
 
         if (!uhcPlayer.isPlaying()) {
             CommonString.CANT_TALK_DEATH.send(player);
+            event.setCancelled(true);
             return;
         }
 
@@ -157,24 +182,25 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (UHCManager.get().getTeam_size() == 1) {
-            event.setFormat(CommonString.SOLO_CHAT_FORMAT.getMessage(event.getPlayer()));
+        if (!uhcPlayer.getTeam().isPresent()) {
+            event.setFormat(CommonString.SOLO_CHAT_FORMAT.getMessage(player));
             return;
         }
 
         if (message.startsWith("!")) {
-            event.setFormat(CommonString.CHAT_GLOBAL_FORMAT.getMessage(event.getPlayer()));
+            event.setMessage(message.substring(1));
+            event.setFormat(CommonString.CHAT_GLOBAL_FORMAT.getMessage(player));
             return;
         }
 
-        if (uhcPlayer.getTeam().isPresent()) {
-            UHCTeam team = uhcPlayer.getTeam().get();
+        UHCTeam team = uhcPlayer.getTeam().get();
 
-            event.getRecipients().removeIf(p -> !team.getPlayers().contains(UHCPlayerManager.get().getPlayer(p)));
-            event.setFormat(CommonString.TEAM_CHAT_FORMAT.getMessage(event.getPlayer()));
-
-        }
+        event.getRecipients().removeIf(p ->
+                team.getPlayers().stream().noneMatch(u -> u.getPlayer().equals(p))
+        );
+        event.setFormat(CommonString.TEAM_CHAT_FORMAT.getMessage(player));
     }
+
 
 }
 

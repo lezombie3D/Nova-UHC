@@ -2,6 +2,9 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.LootCrateLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -23,7 +26,6 @@ public class LootCrate extends Scenario {
 
     private final List<Location> activeCrates = new ArrayList<>();
     private final Random random = new Random();
-    private final int CRATE_SPAWN_INTERVAL = 600; // 10 minutes in seconds
     private BukkitRunnable lootCrateTask;
 
     @Override
@@ -39,6 +41,16 @@ public class LootCrate extends Scenario {
     @Override
     public ItemCreator getItem() {
         return new ItemCreator(Material.CHEST);
+    }
+
+    @Override
+    public String getPath() {
+        return "lootcrate";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return LootCrateLang.values();
     }
 
 
@@ -70,17 +82,18 @@ public class LootCrate extends Scenario {
 
                 timer++;
 
-                if (timer >= CRATE_SPAWN_INTERVAL) {
+                int spawnInterval = getConfig().getInt("spawn_interval", 600);
+                if (timer >= spawnInterval) {
                     spawnLootCrates();
                     timer = 0;
                 }
 
                 // Send warnings
-                int timeUntilNext = CRATE_SPAWN_INTERVAL - timer;
+                int timeUntilNext = spawnInterval - timer;
                 if (timeUntilNext == 60) { // 1 minute before
-                    Bukkit.broadcastMessage("§d[LootCrate] §fNouveaux coffres dans 1 minute !");
+                    ScenarioLangManager.sendAll(LootCrateLang.CRATES_WARNING_1MIN);
                 } else if (timeUntilNext == 10) { // 10 seconds before
-                    Bukkit.broadcastMessage("§d[LootCrate] §fNouveaux coffres dans 10 secondes !");
+                    ScenarioLangManager.sendAll(LootCrateLang.CRATES_WARNING_10SEC);
                 }
             }
         };
@@ -103,8 +116,10 @@ public class LootCrate extends Scenario {
         List<UHCPlayer> playingPlayers = UHCPlayerManager.get().getPlayingOnlineUHCPlayers();
         if (playingPlayers.isEmpty()) return;
 
-        // Spawn 3-5 crates around the map
-        int crateCount = 3 + random.nextInt(3);
+        // Spawn crates based on config
+        int minCrates = getConfig().getInt("min_crates", 3);
+        int maxCrates = getConfig().getInt("max_crates", 5);
+        int crateCount = minCrates + random.nextInt(maxCrates - minCrates + 1);
 
         for (int i = 0; i < crateCount; i++) {
             Location crateLocation = findSuitableCrateLocation();
@@ -113,8 +128,10 @@ public class LootCrate extends Scenario {
             }
         }
 
-        Bukkit.broadcastMessage("§d§l[LootCrate] §f" + activeCrates.size() + " coffres de loot sont apparus !");
-        Bukkit.broadcastMessage("§d[LootCrate] §fCourrez les récupérer avant les autres !");
+        Map<String, Object> placeholders = new HashMap<>();
+        placeholders.put("%count%", String.valueOf(activeCrates.size()));
+        ScenarioLangManager.sendAll(LootCrateLang.CRATES_SPAWNED, placeholders);
+        ScenarioLangManager.sendAll(LootCrateLang.CRATES_ANNOUNCEMENT);
 
         // Play sound to all players
         for (UHCPlayer uhcPlayer : playingPlayers) {
@@ -307,10 +324,6 @@ public class LootCrate extends Scenario {
     }
 
     // Get time until next crate spawn
-    public int getTimeUntilNextCrates() {
-        // This would need to be tracked more precisely in the actual implementation
-        return CRATE_SPAWN_INTERVAL; // Simplified
-    }
 
     // Check if a location has an active crate
     public boolean hasCrateAt(Location location) {

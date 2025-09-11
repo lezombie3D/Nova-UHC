@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
 public abstract class FireForceRole extends Role {
+
+
     public boolean istrans() {
         return false;
     }

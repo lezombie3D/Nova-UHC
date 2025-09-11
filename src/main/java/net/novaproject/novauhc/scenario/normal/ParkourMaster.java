@@ -2,6 +2,9 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.ParkourMasterLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -23,9 +26,6 @@ public class ParkourMaster extends Scenario {
     private final Random random = new Random();
     private BukkitRunnable parkourTask;
 
-    public ParkourMaster() {
-        initializeRewards();
-    }
 
     @Override
     public String getName() {
@@ -42,10 +42,21 @@ public class ParkourMaster extends Scenario {
         return new ItemCreator(Material.FEATHER);
     }
 
+    @Override
+    public String getPath() {
+        return "parkourmaster";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return ParkourMasterLang.values();
+    }
+
 
     @Override
     public void toggleActive() {
         super.toggleActive();
+        initializeRewards();
         if (isActive()) {
             startParkourTask();
         } else {
@@ -70,8 +81,11 @@ public class ParkourMaster extends Scenario {
                 if (challenge.isCompleted()) {
                     completeParkour(player, challenge);
                 } else {
-                    player.sendMessage("§a[ParkourMaster] §fCheckpoint " + challenge.getCurrentCheckpoint() +
-                            "/" + challenge.getTotalCheckpoints() + " atteint !");
+                    UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
+                    Map<String, Object> placeholders = new HashMap<>();
+                    placeholders.put("%current%", String.valueOf(challenge.getCurrentCheckpoint()));
+                    placeholders.put("%total%", String.valueOf(challenge.getTotalCheckpoints()));
+                    ScenarioLangManager.send(uhcPlayer, ParkourMasterLang.CHECKPOINT_REACHED, placeholders);
                     player.getWorld().playSound(playerLoc, org.bukkit.Sound.ORB_PICKUP, 1.0f, 1.5f);
                 }
             }
@@ -100,8 +114,9 @@ public class ParkourMaster extends Scenario {
 
                 timer++;
 
-                // Spawn new parkour every 3-5 minutes
-                if (timer >= 180 + random.nextInt(120)) {
+                // Spawn new parkour based on config interval
+                int spawnInterval = getConfig().getInt("spawn_interval", 300);
+                if (timer >= spawnInterval) {
                     spawnRandomParkour();
                     timer = 0;
                 }
@@ -173,13 +188,17 @@ public class ParkourMaster extends Scenario {
         List<Location> checkpoints = new ArrayList<>();
         checkpoints.add(startLoc.clone());
 
-        // Generate 3-5 checkpoints
-        int numCheckpoints = 3 + random.nextInt(3);
+        // Generate checkpoints based on config
+        int minCheckpoints = getConfig().getInt("min_checkpoints", 3);
+        int maxCheckpoints = getConfig().getInt("max_checkpoints", 5);
+        int numCheckpoints = minCheckpoints + random.nextInt(maxCheckpoints - minCheckpoints + 1);
         Location currentLoc = startLoc.clone();
 
         for (int i = 0; i < numCheckpoints; i++) {
-            // Next checkpoint 5-10 blocks away
-            int distance = 5 + random.nextInt(6);
+            // Next checkpoint distance based on config
+            int minDistance = getConfig().getInt("checkpoint_distance_min", 5);
+            int maxDistance = getConfig().getInt("checkpoint_distance_max", 10);
+            int distance = minDistance + random.nextInt(maxDistance - minDistance + 1);
             double angle = random.nextDouble() * 2 * Math.PI;
 
             int deltaX = (int) (Math.cos(angle) * distance);
@@ -190,7 +209,8 @@ public class ParkourMaster extends Scenario {
             checkpoints.add(currentLoc.clone());
         }
 
-        return new ParkourChallenge(checkpoints, System.currentTimeMillis() + 300000); // 5 minute timeout
+        int timeoutSeconds = getConfig().getInt("parkour_timeout", 300);
+        return new ParkourChallenge(checkpoints, System.currentTimeMillis() + (timeoutSeconds * 1000L));
     }
 
     private void buildParkour(ParkourChallenge challenge) {
@@ -304,12 +324,19 @@ public class ParkourMaster extends Scenario {
     }
 
     private void initializeRewards() {
-        rewards.add(new ParkourReward("2 Pommes d'Or", new ItemStack(Material.GOLDEN_APPLE, 2)));
-        rewards.add(new ParkourReward("16 Flèches", new ItemStack(Material.ARROW, 16)));
-        rewards.add(new ParkourReward("4 Perles d'Ender", new ItemStack(Material.ENDER_PEARL, 4)));
-        rewards.add(new ParkourReward("8 Lingots de Fer", new ItemStack(Material.IRON_INGOT, 8)));
-        rewards.add(new ParkourReward("2 Diamants", new ItemStack(Material.DIAMOND, 2)));
-        rewards.add(new ParkourReward("1 Livre d'Enchantement", new ItemStack(Material.ENCHANTED_BOOK, 1)));
+        int goldenApples = getConfig().getInt("rewards.golden_apple", 2);
+        int arrows = getConfig().getInt("rewards.arrows", 16);
+        int enderPearls = getConfig().getInt("rewards.ender_pearl", 4);
+        int ironIngots = getConfig().getInt("rewards.iron_ingot", 8);
+        int diamonds = getConfig().getInt("rewards.diamond", 2);
+        int enchantedBooks = getConfig().getInt("rewards.enchanted_book", 1);
+
+        rewards.add(new ParkourReward(goldenApples + " Pommes d'Or", new ItemStack(Material.GOLDEN_APPLE, goldenApples)));
+        rewards.add(new ParkourReward(arrows + " Flèches", new ItemStack(Material.ARROW, arrows)));
+        rewards.add(new ParkourReward(enderPearls + " Perles d'Ender", new ItemStack(Material.ENDER_PEARL, enderPearls)));
+        rewards.add(new ParkourReward(ironIngots + " Lingots de Fer", new ItemStack(Material.IRON_INGOT, ironIngots)));
+        rewards.add(new ParkourReward(diamonds + " Diamants", new ItemStack(Material.DIAMOND, diamonds)));
+        rewards.add(new ParkourReward(enchantedBooks + " Livre d'Enchantement", new ItemStack(Material.ENCHANTED_BOOK, enchantedBooks)));
     }
 
     private ParkourReward getRandomReward() {

@@ -239,4 +239,12 @@ public abstract class Scenario {
     public void onFfCMD(Player player, String subCommand, String[] args) {
 
     }
+
+    public void onDeathNoteCMD(Player player, String subCommand, String[] args) {
+
+    }
+
+    public void onKill(UHCPlayer killer, UHCPlayer victim) {
+
+    }
 }

@@ -1,6 +1,8 @@
 package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.MagnetLang;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,6 +44,16 @@ public class Magnet extends Scenario {
     }
 
     @Override
+    public String getPath() {
+        return "magnet";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return MagnetLang.values();
+    }
+
+    @Override
     public void onBreak(Player player, Block block, BlockBreakEvent event) {
         if (!isActive()) return;
 
@@ -64,9 +76,10 @@ public class Magnet extends Scenario {
         int oresAttracted = 0;
 
         // Search in a cube around the broken block
-        for (int x = -MAGNET_RADIUS; x <= MAGNET_RADIUS; x++) {
-            for (int y = -MAGNET_RADIUS; y <= MAGNET_RADIUS; y++) {
-                for (int z = -MAGNET_RADIUS; z <= MAGNET_RADIUS; z++) {
+        int magnetRadius = (int) getConfig().getDouble("magnet_radius", 5.0);
+        for (int x = -magnetRadius; x <= magnetRadius; x++) {
+            for (int y = -magnetRadius; y <= magnetRadius; y++) {
+                for (int z = -magnetRadius; z <= magnetRadius; z++) {
                     Location checkLocation = centerLocation.clone().add(x, y, z);
                     Block checkBlock = checkLocation.getBlock();
 

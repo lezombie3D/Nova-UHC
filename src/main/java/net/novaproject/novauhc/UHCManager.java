@@ -3,6 +3,7 @@ package net.novaproject.novauhc;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.novaproject.novauhc.ability.AbilityManager;
 import net.novaproject.novauhc.command.CommandManager;
 import net.novaproject.novauhc.listener.ListenerManager;
 import net.novaproject.novauhc.scenario.Scenario;
@@ -41,6 +42,7 @@ public class UHCManager {
     public Map<String, ItemStack[]> start = new HashMap<>();
     private WaitState waitState = WaitState.LOBBY_STATE;
     private UHCTeamManager uhcTeamManager;
+    private AbilityManager abilityManager;
     private UHCPlayerManager uhcPlayerManager;
     private GameState gameState = GameState.LOBBY;
     private ScenarioManager scenarioManager;
@@ -67,6 +69,7 @@ public class UHCManager {
         uhcPlayerManager = new UHCPlayerManager();
         uhcTeamManager = new UHCTeamManager();
         (scenarioManager = new ScenarioManager()).setup();
+        (abilityManager = new AbilityManager()).setup();
         ListenerManager.setup();
         CommandManager.setup();
         Bukkit.setWhitelist(true);

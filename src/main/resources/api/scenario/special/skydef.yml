@@ -1,0 +1,30 @@
+banner_loc:
+  world: "arena"
+  x: 10
+  y: 130
+  z: 120
+  pitch: 0
+  yaw: 0
+tp_haut:
+  world: "arena"
+  x: 0
+  y: 190
+  z: 0
+  pitch: 0
+  yaw: 0
+tp_bas:
+  world: "arena"
+  x: 0
+  y: 80
+  z: 0
+  pitch: 0
+  yaw: 0
+schem_loc:
+  world: "arena"
+  x: 0
+  y: 190
+  z: 0
+  pitch: 0
+  yaw: 0
+
+messages:

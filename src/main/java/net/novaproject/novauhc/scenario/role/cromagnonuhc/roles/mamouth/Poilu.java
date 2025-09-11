@@ -1,21 +1,22 @@
 package net.novaproject.novauhc.scenario.role.cromagnonuhc.roles.mamouth;
 
+import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonCamps;
 import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonRole;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ShortCooldownManager;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Collections;
-import java.util.List;
-
 public class Poilu extends CromagnonRole {
     private PotionEffect[] effect;
     private boolean send = false;
+
+    public Poilu() {
+        setCamp(CromagnonCamps.MAMOUT);
+    }
 
     @Override
     public String getName() {
@@ -27,20 +28,6 @@ public class Poilu extends CromagnonRole {
         return "";
     }
 
-    @Override
-    public String getCamps() {
-        return "mamouth";
-    }
-
-    @Override
-    public ChatColor getColor() {
-        return ChatColor.RED;
-    }
-
-    @Override
-    public List<Integer> getPowerUse() {
-        return Collections.emptyList();
-    }
 
     @Override
     public ItemCreator getItem() {

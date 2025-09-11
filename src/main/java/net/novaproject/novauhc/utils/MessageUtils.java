@@ -6,9 +6,6 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Classe utilitaire pour standardiser l'envoi de messages d'erreur, de succès et d'information
- */
 public class MessageUtils {
 
     /**

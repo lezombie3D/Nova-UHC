@@ -2,6 +2,9 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.BloodLustLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Bukkit;
@@ -36,6 +39,16 @@ public class BloodLust extends Scenario {
     }
 
     @Override
+    public String getPath() {
+        return "bloodlust";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return BloodLustLang.values();
+    }
+
+    @Override
     public void onDeath(UHCPlayer uhcPlayer, UHCPlayer killer, PlayerDeathEvent event) {
         if (!isActive()) return;
 
@@ -49,7 +62,7 @@ public class BloodLust extends Scenario {
             applyBloodLustEffect(killerPlayer);
 
             // Send message to killer
-            killerPlayer.sendMessage("§c[BloodLust] §fVous ressentez la soif de sang ! Speed II et Strength I pendant 30 secondes !");
+            ScenarioLangManager.send(killer, BloodLustLang.KILL_BOOST);
 
             // Broadcast to all players
             Bukkit.broadcastMessage("§c[BloodLust] §f" + killerPlayer.getName() + " §fest en état de soif de sang !");
@@ -59,9 +72,14 @@ public class BloodLust extends Scenario {
     private void applyBloodLustEffect(Player player) {
         UUID playerUuid = player.getUniqueId();
 
-        // Apply potion effects
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 1)); // Speed II for 30 seconds
-        player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 600, 0)); // Strength I for 30 seconds
+        // Apply potion effects based on config
+        int speedDuration = getConfig().getInt("speed_duration", 600);
+        int strengthDuration = getConfig().getInt("strength_duration", 600);
+        int speedLevel = getConfig().getInt("speed_level", 1);
+        int strengthLevel = getConfig().getInt("strength_level", 0);
+
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, speedDuration, speedLevel));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, strengthDuration, strengthLevel));
 
         // Create countdown task
         BukkitRunnable countdownTask = new BukkitRunnable() {

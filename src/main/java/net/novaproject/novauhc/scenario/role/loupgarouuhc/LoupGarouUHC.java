@@ -4,6 +4,7 @@ import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.role.Role;
 import net.novaproject.novauhc.scenario.role.ScenarioRole;
+import net.novaproject.novauhc.scenario.role.camps.Camps;
 import net.novaproject.novauhc.scenario.role.loupgarouuhc.roles.Assasin;
 import net.novaproject.novauhc.scenario.role.loupgarouuhc.roles.LoupGarou;
 import net.novaproject.novauhc.scenario.role.loupgarouuhc.roles.Renard;
@@ -36,6 +37,11 @@ public class LoupGarouUHC extends ScenarioRole<LoupGarouRole> {
     @Override
     public ItemCreator getItem() {
         return new ItemCreator(Material.NETHER_STAR);
+    }
+
+    @Override
+    public Camps[] getCamps() {
+        return LGCamps.values();
     }
 
     @Override
@@ -92,37 +98,17 @@ public class LoupGarouUHC extends ScenarioRole<LoupGarouRole> {
     }
 
     public boolean isWin() {
-        Map<String, Integer> campCounts = new HashMap<>();
+        Map<Camps, Integer> campCounts = new HashMap<>();
 
         for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
             Role role = getRoleByUHCPlayer(uhcPlayer);
-            String playerCamp = role.getCamps();
-            campCounts.put(playerCamp, campCounts.getOrDefault(playerCamp, 0) + 1);
-        }
-        if (campCounts.size() == 1) {
-            String remainingCamp = campCounts.keySet().iterator().next();
+            if (role == null) continue;
 
-            if (isDuoCamp(remainingCamp)) {
-                return campCounts.get(remainingCamp) == 2;
-            }
-            return true;
+            Camps camp = role.getCamp();
+            campCounts.put(camp, campCounts.getOrDefault(camp, 0) + 1);
         }
 
-        for (String camp : campCounts.keySet()) {
-            if (isSoloCamp(camp) && campCounts.get(camp) == 1) {
-                return true;
-            }
-        }
-        return false;
+        return campCounts.size() == 1;
     }
-
-    private boolean isSoloCamp(String camp) {
-        return camp.startsWith("Solo"); // Exemple : Camp "Solo1", "Solo2", etc.
-    }
-
-    private boolean isDuoCamp(String camp) {
-        return camp.startsWith("Duo"); // Exemple : Camp "Duo1", "Duo2", etc.
-    }
-
 
 }

@@ -2,6 +2,9 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.AcidRainLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -33,6 +36,16 @@ public class AcidRain extends Scenario {
     @Override
     public ItemCreator getItem() {
         return new ItemCreator(Material.WATER_BUCKET);
+    }
+
+    @Override
+    public String getPath() {
+        return "acidrain";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return AcidRainLang.values();
     }
 
     @Override
@@ -130,7 +143,7 @@ public class AcidRain extends Scenario {
             world.setWeatherDuration(Integer.MAX_VALUE);
         }
 
-        Bukkit.broadcastMessage("§c§l[AcidRain] §fLa pluie acide commence ! Abritez-vous sous des blocs !");
+        ScenarioLangManager.sendAll(AcidRainLang.ACID_RAIN_START);
 
         // Play thunder sound for dramatic effect
         for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {

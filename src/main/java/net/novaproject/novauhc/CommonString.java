@@ -5,7 +5,6 @@ import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.scenario.role.ScenarioRole;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
-import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -84,6 +83,10 @@ public enum CommonString {
     MSG_CANNOT_MESSAGE_SELF,
     MSG_SENT_FORMAT,
     MSG_RECEIVED_FORMAT,
+    DISCORD_MESSAGE,
+    DISCORD_MESSAGE_HOVER,
+    DOCUMENT_MESSAGE,
+    DOCUMENT_MESSAGE_HOVER,
 
     // Messages d'interface
     WHITELIST_ENABLE_BUTTON,
@@ -93,19 +96,15 @@ public enum CommonString {
     // Messages de scénarios
     FINAL_HEAL_BROADCAST,
     TIMEBOMB_EXPLOSION,
-    GOLDEN_HEAD_NAME,
 
-    // Messages de commandes host
     HOST_HELP_MESSAGE,
     HOST_SAY_USAGE,
     HOST_COHOST_USAGE,
     HOST_BYPASS_ENABLED,
     HOST_BYPASS_DISABLED,
 
-    // Messages de commandes joueur
     PLAYER_HELP_MESSAGE,
 
-    // Messages supplémentaires host
     HEAL_BROADCAST,
     CONFIG_CANNOT_INGAME,
     TITLE_USAGE,
@@ -120,7 +119,6 @@ public enum CommonString {
     FORCE_PVP_BROADCAST,
     FORCE_MEETUP_BROADCAST,
 
-    // Messages d'erreur standardisés
     ERROR_INVALID_NUMBER,
     ERROR_NUMBER_TOO_LOW,
     ERROR_NUMBER_TOO_HIGH,
@@ -137,7 +135,6 @@ public enum CommonString {
     ERROR_NOT_STARTED,
     ERROR_COOLDOWN_ACTIVE,
 
-    // Messages de succès standardisés
     SUCCESS_OPERATION_COMPLETED,
     SUCCESS_PLAYER_ADDED,
     SUCCESS_PLAYER_REMOVED,
@@ -145,7 +142,6 @@ public enum CommonString {
     SUCCESS_WORLD_LOADED,
     SUCCESS_TELEPORT_COMPLETED,
 
-    // Messages d'information standardisés
     INFO_LOADING,
     INFO_PROCESSING,
     INFO_PLEASE_WAIT,
@@ -279,17 +275,18 @@ public enum CommonString {
                 placeHolders.put("%role%", "Aucun");
             }
 
-            // Safe arrow direction
             try {
                 if (Common.get() != null && Common.get().getArena() != null) {
                     String arrow = uhcPlayer.getArrowDirection(
                             uhcPlayer.getPlayer().getLocation(),
-                            new Location(Common.get().getArena(), 0, 100, 0),
+                            Common.get().getArena().getHighestBlockAt(0, 0).getLocation(),
                             uhcPlayer.getPlayer().getLocation().getYaw()
                     );
                     placeHolders.put("%arrow%", arrow);
+                    placeHolders.put("%distance%", uhcPlayer.getDistanceToCenter(Common.get().getArena().getHighestBlockAt(0, 0).getLocation()));
                 } else {
                     placeHolders.put("%arrow%", "→");
+
                 }
             } catch (Exception e) {
                 placeHolders.put("%arrow%", "→");

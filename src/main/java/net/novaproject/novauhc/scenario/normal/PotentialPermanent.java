@@ -2,7 +2,11 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.PotentialPermanentLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
+import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -22,9 +26,7 @@ public class PotentialPermanent extends Scenario {
     private final Map<UUID, Double> playerAbsorptionHealth = new HashMap<>();
     private final Map<UUID, BukkitRunnable> absorptionTasks = new HashMap<>();
 
-    private final double STARTING_PERMANENT_HEALTH = 20.0; // 10 hearts
-    private final double STARTING_ABSORPTION_HEALTH = 20.0; // 10 absorption hearts
-    private final double KILL_REWARD = 4.0; // 2 hearts per kill
+
 
     @Override
     public String getName() {
@@ -42,24 +44,42 @@ public class PotentialPermanent extends Scenario {
     }
 
     @Override
+    public String getPath() {
+        return "potentialpermanent";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return PotentialPermanentLang.values();
+    }
+
+    @Override
     public void onStart(Player player) {
         if (!isActive()) return;
 
         UUID playerUuid = player.getUniqueId();
 
-        // Initialize player health values
-        playerPermanentHealth.put(playerUuid, STARTING_PERMANENT_HEALTH);
-        playerAbsorptionHealth.put(playerUuid, STARTING_ABSORPTION_HEALTH);
+        // Initialize player health values based on config
+        double startingPermanent = getConfig().getDouble("starting_permanent_health", 20.0);
+        double startingAbsorption = getConfig().getDouble("starting_absorption_health", 20.0);
+
+        playerPermanentHealth.put(playerUuid, startingPermanent);
+        playerAbsorptionHealth.put(playerUuid, startingAbsorption);
 
         // Set player's max health and current health
-        player.setMaxHealth(STARTING_PERMANENT_HEALTH);
-        player.setHealth(STARTING_PERMANENT_HEALTH);
+        player.setMaxHealth(startingPermanent);
+        player.setHealth(startingPermanent);
 
         // Give absorption hearts
-        player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, Integer.MAX_VALUE, 4)); // 10 absorption hearts
+        int absorptionLevel = (int) Math.ceil(startingAbsorption / 4.0) - 1;
+        player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, Integer.MAX_VALUE, absorptionLevel));
 
-        player.sendMessage("§e[PotentialPermanent] §fVous commencez avec 10 cœurs permanents + 10 cœurs d'absorption !");
-        player.sendMessage("§e[PotentialPermanent] §fTuez des joueurs pour convertir l'absorption en vie permanente !");
+        UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
+        Map<String, Object> placeholders = new HashMap<>();
+        placeholders.put("%permanent_hearts%", String.valueOf(startingPermanent / 2));
+        placeholders.put("%absorption_hearts%", String.valueOf(startingAbsorption / 2));
+        ScenarioLangManager.send(uhcPlayer, PotentialPermanentLang.STARTING_HEALTH, placeholders);
+        ScenarioLangManager.send(uhcPlayer, PotentialPermanentLang.CONVERSION_INFO);
 
         startAbsorptionMonitoring(player);
     }
@@ -78,11 +98,11 @@ public class PotentialPermanent extends Scenario {
             UUID killerUuid = killerPlayer.getUniqueId();
 
             // Reward killer with permanent health
-            double currentPermanent = playerPermanentHealth.getOrDefault(killerUuid, STARTING_PERMANENT_HEALTH);
+            double currentPermanent = playerPermanentHealth.getOrDefault(killerUuid, getConfig().getDouble("starting_permanent_health", 20.0));
             double currentAbsorption = playerAbsorptionHealth.getOrDefault(killerUuid, 0.0);
 
             // Convert some absorption to permanent health
-            double absorptionToConvert = Math.min(KILL_REWARD, currentAbsorption);
+            double absorptionToConvert = Math.min(getConfig().getDouble("kill_reward", 4.0), currentAbsorption);
             double newPermanent = currentPermanent + absorptionToConvert;
             double newAbsorption = currentAbsorption - absorptionToConvert;
 
@@ -194,7 +214,7 @@ public class PotentialPermanent extends Scenario {
 
     // Get player's permanent health
     public double getPlayerPermanentHealth(Player player) {
-        return playerPermanentHealth.getOrDefault(player.getUniqueId(), STARTING_PERMANENT_HEALTH);
+        return playerPermanentHealth.getOrDefault(player.getUniqueId(), getConfig().getDouble("starting_permanent_health", 20.0));
     }
 
     // Get player's absorption health
@@ -239,7 +259,7 @@ public class PotentialPermanent extends Scenario {
         if (!isActive()) return;
 
         UUID playerUuid = player.getUniqueId();
-        double currentPermanent = playerPermanentHealth.getOrDefault(playerUuid, STARTING_PERMANENT_HEALTH);
+        double currentPermanent = playerPermanentHealth.getOrDefault(playerUuid, getConfig().getDouble("starting_permanent_health", 20.0));
         double currentAbsorption = playerAbsorptionHealth.getOrDefault(playerUuid, 0.0);
 
         double toConvert = Math.min(amount, currentAbsorption);

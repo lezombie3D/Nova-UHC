@@ -58,6 +58,14 @@ public class ScenarioLangManager {
         return message;
     }
 
+    public static void send(UHCPlayer uhcPlayer, ScenarioLang key) {
+        send(uhcPlayer.getPlayer(), key, null);
+    }
+
+    public static void send(UHCPlayer uhcPlayer, ScenarioLang key, Map<String, Object> extraPlaceholders) {
+        send(uhcPlayer.getPlayer(), key, extraPlaceholders);
+    }
+
     public static void send(Player player, ScenarioLang key) {
         send(player, key, null);
     }

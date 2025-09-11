@@ -54,7 +54,6 @@ public class LoadingChunkTask extends BukkitRunnable {
         LoadingChunkTask task = new LoadingChunkTask(overworld, nether, radius);
         task.runTaskTimer(Main.get(), 0L, 5L);
         task.state = LoadingTaskState.RUNNING;
-
         Bukkit.broadcastMessage(CommonString.PREGEN_STARTED.getMessage());
         return task;
     }

@@ -9,23 +9,23 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 /**
- * Légende du Dragon
+ * Légende du DragonRole
  */
 public class Dragon extends LegendClass {
 
     public Dragon() {
-        super(13, "Dragon", "Résistance au feu permanente", Material.FIREBALL);
+        super(13, "DragonRole", "Résistance au feu permanente", Material.FIREBALL);
     }
 
     @Override
     public void onChoose(Player player, UHCPlayer uhcPlayer) {
-        player.sendMessage("§6[Dragon] §aVous êtes maintenant un Dragon !");
+        player.sendMessage("§6[DragonRole] §aVous êtes maintenant un DragonRole !");
         player.sendMessage("§7Résistance au feu permanente");
     }
 
     @Override
     public boolean onPower(Player player, UHCPlayer uhcPlayer) {
-        player.sendMessage("§c[Dragon] Vous n'avez pas de pouvoir activable !");
+        player.sendMessage("§c[DragonRole] Vous n'avez pas de pouvoir activable !");
         return false;
     }
 
@@ -42,8 +42,8 @@ public class Dragon extends LegendClass {
         // 20% de chance d'enflammer la victime
         if (Math.random() < 0.20) {
             victim.setFireTicks(20 * 3); // 3 secondes de feu
-            attacker.sendMessage("§6[Dragon] §eVotre attaque enflamme votre ennemi !");
-            victim.sendMessage("§c[Dragon] §eVous êtes enflammé par le Dragon !");
+            attacker.sendMessage("§6[DragonRole] §eVotre attaque enflamme votre ennemi !");
+            victim.sendMessage("§c[DragonRole] §eVous êtes enflammé par le DragonRole !");
         }
     }
 

@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.scenario.role.cromagnonuhc.roles.zoms;
 
+import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonCamps;
 import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonRole;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -12,12 +13,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collections;
-import java.util.List;
-
 public class Feu extends CromagnonRole {
     private UHCPlayer playerRole;
     private boolean enchanted;
+
+    public Feu() {
+        setCamp(CromagnonCamps.ZOMS);
+    }
 
     @Override
     public String getName() {
@@ -34,20 +36,7 @@ public class Feu extends CromagnonRole {
                 "§8§m--------------------------";
     }
 
-    @Override
-    public String getCamps() {
-        return "zoms";
-    }
 
-    @Override
-    public ChatColor getColor() {
-        return ChatColor.GREEN;
-    }
-
-    @Override
-    public List<Integer> getPowerUse() {
-        return Collections.emptyList();
-    }
 
     @Override
     public void onGive(UHCPlayer uhcPlayer) {

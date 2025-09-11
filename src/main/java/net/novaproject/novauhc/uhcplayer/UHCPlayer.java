@@ -35,14 +35,16 @@ public class UHCPlayer {
     private boolean playing = false;
     private final String hostname = PlayerConnectionEvent.getHost().getName();
     private Player killer;
-    public List<ItemStack> deathIteam = new LinkedList<>();
+    public List<ItemStack> deathItem = new LinkedList<>();
     private Optional<UHCTeam> team = Optional.empty();
     private boolean bypassed = false;
     private final UHCManager uhcManager = UHCManager.get();
-    private int limite = uhcManager.getDimamondLimit();
+    private int dimamondLimit = uhcManager.getDimamondLimit();
     private int diamondArmor = uhcManager.getDiamondArmor();
     private int protectionMax = uhcManager.getProtectionMax();
+
     public UHCPlayer(Player player) {
+
         this.uuid = player.getUniqueId();
         this.enchantLimits = new EnumMap<>(Enchants.class);
         for (Enchants ench : Enchants.values()) {
@@ -109,8 +111,8 @@ public class UHCPlayer {
         return Bukkit.getOfflinePlayer(uuid);
     }
 
-    public List<ItemStack> getDeathIteam() {
-        return deathIteam;
+    public List<ItemStack> getDeathItem() {
+        return deathItem;
     }
 
     public int getDiamondmined() {
@@ -195,6 +197,7 @@ public class UHCPlayer {
             for (PotionEffect effect : player.getActivePotionEffects()) {
                 player.removePotionEffect(effect.getType());
             }
+            TeamsTagsManager.setNameTag(player, "", "", "");
             PermissionAttachment attachment = player.addAttachment(Main.get());
             Main.getDatabaseManager().connectPlayer(player.getUniqueId());
             if (player.equals(PlayerConnectionEvent.getHost())) {
@@ -261,6 +264,12 @@ public class UHCPlayer {
         return "?";
     }
 
+    public String getDistanceToCenter(Location to) {
+        double distance = getPlayer().getLocation().distance(to);
+        return String.format("%.0f m", distance);
+    }
+
+
     public void disconnect(Player player) {
 
         if (uhcManager.isLobby()) {
@@ -284,8 +293,8 @@ public class UHCPlayer {
     }
 
     public void onDeath(UHCPlayer killer, PlayerDeathEvent event) {
-        deathIteam.clear();
-        deathIteam.addAll(event.getDrops());
+        deathItem.clear();
+        deathItem.addAll(event.getDrops());
         playing = false;
 
         Player player = getPlayer();
@@ -295,6 +304,8 @@ public class UHCPlayer {
             killer.setKill(killer.getKill() + 1);
             Main.getDatabaseManager().addKills(killer.getUniqueId(), 1);
             this.killer = killer.getPlayer();
+            ScenarioManager.get().getActiveScenarios()
+                    .forEach(scenario -> scenario.onKill(killer, this));
         }
 
         Main.getDatabaseManager().addDeath(player.getUniqueId(), 1);
@@ -337,8 +348,7 @@ public class UHCPlayer {
 
     private void updateScoreboard(Player player) {
         FastBoard scoreboard = new FastBoard(player);
-        String string_ip = Common.get().getServerIp();
-        BlinkEffect ip = new BlinkEffect(string_ip);
+        BlinkEffect ip = new BlinkEffect(Common.get().getServerIp());
 
         new BukkitRunnable() {
             @Override
@@ -360,11 +370,12 @@ public class UHCPlayer {
                 footer = CommonString.getMessage(config.getString("message.tab." + phase + ".footer", ""), uhcPlayer);
 
                 String title = config.getString("message.scoreboard." + phase + ".title", "§6NovaUHC");
+                title = CommonString.getMessage(title, uhcPlayer);
                 List<String> lines = config.getStringList("message.scoreboard." + phase + ".lines");
 
                 List<String> processedLines = lines.stream()
                         .map(line -> {
-                            line = line.replace("<ip>", string_ip);
+                            line = line.replace("<ip>", Common.get().getServerIp());
                             return CommonString.getMessage(line, uhcPlayer);
                         })
                         .collect(Collectors.toList());

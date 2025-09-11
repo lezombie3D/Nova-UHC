@@ -3,11 +3,14 @@ package net.novaproject.novauhc.scenario.role;
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.role.camps.Camps;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -22,6 +25,7 @@ public abstract class ScenarioRole<T extends Role> extends Scenario {
     private final Map<UHCPlayer, T> players_roles = new HashMap<>();
     public boolean isgived = false;
 
+    public abstract Camps[] getCamps();
     private final List<T> roles = new ArrayList<>();
 
     public Map<T, Integer> getDefault_roles() {
@@ -43,7 +47,7 @@ public abstract class ScenarioRole<T extends Role> extends Scenario {
 
     @Override
     public CustomInventory getMenu(Player player) {
-        return new ScenarioRoleUi<>(player, this);
+        return new ScenarioCampUi<>(player, this);
     }
 
     public void addRole(Class<? extends T> roleClass) {
@@ -90,6 +94,7 @@ public abstract class ScenarioRole<T extends Role> extends Scenario {
 
     @Override
     public void setup() {
+        super.setup();
         players_roles.forEach((player, role) -> {
             role.onSetup();
         });
@@ -142,6 +147,25 @@ public abstract class ScenarioRole<T extends Role> extends Scenario {
         return validPlayers;
     }
 
+    public Camps getWinningCamp() {
+        Map<Camps, Integer> campCounts = new HashMap<>();
+
+        for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
+            Role role = getRoleByUHCPlayer(uhcPlayer);
+            if (role == null) continue;
+
+            Camps camp = role.getCamp();
+            campCounts.put(camp, campCounts.getOrDefault(camp, 0) + 1);
+        }
+
+        if (campCounts.size() == 1) {
+            return campCounts.keySet().iterator().next();
+        }
+
+        return null;
+    }
+
+
     @Override
     public void onConsume(Player player1, ItemStack item, PlayerItemConsumeEvent event) {
         players_roles.forEach((player, role) -> {
@@ -168,5 +192,18 @@ public abstract class ScenarioRole<T extends Role> extends Scenario {
         players_roles.forEach((player1, role) -> {
             role.onFfCMD(player1, subCommand, args);
         });
+    }
+
+    @Override
+    public void onHit(Entity entity, Entity dammager, EntityDamageByEntityEvent event) {
+        players_roles.forEach((uhcPlayer, role) ->
+                role.onHit(entity, dammager, event)
+        );
+    }
+
+    @Override
+    public void onKill(UHCPlayer killer, UHCPlayer victim) {
+        players_roles.forEach((uhcPlayer, role) ->
+                role.onKill(killer, victim));
     }
 }

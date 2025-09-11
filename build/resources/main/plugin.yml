@@ -15,6 +15,20 @@ commands:
   tc:
     description: Envoie vos coordonnées à votre équipe.
     usage: /tc
+  mumble:
+    aliases: mb
+    description: Commande pour le Mumble.
+  config:
+    aliases: cg
+    description: Commande pour la configuration.
+  doc :
+    aliases:
+      - document
+    description: Commande pour le document.
+  ds :
+    aliases:
+      - discord
+    description: Commande pour le discord.
   t:
     aliases: taupe
     description: commande pour le Taupe gun.
@@ -24,12 +38,6 @@ commands:
   ld:
     aliases: lduhc
     description: Commande pour Legends UHC
-  mumble:
-    aliases: mb
-    description: Commande pour le Mumble.
-  config:
-    aliases: cg
-    description: Commande pour la configuration.
   ff:
     aliases:
       - fireforce
@@ -50,6 +58,18 @@ commands:
     aliases: reply
     description: Répond à un message privé.
     usage: /r <message>
+  dnote:
+    aliases:
+      - deathnote
+      - dn
+    description: Commandes pour le scénario Death Note UHC.
+    usage: /dnote <commande> [arguments]
+  k:
+    aliases:
+      - kira
+      - kirachat
+    description: Chat privé pour l'équipe Kira dans Death Note UHC.
+    usage: /k <message>
 permission:
   novauhc.host:
     default: OP

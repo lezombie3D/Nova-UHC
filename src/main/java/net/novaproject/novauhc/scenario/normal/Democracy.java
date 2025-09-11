@@ -2,6 +2,8 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.DemocracyLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -17,8 +19,8 @@ public class Democracy extends Scenario {
     private final Map<UUID, UUID> playerVotes = new HashMap<>(); // voter -> target
     private final Map<UUID, Integer> voteCount = new HashMap<>(); // target -> vote count
     private final Set<UUID> hasVoted = new HashSet<>();
-    private final int VOTE_INTERVAL = 30 * 60; // 30 minutes in seconds
-    private final int VOTE_DURATION = 120; // 2 minutes to vote
+    private final int VOTE_INTERVAL = 1800; // 30 minutes in seconds
+
     private BukkitRunnable voteTask;
     private boolean voteActive = false;
 
@@ -38,11 +40,13 @@ public class Democracy extends Scenario {
     }
 
     @Override
-    public void enable() {
-        super.enable();
-        if (isActive()) {
-            startVoteTask();
-        }
+    public String getPath() {
+        return "democracy";
+    }
+
+    @Override
+    public ScenarioLang[] getLang() {
+        return DemocracyLang.values();
     }
 
     @Override
@@ -75,10 +79,11 @@ public class Democracy extends Scenario {
 
                 if (!voteActive) {
                     // Waiting for next vote
-                    if (timer >= VOTE_INTERVAL) {
+                    int voteInterval = getConfig().getInt("vote_interval", 1800);
+                    if (timer >= voteInterval) {
                         startVoting();
                         timer = 0;
-                        voteTimer = VOTE_DURATION;
+                        voteTimer = getConfig().getInt("vote_duration", 120);
                     } else {
                         // Send warnings
                         int timeUntilVote = VOTE_INTERVAL - timer;
