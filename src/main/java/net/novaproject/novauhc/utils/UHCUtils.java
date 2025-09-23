@@ -258,6 +258,12 @@ public class UHCUtils {
                         int blockY = location.getBlockY() + y - offsetY;
                         int blockZ = location.getBlockZ() + z - offsetZ;
 
+                        // Vérification des limites de hauteur du monde
+                        if (blockY < 0 || blockY > 255) {
+                            index++;
+                            continue;
+                        }
+
                         int blockId = blocks[index] & 0xFF;
                         byte blockData = data[index];
 
@@ -282,11 +288,19 @@ public class UHCUtils {
                             final var pos = new BlockPosition(blockX, blockY, blockZ);
                             final var nmsWorld = ((CraftWorld) world).getHandle();
                             final var nmsChunk = nmsWorld.getChunkAt(blockX >> 4, blockZ >> 4);
-                            var cs = nmsChunk.getSections()[blockY >> 4];
+
+                            // FIX: Vérification de l'index de section
+                            int sectionIndex = blockY >> 4;
+                            if (sectionIndex < 0 || sectionIndex >= 16) {
+                                index++;
+                                continue;
+                            }
+
+                            var cs = nmsChunk.getSections()[sectionIndex];
 
                             if (cs == null) {
-                                cs = new ChunkSection((blockY >> 4) << 4, !nmsWorld.worldProvider.o());
-                                nmsChunk.getSections()[blockY >> 4] = cs;
+                                cs = new ChunkSection(sectionIndex << 4, !nmsWorld.worldProvider.o());
+                                nmsChunk.getSections()[sectionIndex] = cs;
                             }
 
                             cs.setType(blockX & 15, blockY & 15, blockZ & 15, blockDataFinal);
@@ -308,7 +322,7 @@ public class UHCUtils {
                         cancel();
                     }
                 }
-            }.runTaskTimer(plugin, 0L, 2L);
+            }.runTaskTimerAsynchronously(plugin, 0L, 2L);
         } catch (Exception e) {
             e.printStackTrace();
             Bukkit.broadcastMessage("§cAn error has occured while loading the schematic " + file.getName() + ". (" + e.getMessage() + ")");

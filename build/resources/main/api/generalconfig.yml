@@ -49,4 +49,4 @@ message:
 
 timer:
   timer_before_start: 15
-  combat : 30
+  combat: 30

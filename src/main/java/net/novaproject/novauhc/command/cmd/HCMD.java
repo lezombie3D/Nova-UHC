@@ -12,7 +12,6 @@ import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
-import net.novaproject.novauhc.ui.DefaultUi;
 import net.novaproject.novauhc.ui.config.ScenariosUi;
 import net.novaproject.novauhc.ui.player.LimiteStuffbyPlayerUi;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -251,10 +250,6 @@ public class HCMD implements CommandExecutor {
         UHCManager uhcManager = UHCManager.get();
         if (uhcManager.getGameState() != UHCManager.GameState.INGAME &&
                 uhcManager.getGameState() != UHCManager.GameState.SCATTERING) {
-            ItemCreator menuConf = new ItemCreator(Material.REDSTONE_COMPARATOR)
-                    .setName(ChatColor.YELLOW + "Configurer");
-            player.getInventory().setItem(4, menuConf.getItemstack());
-            new DefaultUi(player).open();
         } else {
             CommonString.CONFIG_CANNOT_INGAME.send(player);
         }

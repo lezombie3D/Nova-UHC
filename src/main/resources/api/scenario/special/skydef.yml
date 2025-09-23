@@ -1,15 +1,22 @@
 banner_loc:
   world: "arena"
-  x: 10
-  y: 130
-  z: 120
+  x: -10
+  y: 214
+  z: -8
+  pitch: 0
+  yaw: 0
+def_spawn:
+  world: "arena"
+  x: 8
+  y: 186
+  z: -8
   pitch: 0
   yaw: 0
 tp_haut:
   world: "arena"
-  x: 0
-  y: 190
-  z: 0
+  x: 57
+  y: 182
+  z: -8
   pitch: 0
   yaw: 0
 tp_bas:
@@ -22,7 +29,7 @@ tp_bas:
 schem_loc:
   world: "arena"
   x: 0
-  y: 190
+  y: 185
   z: 0
   pitch: 0
   yaw: 0
