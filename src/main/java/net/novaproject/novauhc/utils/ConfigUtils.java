@@ -12,8 +12,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -32,7 +30,6 @@ public class ConfigUtils {
         registerConfig(GENERAL_CONFIG_PATH);
         registerConfig(LANG_CONFIG);
         registerConfig(MENU_CONFIG);
-        createDefaultSchematics();
         createDefaultFiles();
         CommonString.loadMessages(getLangConfig());
     }
@@ -41,33 +38,6 @@ public class ConfigUtils {
         if (!REGISTERED_PATHS.contains(path)) {
             REGISTERED_PATHS.add(path);
         }
-    }
-
-    public static void createDefaultSchematic(String resourcePath, String fileName) {
-        File dataFolder = Main.get().getDataFolder();
-        File schemFolder = new File(dataFolder, "api/schem");
-        if (!schemFolder.exists()) {
-            schemFolder.mkdirs();
-        }
-
-        File targetFile = new File(schemFolder, fileName);
-        if (!targetFile.exists()) {
-            try (InputStream in = Main.get().getResource(resourcePath)) {
-                if (in == null) {
-                    Bukkit.getLogger().severe("Resource not found: " + resourcePath);
-                    return;
-                }
-                Files.copy(in, targetFile.toPath());
-                Bukkit.getLogger().info("§aSchematic par défaut créé : " + fileName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static void createDefaultSchematics() {
-        createDefaultSchematic("api/schem/skydef.schematic", "skydef.schematic");
-        createDefaultSchematic("api/schem/tp.schematic", "tp.schematic");
     }
 
     public static void createDefaultFiles(String path) {

@@ -21,11 +21,11 @@ commands:
   config:
     aliases: cg
     description: Commande pour la configuration.
-  doc:
+  doc :
     aliases:
       - document
     description: Commande pour le document.
-  ds:
+  ds :
     aliases:
       - discord
     description: Commande pour le discord.
