@@ -1,4 +1,4 @@
-package net.novaproject.novauhc.utils;
+package net.novaproject.novauhc.command.cmd;
 
 import java.util.HashMap;
 import java.util.UUID;

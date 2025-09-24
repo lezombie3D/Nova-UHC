@@ -16,7 +16,7 @@ serverinfo:
 mumble:
   port: ""
   ip: ""
-doc: "https://mystouille.gitbook.io/nova-code"
-discord: "https://discord.gg/TGMM7bPwTb"
+doc : "https://mystouille.gitbook.io/nova-code"
+discord : "https://discord.gg/TGMM7bPwTb"
 ## PlaceHolder utilisable :
 

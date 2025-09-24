@@ -31,7 +31,7 @@ public class SkyDefUi extends CustomInventory {
                         "  §8┃ §fle nombre de " + Common.get().getMainColor() + "joueurs§f",
                         "  §8┃ §fdans l'equipe de §bDéfenseur§f",
                         ""
-                )).setName("§8┃ §f Taille de l'équipe des §bDéfenseur : " + sky.getTeam_size());
+                ));
         addMenu(13, def_team_size, new ConfigVarUi(getPlayer(), 3, 2, 1, 3, 2, 1, sky.getTeam_size(), 2, 0, this) {
             @Override
             public void onChange(int newValue) {
