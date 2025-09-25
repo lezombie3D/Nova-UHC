@@ -347,46 +347,49 @@ public class UHCPlayer {
     }
 
     private void updateScoreboard(Player player) {
-        FastBoard scoreboard = new FastBoard(player);
-        BlinkEffect ip = new BlinkEffect(Common.get().getServerIp());
+    FastBoard scoreboard = new FastBoard(player);
+    BlinkEffect ip = new BlinkEffect(Common.get().getServerIp());
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!uhcManager.isLobby() && !uhcManager.isGame()) cancel();
-                if (getPlayer() == null) cancel();
-                ip.next();
-                String ips = ip.getText();
+    new BukkitRunnable() {
+        @Override
+        public void run() {
+            if (!uhcManager.isLobby() && !uhcManager.isGame()) cancel();
+            if (getPlayer() == null) cancel();
+            ip.next();
+            String ips = ip.getText();
 
-                UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
-                if (uhcPlayer == null) return;
+            UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
+            if (uhcPlayer == null) return;
 
-                String header = "", footer = "";
-                FileConfiguration config = ConfigUtils.getGeneralConfig();
+            FileConfiguration config = ConfigUtils.getGeneralConfig();
 
-                String phase = uhcManager.isLobby() ? "lobby" : (uhcManager.isGame() ? "game" : "end");
+            String phase = uhcManager.isLobby() ? "lobby" : (uhcManager.isGame() ? "game" : "end");
+            boolean tabIsActive = config.getBoolean("message.tab.show", true);
 
-                header = CommonString.getMessage(config.getString("message.tab." + phase + ".header", ""), uhcPlayer);
-                footer = CommonString.getMessage(config.getString("message.tab." + phase + ".footer", ""), uhcPlayer);
+            String header = CommonString.getMessage(config.getString("message.tab." + phase + ".header", ""), uhcPlayer);
+            String footer = CommonString.getMessage(config.getString("message.tab." + phase + ".footer", ""), uhcPlayer);
 
-                String title = config.getString("message.scoreboard." + phase + ".title", "§6NovaUHC");
-                title = CommonString.getMessage(title, uhcPlayer);
-                List<String> lines = config.getStringList("message.scoreboard." + phase + ".lines");
+            String title = config.getString("message.scoreboard." + phase + ".title", "§6NovaUHC");
+            title = CommonString.getMessage(title, uhcPlayer);
 
-                List<String> processedLines = lines.stream()
-                        .map(line -> {
-                            line = line.replace("<ip>", Common.get().getServerIp());
-                            return CommonString.getMessage(line, uhcPlayer);
-                        })
-                        .collect(Collectors.toList());
+            List<String> lines = config.getStringList("message.scoreboard." + phase + ".lines");
+            List<String> processedLines = lines.stream()
+                    .map(line -> {
+                        line = line.replace("<ip>", Common.get().getServerIp());
+                        return CommonString.getMessage(line, uhcPlayer);
+                    })
+                    .collect(Collectors.toList());
 
-                scoreboard.updateTitle(title);
-                scoreboard.updateLines(processedLines);
+            scoreboard.updateTitle(title);
+            scoreboard.updateLines(processedLines);
+
+            // Afficher le tab seulement si activé dans la config
+            if (tabIsActive) {
                 TabListManager.sendTab(player, header, footer);
-
             }
-        }.runTaskTimerAsynchronously(Main.get(), 0L, 2L);
-
+        }
+    }.runTaskTimerAsynchronously(Main.get(), 0L, 2L);
+}
     }
 
 }
