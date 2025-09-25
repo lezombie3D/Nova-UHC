@@ -1,5 +1,6 @@
 message:
   tab:
+    show: true
     lobby:
       header: "§3»§b»§f» %main_color%NOVA §f§lUHC §f«§b«§3«\n\n§8│ §7Joueurs: §f%players% §8| §7Serveur: §fUHC §8│\n"
       footer: "\n§8● §9/§fdiscord §8● §3/§fdoc"
