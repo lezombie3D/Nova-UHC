@@ -539,7 +539,7 @@ public class FallenKingdom extends Scenario {
                 ep.playSound(ep.getLocation(), Sound.WITHER_DEATH, 1.0f, 1.0f);
                 enemy.setPlaying(false);
                 ep.setGameMode(GameMode.SPECTATOR);
-                TeamsTagsManager.setNameTag(ep, "zzzzz", "§8§o[Spec] ", "");
+                TeamsTagsManager.setNameTag(ep, "zzzzz", "§8§lSPEC §r§8", "");
             }
         }
 

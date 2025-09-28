@@ -69,7 +69,7 @@ public class FireForceUHC extends ScenarioRole<FireForceRole> {
         player.sendMessage(ChatColor.RED + "vos allier : " + list);
     }
 
-    @Override
+    /*@Override
     public void onFfCMD(Player player, String subCommand, String[] args) {
         super.onFfCMD(player, subCommand, args);
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
@@ -84,7 +84,7 @@ public class FireForceUHC extends ScenarioRole<FireForceRole> {
             default:
                 break;
         }
-    }
+    }*/
 
     @Override
     public boolean hascustomDeathMessage() {
@@ -211,7 +211,7 @@ public class FireForceUHC extends ScenarioRole<FireForceRole> {
 
                 Bukkit.broadcastMessage(message);
                 player.setGameMode(GameMode.SPECTATOR);
-                TeamsTagsManager.setNameTag(player, "zzzzz", "§8§o[Spec] ", "");
+                TeamsTagsManager.setNameTag(player, "zzzzz", "§8§lSPEC §r§8", "");
                 UHCManager.get().checkVictory();
             }
         }.runTaskLater(Main.get(), 120L);

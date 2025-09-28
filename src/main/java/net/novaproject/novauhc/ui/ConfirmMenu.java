@@ -74,6 +74,6 @@ public class ConfirmMenu extends CustomInventory {
     @Override
     public void onClose() {
         super.onClose();
-        parent.open();
+        if (parent != null) parent.open();
     }
 }

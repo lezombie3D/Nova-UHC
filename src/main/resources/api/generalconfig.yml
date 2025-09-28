@@ -1,6 +1,6 @@
 message:
   tab:
-    show: true
+    show: false
     lobby:
       header: "§3»§b»§f» %main_color%NOVA §f§lUHC §f«§b«§3«\n\n§8│ §7Joueurs: §f%players% §8| §7Serveur: §fUHC §8│\n"
       footer: "\n§8● §9/§fdiscord §8● §3/§fdoc"
@@ -20,8 +20,7 @@ message:
         - "§8┃ §fJoueurs: §b%players%§f/§b%slot%"
         - "§8┃ §fHost: %main_color%%host%"
         - ""
-        - "%main_color%<ip>"
-        -
+        - "<ip>"
     game:
       title: "%main_color%§lNova UHC"
       lines:
@@ -34,7 +33,7 @@ message:
         - "§8┃ §fCentre: %main_color%%distance% %arrow%"
         - "§8┃ §fKill : %main_color%%kills%"
         - ""
-        - "§e<ip>"
+        - "<ip>"
     end:
       title: "%main_color%§lNova UHC"
       lines:
@@ -44,7 +43,7 @@ message:
         - ""
         - "§8┃ §fFélicitations !"
         - ""
-        - "%main_color%<ip>"
+        - "<ip>"
 
 
 

@@ -1,13 +1,14 @@
 package net.novaproject.novauhc.scenario.special.legend;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.novaproject.novauhc.Main;
-import net.novaproject.novauhc.UHCManager;
+import net.novaproject.novauhc.command.CommandManager;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioLangManager;
 import net.novaproject.novauhc.scenario.special.legend.core.LegendClass;
 import net.novaproject.novauhc.scenario.special.legend.core.LegendData;
 import net.novaproject.novauhc.scenario.special.legend.core.LegendRegistry;
-import net.novaproject.novauhc.scenario.special.legend.ui.ChooseUi;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
@@ -34,7 +35,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+@Getter
+@Setter
 public class Legend extends Scenario {
 
     private static Legend instance;
@@ -105,6 +107,7 @@ public class Legend extends Scenario {
 
     @Override
     public void onStart(Player player) {
+        CommandManager.get().register("legend", new LdCMD(), "ld");
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
         if (uhcPlayer.getTeam().isPresent()) {
             UHCTeam team = uhcPlayer.getTeam().get();
@@ -286,91 +289,38 @@ public class Legend extends Scenario {
         }
     }
 
-    @Override
-    public void onLdCMD(Player player, String subCommand, String[] args) {
-        UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
 
-        // Vérifier si le joueur est une marionnette
-        if (isPuppet(uhcPlayer)) {
-            ScenarioLangManager.send(player, LegendLang.MARIONNETTISTE_PUPPET_RESTRICTION_COMMAND);
-            return;
-        }
 
-        switch (subCommand) {
-            case "choose":
-                if (canChooseClass && UHCManager.get().isGame()) {
-                    new ChooseUi(player).open();
-                } else {
-                    player.sendMessage(ChatColor.RED + "Vous ne pouvez plus choisir de classe");
-                }
-                break;
-
-            case "pouvoir":
-                LegendData data = playerData.get(uhcPlayer);
-                if (data != null && data.getLegendClass().hasPower()) {
-                    // Donner l'item de pouvoir (sera géré par chaque légende)
-                    player.sendMessage(ChatColor.GREEN + "Utilisez votre pouvoir avec l'item correspondant !");
-                } else {
-                    player.sendMessage(ChatColor.RED + "Votre classe n'a pas de pouvoir activable");
-                }
-                break;
-
-            default:
-                player.sendMessage(ChatColor.RED + "Commande inconnue. Utilisez :");
-                player.sendMessage(ChatColor.YELLOW + "/ld choose - Choisir une classe");
-                player.sendMessage(ChatColor.YELLOW + "/ld pouvoir - Informations sur votre pouvoir");
-        }
-    }
-
-    // === MÉTHODES PUBLIQUES POUR L'INTERFACE ===
-
-    /**
-     * Vérifie si un joueur a déjà une classe
-     */
     public boolean hasPlayerClass(UHCPlayer player) {
         return playerData.containsKey(player);
     }
 
-    /**
-     * Vérifie si une classe est déjà prise dans une équipe
-     */
     public boolean isClassTakenInTeam(UHCTeam team, LegendClass legendClass) {
         Set<LegendClass> usedClasses = teamUsedClasses.get(team);
         return usedClasses != null && usedClasses.contains(legendClass);
     }
 
-    /**
-     * Assigne une classe à un joueur (utilisé par ChooseUi)
-     */
+
     public void assignPlayerClass(UHCPlayer player, LegendClass legendClass, UHCTeam team) {
-        // Créer les données du joueur
         LegendData data = new LegendData(player, legendClass);
         playerData.put(player, data);
 
-        // Marquer la classe comme utilisée dans l'équipe
         teamUsedClasses.computeIfAbsent(team, k -> ConcurrentHashMap.newKeySet()).add(legendClass);
 
-        // Appeler onChoose de la légende
         legendClass.onChoose(player.getPlayer(), player);
     }
 
-    /**
-     * Récupère les données d'un joueur
-     */
+
     public LegendData getPlayerData(UHCPlayer player) {
         return playerData.get(player);
     }
 
-    /**
-     * Récupère le registry des légendes
-     */
+
     public LegendRegistry getLegendRegistry() {
         return legendRegistry;
     }
 
-    /**
-     * Vérifie si un joueur est une marionnette
-     */
+
     public boolean isPuppet(UHCPlayer player) {
         for (LegendData masterData : playerData.values()) {
             if (masterData.getPuppets().contains(player)) {
@@ -380,24 +330,17 @@ public class Legend extends Scenario {
         return false;
     }
 
-    // === MÉTHODES PRIVÉES ===
-
-    /**
-     * Assigne une classe aléatoire à un joueur s'il n'en a pas encore une
-     */
     private void assignRandomClassIfNeeded(Player player) {
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
 
         if (!canChooseClass && uhcPlayer.getTeam().isPresent()) {
             UHCTeam team = uhcPlayer.getTeam().get();
 
-            // Vérifier si le joueur a déjà une classe
             if (hasPlayerClass(uhcPlayer)) {
                 player.sendMessage(ChatColor.RED + "Vous avez déjà une classe");
                 return;
             }
 
-            // Obtenir une classe disponible aléatoirement
             List<LegendClass> availableClasses = getAvailableClasses(team);
             if (availableClasses.isEmpty()) {
                 player.sendMessage(ChatColor.RED + "Aucune classe disponible !");
@@ -412,9 +355,6 @@ public class Legend extends Scenario {
         }
     }
 
-    /**
-     * Obtient la liste des classes disponibles pour une équipe
-     */
     private List<LegendClass> getAvailableClasses(UHCTeam team) {
         Set<LegendClass> usedClasses = teamUsedClasses.getOrDefault(team, Collections.emptySet());
 

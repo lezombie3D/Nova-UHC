@@ -88,7 +88,7 @@ public class PlayerInteractEvent implements Listener {
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
-        if (UHCManager.get().isLobby() && (!event.getPlayer().hasPermission("novauhc.host") && !event.getPlayer().hasPermission("novauhc.cohost"))) {
+        if (UHCManager.get().isLobby()) {
             event.setCancelled(true);
             return;
         }
@@ -101,7 +101,7 @@ public class PlayerInteractEvent implements Listener {
         if (!(event.getWhoClicked() instanceof Player)) return;
         Player player = (Player) event.getWhoClicked();
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
-        if (UHCManager.get().isLobby() && (!player.hasPermission("novauhc.host") && !player.hasPermission("novauhc.cohost"))) {
+        if (UHCManager.get().isLobby()) {
             event.setCancelled(true);
             return;
         }

@@ -71,7 +71,7 @@ public class UHCManager {
         (scenarioManager = new ScenarioManager()).setup();
         (abilityManager = new AbilityManager()).setup();
         ListenerManager.setup();
-        CommandManager.setup();
+        CommandManager.get().setup();
         Bukkit.setWhitelist(true);
         Bukkit.getWhitelistedPlayers().forEach(wl -> {
             wl.setWhitelisted(false);

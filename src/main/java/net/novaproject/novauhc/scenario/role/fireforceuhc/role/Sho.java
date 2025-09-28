@@ -1,6 +1,5 @@
 package net.novaproject.novauhc.scenario.role.fireforceuhc.role;
 
-import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonCamps;
 import net.novaproject.novauhc.scenario.role.fireforceuhc.FireForceRole;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -16,10 +15,6 @@ public class Sho extends FireForceRole {
     private double force;
     private boolean istrans;
     private double maxforce;
-
-    public Sho() {
-        setCamp(CromagnonCamps.ZOMS);
-    }
 
     @Override
     public String getName() {

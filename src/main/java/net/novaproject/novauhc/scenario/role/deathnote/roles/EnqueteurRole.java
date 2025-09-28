@@ -1,6 +1,5 @@
 package net.novaproject.novauhc.scenario.role.deathnote.roles;
 
-import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonCamps;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Material;
@@ -19,9 +18,6 @@ public class EnqueteurRole extends DeathNoteRole {
     private final int maxInvestigations = 3; // Nombre maximum d'enquêtes par partie
     private int investigationsUsed = 0;
 
-    public EnqueteurRole() {
-        setCamp(CromagnonCamps.ZOMS);
-    }
 
     @Override
     public String getName() {

@@ -259,7 +259,6 @@ public class SlaveMarket extends Scenario {
 
             diams.put(p, nbDiamond);
             p.getPlayer().getInventory().setItem(4, new ItemCreator(Material.DIAMOND)
-                    .setAmount(nbDiamond)
                     .setName(ChatColor.AQUA + "Diamants: " + nbDiamond)
                     .getItemstack());
 
@@ -330,7 +329,7 @@ public class SlaveMarket extends Scenario {
                                     .getItemstack());
                             UHCTeam team = lastBuyer.getTeam().get();
                             System.out.println(team);
-                            choosen.forecSetTeam(Optional.of(team));
+                            choosen.forceSetTeam(Optional.of(team));
                             Bukkit.broadcastMessage(ChatColor.GREEN + choosen.getPlayer().getName() +
                                     ChatColor.YELLOW + " a été acheté par " +
                                     ChatColor.GOLD + lastBuyer.getPlayer().getName() +
@@ -338,7 +337,7 @@ public class SlaveMarket extends Scenario {
                                     ChatColor.AQUA + bid + " diamants");
                         } else {
                             UHCPlayer randomOwner = owners.get(random.nextInt(owners.size()));
-                            choosen.forecSetTeam(Optional.of(owners.get(random.nextInt(owners.size())).getTeam().get()));
+                            choosen.forceSetTeam(Optional.of(owners.get(random.nextInt(owners.size())).getTeam().get()));
                             Bukkit.broadcastMessage(ChatColor.GREEN + choosen.getPlayer().getName() +
                                     ChatColor.YELLOW + " n'a pas été acheté et a été assigné à " +
                                     ChatColor.GOLD + randomOwner.getPlayer().getName());

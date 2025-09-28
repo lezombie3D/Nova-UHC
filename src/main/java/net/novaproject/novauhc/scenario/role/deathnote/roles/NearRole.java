@@ -1,6 +1,5 @@
 package net.novaproject.novauhc.scenario.role.deathnote.roles;
 
-import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonCamps;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Material;
@@ -20,9 +19,6 @@ public class NearRole extends DeathNoteRole {
     private int analysisUsed = 0;
     private boolean hasUsedSpecialPower = false;
 
-    public NearRole() {
-        setCamp(CromagnonCamps.ZOMS);
-    }
 
     @Override
     public String getName() {

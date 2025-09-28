@@ -92,7 +92,7 @@ public class Marionnettiste extends LegendClass {
         masterData.addPuppet(deadPlayer);
 
         if (master.getTeam().isPresent()) {
-            deadPlayer.forecSetTeam(Optional.of(master.getTeam().get()));
+            deadPlayer.forceSetTeam(Optional.of(master.getTeam().get()));
         }
 
         puppetPlayer.teleport(masterPlayer.getLocation());

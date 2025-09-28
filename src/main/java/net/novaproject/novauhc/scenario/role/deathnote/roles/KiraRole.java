@@ -1,7 +1,6 @@
 package net.novaproject.novauhc.scenario.role.deathnote.roles;
 
 import net.novaproject.novauhc.scenario.ScenarioManager;
-import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonCamps;
 import net.novaproject.novauhc.scenario.role.deathnote.DeathNote;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -25,10 +24,6 @@ public class KiraRole extends DeathNoteRole {
     private long abandonModeEndTime = 0;
     private boolean hasShinigamiPact = false;
     private boolean hasRevealed = false;
-
-    public KiraRole() {
-        setCamp(CromagnonCamps.ZOMS);
-    }
 
     @Override
     public String getName() {

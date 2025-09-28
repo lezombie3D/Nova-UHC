@@ -3,74 +3,67 @@ package net.novaproject.novauhc.command.cmd;
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
+import net.novaproject.novauhc.command.Command;
+import net.novaproject.novauhc.command.CommandArguments;
 import net.novaproject.novauhc.database.UHCGameConfiguration;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.ui.config.Enchants;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static net.novaproject.novauhc.utils.UHCUtils.getFormattedTime;
 
-public class ConfigCMD implements CommandExecutor {
+public class ConfigCMD extends Command {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Cette commande ne peut être utilisée que par un joueur.");
-            return true;
+    public void execute(CommandArguments args) {
+        if (!(args.getSender() instanceof Player)) {
+            args.getSender().sendMessage(ChatColor.RED + "Commande réservée aux joueurs.");
+            return;
         }
-
-        Player player = (Player) sender;
+        Player player = (Player) args.getSender();
         UUID playerUUID = player.getUniqueId();
+        String[] arguments = args.getArguments();
 
-        if (args.length == 0) {
+        if (arguments.length == 0) {
             showHelp(player);
-            return true;
+            return;
         }
 
-        switch (args[0].toLowerCase()) {
+        switch (arguments[0].toLowerCase()) {
             case "save":
-                if (args.length < 2) {
+                if (arguments.length < 2) {
                     player.sendMessage(ChatColor.RED + "Usage: /config save <nom>");
-                    return true;
+                    return;
                 }
-                saveConfig(player, playerUUID, args[1]);
+                saveConfig(player, playerUUID, arguments[1]);
                 break;
             case "load":
-                if (args.length < 2) {
+                if (arguments.length < 2) {
                     player.sendMessage(ChatColor.RED + "Usage: /config load <nom>");
-                    return true;
+                    return;
                 }
-                loadConfig(player, playerUUID, args[1]);
+                loadConfig(player, playerUUID, arguments[1]);
                 break;
             case "delete":
-                if (args.length < 2) {
+                if (arguments.length < 2) {
                     player.sendMessage(ChatColor.RED + "Usage: /config delete <nom>");
-                    return true;
+                    return;
                 }
-                deleteConfig(player, playerUUID, args[1]);
+                deleteConfig(player, playerUUID, arguments[1]);
                 break;
             case "list":
                 listConfigs(player, playerUUID);
                 break;
-
             default:
                 showHelp(player);
                 break;
         }
-
-        return true;
     }
 
     private void showHelp(Player player) {
@@ -93,8 +86,8 @@ public class ConfigCMD implements CommandExecutor {
         int finalsize = (int) UHCManager.get().getTargetSize();
         int timereduc = (int) UHCManager.get().getReducSpeed();
         List<Integer> limite = new ArrayList<>();
-        for (int i = 0; i < Enchants.values().length; i++) {
-            limite.add(Enchants.values()[i].getConfigValue());
+        for (Enchants ench : Enchants.values()) {
+            limite.add(ench.getConfigValue());
         }
         int slot = UHCManager.get().getSlot();
         int diamant = UHCManager.get().getDimamondLimit();
@@ -117,7 +110,7 @@ public class ConfigCMD implements CommandExecutor {
                 limiteD,
                 protection,
                 stuff,
-                null // potionStates will be handled by the UHCConfigManager
+                null
         );
 
         Main.getDatabaseManager().saveUHCConfig(playerUUID, config);
@@ -154,13 +147,11 @@ public class ConfigCMD implements CommandExecutor {
         uhc.applyLimitsFromList(config.getLimite());
         uhc.setProtectionMax(config.getProtection());
 
-        // Apply potion states from the configuration
         if (config.getPotionStates() != null && !config.getPotionStates().isEmpty()) {
             Main.getDatabaseManager().getConfigManager().applyPotionStatesToEnum(config.getPotionStates());
         }
 
         player.sendMessage(ChatColor.GREEN + "Configuration " + ChatColor.GOLD + configName + ChatColor.GREEN + " chargée!");
-        System.out.println();
         String scenariosStr = String.join(", ", config.getEnabledScenarios());
         player.sendMessage(ChatColor.YELLOW + "Scénarios: " + ChatColor.WHITE + scenariosStr);
 
@@ -176,7 +167,6 @@ public class ConfigCMD implements CommandExecutor {
         player.sendMessage(ChatColor.YELLOW + "Slots max: " + ChatColor.WHITE + config.getSlot());
 
         player.sendMessage(ChatColor.YELLOW + "Types de stuff: " + ChatColor.WHITE + String.join(", ", config.getStuff().keySet()));
-
     }
 
     private void deleteConfig(Player player, UUID playerUUID, String configName) {
@@ -201,5 +191,13 @@ public class ConfigCMD implements CommandExecutor {
         for (String name : configNames) {
             player.sendMessage(ChatColor.YELLOW + "- " + ChatColor.WHITE + name);
         }
+    }
+
+    @Override
+    public java.util.List<String> tabComplete(CommandArguments args) {
+        if (args.getArguments().length == 1) {
+            return Arrays.asList("save", "load", "delete", "list");
+        }
+        return java.util.Collections.emptyList();
     }
 }

@@ -112,19 +112,19 @@ public class GameUi extends CustomInventory {
         addItem(new StaticItem(26, death));
         addMenu(29, potion, new PotionUi(getPlayer()));
         addMenu(33, drop, new DropUi(getPlayer()));
-        addMenu(15, diams, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, limit_diamss, 0, 0, this) {
+        addMenu(15, diams, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, UHCManager.get().getDimamondLimit(), 0, 0, this) {
             @Override
             public void onChange(int newValue) {
                 UHCManager.get().setDimamondLimit(newValue);
             }
         });
-        addMenu(10, pvp, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, pvp_time / 60, 1, 60, this) {
+        addMenu(10, pvp, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, UHCManager.get().getTimerborder() / 60, 1, 60, this) {
             @Override
             public void onChange(int newValue) {
                 UHCManager.get().setTimerpvp(newValue * 60);
             }
         });
-        addMenu(11, bordure, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, border_time / 60, 60, 120, this) {
+        addMenu(11, bordure, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, UHCManager.get().getTimerpvp() / 60, 60, 120, this) {
             @Override
             public void onChange(int newValue) {
                 UHCManager.get().setTimerborder(newValue * 60);

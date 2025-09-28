@@ -204,9 +204,6 @@ public abstract class Scenario {
 
     }
 
-    public void onLdCMD(Player player, String subCommand, String[] args) {
-
-    }
 
     public void onTeamUpdate() {
     }
@@ -214,9 +211,6 @@ public abstract class Scenario {
     public void scatter(UHCPlayer uhcPlayer, Location location, HashMap<UHCTeam, Location> teamloc) {
     }
 
-    public void onTaupeCMD(Player player, String subCommand, String[] args) {
-
-    }
 
     public void onTeamCordCMD(Player player, int x, int y, int z, String coordsMessage) {
 

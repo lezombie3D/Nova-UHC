@@ -34,14 +34,12 @@ public class AutoRevive extends Scenario {
     }
 
     @Override
-    public void onDeath(UHCPlayer uhcPlayer, UHCPlayer killer, PlayerDeathEvent event) {
+    public void onAfterDeath(UHCPlayer uhcPlayer, UHCPlayer killer, PlayerDeathEvent event) {
         if (actived) {
             event.getDrops().clear();
             Collection<PotionEffect> effect = uhcPlayer.getPlayer().getActivePotionEffects();
             Location location = uhcPlayer.getPlayer().getLocation();
             Player player = uhcPlayer.getPlayer();
-
-            if (UHCManager.get().getTeam_size() != 1) {
                 if (uhcPlayer.getTeam().isPresent()) {
                     UHCTeam team = uhcPlayer.getTeam().get();
                     uhcPlayer.setTeam(Optional.of(team));
@@ -53,10 +51,6 @@ public class AutoRevive extends Scenario {
                         uhcPlayer.getPlayer().addPotionEffect(e);
                     }
                 } else {
-                    player.sendMessage(ChatColor.RED + " Impossible car la game ont des équipes hors le target n'en a pas");
-                    return;
-                }
-            } else {
                 TeamsTagsManager.setNameTag(uhcPlayer.getPlayer(), "", "", "");
                 uhcPlayer.setPlaying(true);
                 uhcPlayer.getPlayer().setGameMode(GameMode.SURVIVAL);

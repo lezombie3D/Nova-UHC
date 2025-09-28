@@ -145,6 +145,7 @@ public class AnvilUi {
 				}
 			}
 
+
 			@EventHandler
 			public void onInventoryClose(InventoryCloseEvent event){
 				if(event.getPlayer() instanceof Player){
@@ -168,6 +169,76 @@ public class AnvilUi {
 
 		Bukkit.getPluginManager().registerEvents(listener, Main.get());//Replace with instance of main class
 	}
+
+    public AnvilUi(Player player, CustomInventory parent, final AnvilClickEventHandler handler) {
+        this.player = player;
+        this.handler = handler;
+
+        this.listener = new Listener() {
+            @EventHandler
+            public void onInventoryClick(InventoryClickEvent event) {
+                if (event.getWhoClicked() instanceof Player) {
+                    Player clicker = (Player) event.getWhoClicked();
+
+                    if (event.getInventory().equals(inv)) {
+                        event.setCancelled(true);
+
+                        ItemStack item = event.getCurrentItem();
+                        int slot = event.getRawSlot();
+                        String name = "";
+
+                        if (item != null) {
+                            if (item.hasItemMeta()) {
+                                ItemMeta meta = item.getItemMeta();
+
+                                if (meta.hasDisplayName()) {
+                                    name = meta.getDisplayName();
+                                }
+                            }
+                        }
+
+                        AnvilClickEvent clickEvent = new AnvilClickEvent(AnvilSlot.bySlot(slot), name);
+
+                        handler.onAnvilClick(clickEvent);
+
+                        if (clickEvent.getWillClose()) {
+                            event.getWhoClicked().closeInventory();
+                        }
+
+                        if (clickEvent.getWillDestroy()) {
+                            destroy(parent);
+                        }
+                    }
+                }
+            }
+
+
+            @EventHandler
+            public void onInventoryClose(InventoryCloseEvent event) {
+                if (event.getPlayer() instanceof Player) {
+                    Player player = (Player) event.getPlayer();
+                    Inventory inv = event.getInventory();
+
+                    if (inv.equals(AnvilUi.this.inv)) {
+                        inv.clear();
+                        destroy(parent);
+                    }
+                }
+            }
+
+            @EventHandler
+            public void onPlayerQuit(PlayerQuitEvent event) {
+                if (event.getPlayer().equals(getPlayer())) {
+                    destroy(parent);
+                }
+            }
+        };
+
+        Bukkit.getPluginManager().registerEvents(listener, Main.get());
+    }
+
+
+
 
 	public Player getPlayer(){
 		return player;
@@ -225,4 +296,15 @@ public class AnvilUi {
 
 		listener = null;
 	}
+
+    public void destroy(CustomInventory parent) {
+        player = null;
+        handler = null;
+        items = null;
+
+        HandlerList.unregisterAll(listener);
+
+        listener = null;
+        parent.open();
+    }
 }

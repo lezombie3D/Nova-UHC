@@ -1,17 +1,15 @@
 package net.novaproject.novauhc.command.cmd;
 
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
-import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
+import net.novaproject.novauhc.command.Command;
+import net.novaproject.novauhc.command.CommandArguments;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
+import net.novaproject.novauhc.ui.ConfirmMenu;
 import net.novaproject.novauhc.ui.DefaultUi;
 import net.novaproject.novauhc.ui.config.ScenariosUi;
 import net.novaproject.novauhc.ui.player.LimiteStuffbyPlayerUi;
@@ -20,44 +18,39 @@ import net.novaproject.novauhc.utils.TeamsTagsManager;
 import net.novaproject.novauhc.utils.Titles;
 import net.novaproject.novauhc.utils.UHCUtils;
 import org.bukkit.*;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import static net.novaproject.novauhc.utils.UHCUtils.*;
 
-public class HCMD implements CommandExecutor {
-
+public class HCMD extends Command {
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
-        if (!(commandSender instanceof Player)) {
-            commandSender.sendMessage("Cette commande est réservée aux joueurs !");
-            return true;
+    public void execute(CommandArguments args) {
+        CommandSender sender = args.getSender();
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("Cette commande est réservée aux joueurs !");
+            return;
         }
-
-        Player player = (Player) commandSender;
+        Player player = (Player) sender;
+        String[] arguments = args.getArguments();
 
         if (!player.hasPermission("novauhc.host") && !player.hasPermission("novauhc.cohost")) {
             player.sendMessage(ChatColor.RED + "Vous n'avez pas la permission d'utiliser cette commande.");
-            return true;
+            return;
         }
 
-        if (args.length == 0) {
+        if (arguments.length == 0) {
             sendHelpMessage(player);
-            return true;
+            return;
         }
 
-        String subCommand = args[0].toLowerCase();
-
+        String subCommand = arguments[0].toLowerCase();
 
         switch (subCommand) {
             case "scenario":
@@ -69,41 +62,38 @@ public class HCMD implements CommandExecutor {
             case "config":
                 handleConfigCommand(player);
                 break;
-
             case "bypass":
                 toggleBypassMode(player);
                 break;
-
             case "say":
-                if (args.length >= 2) {
-                    broadcastMessage(args, player);
+                if (arguments.length >= 2) {
+                    broadcastMessage(arguments, player);
                 } else {
                     CommonString.HOST_SAY_USAGE.send(player);
                 }
                 break;
             case "title":
-                titlesMessage(args, player);
+                titlesMessage(arguments, player);
                 break;
             case "cohost":
-                if (args.length >= 3) {
-                    manageCohost(player, args[1].toLowerCase(), args[2]);
+                if (arguments.length >= 3) {
+                    manageCohost(player, arguments[1].toLowerCase(), arguments[2]);
                 } else {
                     CommonString.HOST_COHOST_USAGE.send(player);
                 }
                 break;
-
             case "revive":
-                if (args.length >= 2) {
-                    manageRevive(player, args);
+                if (arguments.length >= 2) {
+                    manageRevive(player, arguments);
                 }
                 break;
-
+            case "forceteam":
             case "heal":
                 finalHealManager();
                 break;
             case "limite":
-                if (args.length >= 2) {
-                    limiteManager(player, args);
+                if (arguments.length >= 2) {
+                    limiteManager(player, arguments);
                 }
                 break;
             case "forcepvp":
@@ -115,22 +105,61 @@ public class HCMD implements CommandExecutor {
                 Bukkit.broadcastMessage(Common.get().getInfoTag() + "Le meetup vient d'etre forcé.");
                 break;
             case "whitelist":
-                if (args.length >= 2) {
-                    manageWhitelist(player, args);
+                if (arguments.length >= 2) {
+                    manageWhitelist(player, arguments);
                 } else {
                     player.sendMessage("/h whitelist add/remove <target>");
                     player.sendMessage("/h whitelist list/clear/on/off");
                 }
                 break;
             case "stuff":
-                startSTuff(player, args);
+                startSTuff(player, arguments);
                 break;
             default:
                 player.sendMessage(ChatColor.RED + "Commande inconnue. Essayez /h pour plus d'informations.");
         }
+    }
 
-
-        return true;
+    @Override
+    public List<String> tabComplete(CommandArguments args) {
+        String[] arguments = args.getArguments();
+        if (arguments.length == 0) {
+            return getStrings(args, "scenario", "reset", "config", "bypass", "say", "title", "cohost", "revive", "forceteam", "heal", "limite", "forcepvp", "forcemtp", "whitelist", "stuff");
+        }
+        if (arguments.length == 1) {
+            return getStrings(args, "scenario", "reset", "config", "bypass", "say", "title", "cohost", "revive", "forceteam", "heal", "limite", "forcepvp", "forcemtp", "whitelist", "stuff");
+        }
+        String sub = arguments[0].toLowerCase();
+        switch (sub) {
+            case "cohost":
+                if (arguments.length == 2) {
+                    return getStrings(args, "add", "remove");
+                }
+                if (arguments.length == 3) {
+                    return getOnlinePlayers(args);
+                }
+                break;
+            case "revive":
+            case "limite":
+                if (arguments.length == 2) {
+                    return getOnlinePlayers(args);
+                }
+                break;
+            case "whitelist":
+                if (arguments.length == 2) {
+                    return getStrings(args, "add", "remove", "list", "clear", "on", "off");
+                }
+                if (arguments.length == 3 && (arguments[1].equalsIgnoreCase("add") || arguments[1].equalsIgnoreCase("remove"))) {
+                    return getOnlinePlayers(args);
+                }
+                break;
+            case "stuff":
+                if (arguments.length == 2) {
+                    return getStrings(args, "clear", "list", "modif", "save", "cancel");
+                }
+                break;
+        }
+        return Collections.emptyList();
     }
 
     private void limiteManager(Player player, String[] args) {
@@ -143,105 +172,66 @@ public class HCMD implements CommandExecutor {
     }
 
     private void startSTuff(Player player, String[] args) {
+        if (args.length < 2) return;
         String arg = args[1];
-        if (args.length == 2) {
-
-            switch (arg) {
-                case "clear":
-                    UHCManager.get().start.clear();
-                    player.sendMessage(ChatColor.RED + "Le Stuff de depart est clear.");
-                    break;
-                case "list":
-                    String sb = "";
-                    getInventoryContentsAsString(UHCManager.get().start);
-                    player.sendMessage(ChatColor.RED + "Le contenu est : \n" +
-                            sb);
-                    break;
-                case "modif":
-                    if (UHCManager.get().isLobby()) {
-                        TextComponent base = new TextComponent("Modification de l'inventaire de depart : ");
-                        TextComponent msg = new TextComponent("§a§lSauvegarder");
-                        TextComponent msg2 = new TextComponent(" §fou §c§lAnnuler");
-
-                        msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
-                                "§aSauvegarder l'inventaire actuel"
-
-                        ).create()));
-                        msg2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
-                                "§aAnnuler la modification de l'inventaire").create()));
-
-                        msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/h stuff save"));
-                        msg2.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/h stuff cancel"));
-
-
-                        player.spigot().sendMessage(base, msg, msg2);
-                        player.setOp(true);
-                        player.getInventory().clear();
-                        player.setGameMode(GameMode.CREATIVE);
-                        restorePlayerInventory(player, UHCManager.get().start);
-
-                    }
-                    break;
-                case "save":
-
-                    if (UHCManager.get().isLobby()) {
-                        UHCManager.get().start = savePlayerInventory(player);
-                        player.setGameMode(GameMode.ADVENTURE);
-                        player.setOp(false);
-                        clearPlayerInventory(player);
-                        ItemCreator menuconf = new ItemCreator(Material.REDSTONE_COMPARATOR)
-                                .setName(ChatColor.YELLOW + "Configurer");
-                        ItemCreator item = new ItemCreator(Material.NETHER_STAR).setName(ChatColor.GOLD + "Salle des règles");
-                        player.getInventory().setItem(8, item.getItemstack());
-                        player.getInventory().setItem(4, menuconf.getItemstack());
-                        ItemCreator team = new ItemCreator(Material.BANNER).setName(ChatColor.DARK_PURPLE + "Team");
-                        player.getInventory().setItem(0, team.getItemstack());
-                        player.sendMessage(ChatColor.GOLD + "L'inventaire de depart a bien été sauvegarder ! ");
-                        if (player == PlayerConnectionEvent.getHost()) {
-                            player.setOp(true);
-                        }
-                    }
-                    break;
-                case "cancel":
-                    if (UHCManager.get().isLobby()) {
-                        player.setGameMode(GameMode.ADVENTURE);
-                        player.setOp(false);
-                        clearPlayerInventory(player);
-                        UHCUtils.giveLobbyItems(player);
-                        if (player == PlayerConnectionEvent.getHost()) {
-                            player.setOp(true);
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
+        switch (arg) {
+            case "clear":
+                UHCManager.get().start.clear();
+                player.sendMessage(ChatColor.RED + "Le Stuff de depart est clear.");
+                break;
+            case "list":
+                String sb = "";
+                getInventoryContentsAsString(UHCManager.get().start);
+                player.sendMessage(ChatColor.RED + "Le contenu est : \n" + sb);
+                break;
+            case "modif":
+                if (UHCManager.get().isLobby()) {
+                    player.getInventory().clear();
+                    player.setGameMode(GameMode.CREATIVE);
+                    restorePlayerInventory(player, UHCManager.get().start);
+                }
+                break;
+            case "save":
+                if (UHCManager.get().isLobby()) {
+                    UHCManager.get().start = savePlayerInventory(player);
+                    player.setGameMode(GameMode.ADVENTURE);
+                    clearPlayerInventory(player);
+                    ItemCreator menuconf = new ItemCreator(Material.REDSTONE_COMPARATOR)
+                            .setName(ChatColor.YELLOW + "Configurer");
+                    ItemCreator item = new ItemCreator(Material.NETHER_STAR).setName(ChatColor.GOLD + "Salle des règles");
+                    player.getInventory().setItem(8, item.getItemstack());
+                    player.getInventory().setItem(4, menuconf.getItemstack());
+                    ItemCreator team = new ItemCreator(Material.BANNER).setName(ChatColor.DARK_PURPLE + "Team");
+                    player.getInventory().setItem(0, team.getItemstack());
+                    player.sendMessage(ChatColor.GOLD + "L'inventaire de depart a bien été sauvegarder ! ");
+                }
+                break;
+            case "cancel":
+                if (UHCManager.get().isLobby()) {
+                    player.setGameMode(GameMode.ADVENTURE);
+                    clearPlayerInventory(player);
+                    UHCUtils.giveLobbyItems(player);
+                }
+                break;
+            default:
+                break;
         }
-
     }
 
     private void forceMTP() {
-
         UHCManager.get().setTimerborder(UHCManager.get().getTimer() + 1);
-
     }
 
     private void forcepvp() {
-
         UHCManager.get().setTimerpvp(UHCManager.get().getTimer() + 1);
-
     }
 
     private void finalHealManager() {
-
         for (UHCPlayer player : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
             player.getPlayer().setHealth(player.getPlayer().getMaxHealth());
         }
-
         Bukkit.broadcastMessage(CommonString.HEAL_BROADCAST.getMessage());
-
     }
-
 
     private void sendHelpMessage(Player player) {
         CommonString.HOST_HELP_MESSAGE.send(player);
@@ -251,12 +241,15 @@ public class HCMD implements CommandExecutor {
         UHCManager uhcManager = UHCManager.get();
         if (uhcManager.getGameState() != UHCManager.GameState.INGAME &&
                 uhcManager.getGameState() != UHCManager.GameState.SCATTERING) {
-            ItemCreator menuConf = new ItemCreator(Material.REDSTONE_COMPARATOR)
-                    .setName(ChatColor.YELLOW + "Configurer");
-            player.getInventory().setItem(4, menuConf.getItemstack());
+            UHCUtils.giveLobbyItems(player);
             new DefaultUi(player).open();
         } else {
-            CommonString.CONFIG_CANNOT_INGAME.send(player);
+
+            new ConfirmMenu(player, "§cEtes-vous sur de vouloir sur de prendre le risque ?", () -> {
+                new DefaultUi(player).open();
+            }, () -> {
+                CommonString.CONFIG_CANNOT_INGAME.send(player);
+            }, null);
         }
     }
 
@@ -276,12 +269,12 @@ public class HCMD implements CommandExecutor {
     }
 
     private void broadcastMessage(String[] args, Player player) {
-        String message = String.join(" ", java.util.Arrays.copyOfRange(args, 1, args.length));
+        String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
         Bukkit.broadcastMessage(Common.get().getInfoTag() + ChatColor.RED + message);
     }
 
     private void titlesMessage(String[] args, Player player) {
-        String message = String.join(" ", java.util.Arrays.copyOfRange(args, 1, args.length));
+        String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
         for (Player p : Bukkit.getOnlinePlayers()) {
             new Titles().sendTitle(p, message, "", 10);
         }
@@ -293,26 +286,21 @@ public class HCMD implements CommandExecutor {
             player.sendMessage(ChatColor.RED + "Le joueur " + targetName + " est introuvable.");
             return;
         }
-
         switch (action) {
             case "add":
-                if (target == player) {
-                    return;
-                }
+                if (target == player) return;
                 target.addAttachment(Main.get(), "novauhc.cohost", true);
                 player.sendMessage(ChatColor.GREEN + "Le joueur " + target.getName() + " a été ajouté comme cohost.");
-                TeamsTagsManager.setNameTag(target, "cohost", "§f[§5CoHost§f] ", "");
+                TeamsTagsManager.setNameTag(target, "cohost", "§5§lCOHOST §r§5", "");
+                UHCUtils.giveLobbyItems(player);
                 break;
-
             case "remove":
-                if (target == player) {
-                    return;
-                }
+                if (target == player) return;
                 target.addAttachment(Main.get(), "novauhc.cohost", false);
                 player.sendMessage(ChatColor.GREEN + "Le joueur " + target.getName() + " a été retiré comme cohost.");
                 TeamsTagsManager.setNameTag(target, "", "", "");
+                UHCUtils.giveLobbyItems(player);
                 break;
-
             default:
                 player.sendMessage(ChatColor.RED + "Usage incorrect : /h cohost <add|remove> <joueur>");
                 break;
@@ -324,9 +312,7 @@ public class HCMD implements CommandExecutor {
         if (args.length == 2) {
             switch (arg) {
                 case "clear":
-                    Bukkit.getWhitelistedPlayers().forEach(offlinePlayer -> {
-                        offlinePlayer.setWhitelisted(false);
-                    });
+                    Bukkit.getWhitelistedPlayers().forEach(offlinePlayer -> offlinePlayer.setWhitelisted(false));
                     player.sendMessage(ChatColor.RED + "La whitelist est clear.");
                     break;
                 case "list":
@@ -334,8 +320,7 @@ public class HCMD implements CommandExecutor {
                     for (OfflinePlayer offlinePlayer : Bukkit.getWhitelistedPlayers()) {
                         sb.append(offlinePlayer.getName()).append(" ");
                     }
-                    player.sendMessage(ChatColor.RED + "Les joueurs whitelist: \n" +
-                            sb);
+                    player.sendMessage(ChatColor.RED + "Les joueurs whitelist: \n" + sb);
                     break;
                 case "on":
                     if (Bukkit.hasWhitelist()) {
@@ -357,71 +342,56 @@ public class HCMD implements CommandExecutor {
                     break;
             }
         } else if (args.length == 3) {
-
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[2]);
-
             if (offlinePlayer == null) {
                 player.sendMessage(ChatColor.RED + "Le joueur est inexistant");
             }
-
             switch (arg) {
                 case "add":
                     if (offlinePlayer.isWhitelisted()) {
                         player.sendMessage(ChatColor.RED + "Le joueur est déjà present");
                         return;
                     }
-
                     offlinePlayer.setWhitelisted(true);
                     player.sendMessage(ChatColor.RED + "Vous avez ajoutez : " + ChatColor.AQUA + offlinePlayer.getName());
                     break;
                 case "remove":
-                    if (offlinePlayer.isWhitelisted()) {
+                    if (!offlinePlayer.isWhitelisted()) {
                         player.sendMessage(ChatColor.RED + "Le joueur n'est pas WhiteListe");
                     } else {
                         offlinePlayer.setWhitelisted(false);
                         player.sendMessage(ChatColor.RED + "Vous avez enlevez : " + ChatColor.AQUA + offlinePlayer.getName());
-                        break;
                     }
-
+                    break;
             }
         }
     }
 
     private void manageRevive(Player player, String[] args) {
-
         UHCPlayer target = UHCPlayerManager.get().getPlayer(Bukkit.getPlayer(args[1]));
         if (target == null) {
             player.sendMessage(ChatColor.RED + "Nom du joueur invalide");
             return;
         }
         Collection<PotionEffect> effect = target.getPlayer().getActivePotionEffects();
-
-
         World world = Common.get().getArena();
         WorldBorder worldBorder = world.getWorldBorder();
         Random random = new Random();
-
         double radius = worldBorder.getSize() / 2;
         double x = worldBorder.getCenter().getX() + (random.nextDouble() * 2 - 1) * radius;
         double z = worldBorder.getCenter().getZ() + (random.nextDouble() * 2 - 1) * radius;
         double y = world.getHighestBlockYAt((int) x, (int) z);
-
         Location location = new Location(world, x, y, z);
 
-        if (UHCManager.get().getTeam_size() != 1) {
-            if (target.getTeam().isPresent()) {
-                UHCTeam team = target.getTeam().get();
-                target.setTeam(Optional.of(team));
-                TeamsTagsManager.setNameTag(target.getPlayer(), team.getName(), team.getPrefix(), "");
-                target.setPlaying(true);
-                target.getPlayer().setGameMode(GameMode.SURVIVAL);
-                target.getPlayer().teleport(location);
-                for (PotionEffect e : effect) {
-                    target.getPlayer().addPotionEffect(e);
-                }
-            } else {
-                player.sendMessage(ChatColor.RED + " Impossible car la game ont des équipes hors le target n'en a pas");
-                return;
+        if (target.getTeam().isPresent()) {
+            UHCTeam team = target.getTeam().get();
+            target.setTeam(Optional.of(team));
+            TeamsTagsManager.setNameTag(target.getPlayer(), team.getName(), team.getPrefix(), "");
+            target.setPlaying(true);
+            target.getPlayer().setGameMode(GameMode.SURVIVAL);
+            target.getPlayer().teleport(location);
+            for (PotionEffect e : effect) {
+                target.getPlayer().addPotionEffect(e);
             }
         } else {
             TeamsTagsManager.setNameTag(target.getPlayer(), "", "", "");
@@ -430,11 +400,9 @@ public class HCMD implements CommandExecutor {
             target.getPlayer().teleport(location);
         }
 
+        PlayerInventory inventory = target.getPlayer().getInventory();
         for (ItemStack item : target.getDeathItem()) {
-            if (item == null || item.getType() == Material.AIR) continue; // Ignore les items vides
-
-            PlayerInventory inventory = target.getPlayer().getInventory();
-
+            if (item == null || item.getType() == Material.AIR) continue;
             if (isHelmet(item)) {
                 if (inventory.getHelmet() == null) {
                     inventory.setHelmet(item);
@@ -456,13 +424,11 @@ public class HCMD implements CommandExecutor {
                     continue;
                 }
             }
-
             inventory.addItem(item);
         }
         Bukkit.broadcastMessage(CommonString.REVIVE_MESSAGE.getMessage(target.getPlayer()));
         target.getPlayer().sendMessage(ChatColor.RED + "Oublier pas de refaire votre Inventaire ! ");
     }
-
 
     private boolean isHelmet(ItemStack item) {
         Material type = item.getType();

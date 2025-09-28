@@ -2,8 +2,6 @@ package net.novaproject.novauhc.scenario;
 
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.normal.*;
-import net.novaproject.novauhc.scenario.role.loupgarouuhc.LoupGarouUHC;
-import net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.DragonFall;
 import net.novaproject.novauhc.scenario.special.MysteryTeam;
 import net.novaproject.novauhc.scenario.special.SoulBrother;
 import net.novaproject.novauhc.scenario.special.beatthesanta.BeatTheSanta;
@@ -49,7 +47,7 @@ public class ScenarioManager {
         addScenario(new BetaZombie());
         addScenario(new CatEye());
         addScenario(new Meetup());
-        addScenario(new LoupGarouUHC());
+        //addScenario(new LoupGarouUHC());
         addScenario(new StarterTools());
         addScenario(new InfiniteEnchanter());
 
@@ -141,7 +139,7 @@ public class ScenarioManager {
         addScenario(new TeamAtFirstSeigth());
 
         //addScenario(new DeathNote());
-        addScenario(new DragonFall());
+        //addScenario(new DragonFall());
     }
 
 

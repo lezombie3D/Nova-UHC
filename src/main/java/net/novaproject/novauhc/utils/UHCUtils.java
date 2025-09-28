@@ -301,7 +301,6 @@ public class UHCUtils {
                         index++;
                     }
 
-                    Bukkit.broadcastMessage("§aPlaced " + index + " blocks. (" + (index * 100 / blocks.length) + "%)");
 
                     if (index >= blocks.length) {
                         Bukkit.broadcastMessage("§aSchematic " + file.getName() + " loaded in " + (System.currentTimeMillis() - start) + "ms");

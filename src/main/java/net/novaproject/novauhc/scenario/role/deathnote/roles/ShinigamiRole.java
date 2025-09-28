@@ -1,6 +1,6 @@
 package net.novaproject.novauhc.scenario.role.deathnote.roles;
 
-import net.novaproject.novauhc.scenario.role.cromagnonuhc.CromagnonCamps;
+
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Material;
@@ -22,9 +22,6 @@ public class ShinigamiRole extends DeathNoteRole {
     private final Map<UHCPlayer, Integer> pactedKira = new HashMap<>(); // Kira avec qui il a fait un pacte -> utilisations tracker restantes
     private final int maxTrackerUses = 3;
 
-    public ShinigamiRole() {
-        setCamp(CromagnonCamps.ZOMS);
-    }
 
     @Override
     public String getName() {

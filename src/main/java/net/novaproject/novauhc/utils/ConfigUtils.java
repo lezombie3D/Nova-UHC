@@ -12,8 +12,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.logging.Level;
 
 @Getter
@@ -24,12 +29,14 @@ public class ConfigUtils {
     private static final String GENERAL_CONFIG_PATH = "api/generalconfig.yml";
     private static final String LANG_CONFIG = "api/lang.yml";
     private static final String MENU_CONFIG = "api/menu.yml";
+    private static final String SCHEM_RESOURCE_DIR = "api/schem";
 
     public static void setup() {
         registerConfig(LOBBY_CONFIG_PATH);
         registerConfig(GENERAL_CONFIG_PATH);
         registerConfig(LANG_CONFIG);
         registerConfig(MENU_CONFIG);
+        saveAllSchems();
         createDefaultFiles();
         CommonString.loadMessages(getLangConfig());
     }
@@ -48,7 +55,31 @@ public class ConfigUtils {
         }
     }
 
-
+    public static void saveAllSchems() {
+        try {
+            URL jarUrl = Main.class.getProtectionDomain().getCodeSource().getLocation();
+            File jarFile = new File(jarUrl.toURI());
+            if (jarFile.isFile()) {
+                try (JarFile jar = new JarFile(jarFile)) {
+                    Enumeration<JarEntry> entries = jar.entries();
+                    while (entries.hasMoreElements()) {
+                        JarEntry entry = entries.nextElement();
+                        String name = entry.getName();
+                        if (name.startsWith(SCHEM_RESOURCE_DIR + "/") && name.endsWith(".schematic")) {
+                            String fileName = name.substring(SCHEM_RESOURCE_DIR.length() + 1);
+                            File dest = new File(Main.get().getDataFolder(), SCHEM_RESOURCE_DIR + "/" + fileName);
+                            if (!dest.exists()) {
+                                Main.get().saveResource(SCHEM_RESOURCE_DIR + "/" + fileName, false);
+                                Bukkit.getLogger().log(Level.INFO, "Schematique copiée: {0}", fileName);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IOException | URISyntaxException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Erreur lors de la copie des schems", e);
+        }
+    }
 
     private static void createDefaultFiles() {
         REGISTERED_PATHS.forEach(path -> {

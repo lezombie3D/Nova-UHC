@@ -7,17 +7,16 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import net.novaproject.novauhc.command.Command;
+import net.novaproject.novauhc.command.CommandArguments;
 import org.bukkit.entity.Player;
 
-public class DiscordCMD implements CommandExecutor {
-    @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        if (!(commandSender instanceof Player)) return false;
-        Player player = (Player) commandSender;
 
+public class DiscordCMD extends Command {
+
+    @Override
+    public void execute(CommandArguments args) {
+        Player player = (Player) args.getSender();
         TextComponent base = new TextComponent(CommonString.DISCORD_MESSAGE.getMessage(player));
 
         TextComponent linkConfig = new TextComponent(" §f[" + Common.get().getMainColor() + "Discord§f]§r");
@@ -44,7 +43,5 @@ public class DiscordCMD implements CommandExecutor {
         base.addExtra(linkOfficial);
 
         player.spigot().sendMessage(base);
-        return true;
     }
-
 }

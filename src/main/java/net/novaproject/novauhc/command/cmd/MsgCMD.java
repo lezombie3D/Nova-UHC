@@ -3,6 +3,7 @@ package net.novaproject.novauhc.command.cmd;
 
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
+import net.novaproject.novauhc.utils.MessageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

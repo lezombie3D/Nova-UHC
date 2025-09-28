@@ -91,7 +91,7 @@ public class PreconfigUi extends CustomInventory {
                 .addLore("")) {
             @Override
             public void onClick(InventoryClickEvent e) {
-                new AnvilUi(getPlayer(), event -> {
+                new AnvilUi(getPlayer(), new PreconfigUi(getPlayer(), new DefaultUi(getPlayer())), event -> {
                     if (event.getSlot() == AnvilUi.AnvilSlot.OUTPUT) {
                         String enteredText = event.getName();
                         getPlayer().performCommand("config save " + enteredText);

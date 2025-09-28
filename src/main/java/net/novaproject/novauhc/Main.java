@@ -6,6 +6,7 @@ import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import net.novaproject.novauhc.command.CommandManager;
 import net.novaproject.novauhc.database.DatabaseManager;
 import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.nms.NMSPatcher;
@@ -19,6 +20,7 @@ public class Main extends JavaPlugin {
     private static UHCManager uhcManager;
     private static Common common;
     private static DatabaseManager databaseManager;
+    private CommandManager commandManager;
     private MongoClient mongoClient;
     private MongoDatabase database;
 
@@ -39,6 +41,10 @@ public class Main extends JavaPlugin {
         return common;
     }
 
+    public CommandManager getCommandManager() {
+        return commandManager;
+    }
+
     public MongoDatabase getMongoDB() {
         return database;
     }
@@ -56,6 +62,7 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         connectToMongoDB();
+        commandManager = new CommandManager(this);
         common.setup();
         uhcManager.setup();
         databaseManager = new DatabaseManager();

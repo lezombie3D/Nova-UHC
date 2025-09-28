@@ -1,31 +1,26 @@
 package net.novaproject.novauhc.command.cmd;
 
 import net.novaproject.novauhc.UHCManager;
+import net.novaproject.novauhc.command.Command;
+import net.novaproject.novauhc.command.CommandArguments;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
-public class TeamCordCMD implements CommandExecutor {
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("Cette commande est réservée aux joueurs !");
-            return true;
-        }
+public class TeamCordCMD extends Command {
 
-        Player player = (Player) sender;
+    @Override
+    public void execute(CommandArguments args) {
+        Player player = (Player) args.getSender();
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
 
         if (!uhcPlayer.getTeam().isPresent() || !uhcPlayer.isPlaying() ||
                 UHCManager.get().getGameState() != UHCManager.GameState.INGAME) {
             player.sendMessage(ChatColor.RED + "Vous n'avez pas d'équipe ou la partie n'a pas commencé !");
-            return true;
+            return;
         }
 
         int x = player.getLocation().getBlockX();
@@ -39,7 +34,7 @@ public class TeamCordCMD implements CommandExecutor {
             ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
                 scenario.onTaupeTcCMD(player, x, y, z, coordsMessage);
             });
-        } else if (UHCManager.get().getTeam_size() > 1) {
+        } else {
 
             String teamMessage =
                     "§7[§6%team%§7] §f" + player.getName() + " §8» §f " + coordsMessage;
@@ -47,9 +42,5 @@ public class TeamCordCMD implements CommandExecutor {
             uhcPlayer.getTeam().get().getPlayers().forEach(teamPlayer ->
                     teamPlayer.getPlayer().sendMessage(teamMessage));
         }
-
-        return true;
     }
-
-
 }

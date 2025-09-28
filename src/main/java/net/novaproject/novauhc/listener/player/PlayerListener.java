@@ -37,11 +37,14 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
+    public void onAchievement(PlayerAchievementAwardedEvent event) {
+        event.setCancelled(true);
+    }
+    @EventHandler
     public void onItemPickup(PlayerPickupItemEvent event) {
         Player player = event.getPlayer();
         Item item = event.getItem();
         ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
-
             scenario.onPickUp(player, item, event);
         });
     }

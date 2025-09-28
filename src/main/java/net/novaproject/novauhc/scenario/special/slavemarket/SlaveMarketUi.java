@@ -1,9 +1,11 @@
 package net.novaproject.novauhc.scenario.special.slavemarket;
 
+import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
+import net.novaproject.novauhc.ui.ConfigVarUi;
 import net.novaproject.novauhc.ui.config.ScenariosUi;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.MessageUtils;
@@ -20,8 +22,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.Arrays;
-
 public class SlaveMarketUi extends CustomInventory {
     private final SlaveMarket slave = SlaveMarket.get();
 
@@ -36,7 +36,7 @@ public class SlaveMarketUi extends CustomInventory {
         addItem(new ActionItem(16, new ItemCreator(Material.PAPER).setName("§2Ajouter un joueur")) {
             @Override
             public void onClick(InventoryClickEvent e) {
-                new AnvilUi(getPlayer(), event -> {
+                new AnvilUi(getPlayer(), new SlaveMarketUi(getPlayer()), event -> {
                     if (event.getSlot() == AnvilUi.AnvilSlot.OUTPUT) {
                         String enteredText = event.getName();
                         Player player = Bukkit.getPlayer(enteredText);
@@ -81,29 +81,16 @@ public class SlaveMarketUi extends CustomInventory {
                     break;
             }
         }
-        addItem(new ActionItem(10, new ItemCreator(Material.DIAMOND).setName("§2Nombre de diamant : " + slave.getNbDiamond()).setLores(Arrays.asList("", ChatColor.GREEN + "Ajouter des diamants", ChatColor.RED + "Retirés des diamants"))) {
+
+        addMenu(10, new ItemCreator(Material.DIAMOND).setName("§8┃ §fNombre de §3Diamond §f: §3§l" + slave.getNbDiamond())
+                .addLore("")
+                .addLore("  §8┃ §fVous permet de §cmodifier")
+                .addLore("  §8┃ §fle nombre de §3Diamond §f.")
+                .addLore("  §8┃ §fdonner au §f " + Common.get().getMainColor() + "Owner.")
+                .addLore(""), new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, slave.getNbDiamond(), 20, 100, this) {
             @Override
-            public void onClick(InventoryClickEvent e) {
-                int current = slave.getNbDiamond();
-
-                if (e.isRightClick()) {
-                    if (e.isShiftClick()) {
-                        slave.setNbDiamond(current + 5);
-                    } else {
-                        slave.setNbDiamond(current + 1);
-                    }
-                    openAll();
-                    return;
-                }
-
-                if (e.isLeftClick()) {
-                    if (e.isShiftClick() && current >= 5) {
-                        slave.setNbDiamond(current - 5);
-                    } else if (!e.isShiftClick() && current >= 1) {
-                        slave.setNbDiamond(current - 1);
-                    }
-                }
-                openAll();
+            public void onChange(int newValue) {
+                slave.setNbDiamond(newValue);
             }
         });
         addItem(new ActionItem(4, getWool(UHCManager.get().isStarted())) {
@@ -134,7 +121,7 @@ public class SlaveMarketUi extends CustomInventory {
         ItemStack wool = new ItemStack(material, 1, color);
         ItemMeta meta = wool.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName(started ? "§cAnnuler le lancement" : "§aLancer la partie");
+            meta.setDisplayName(started ? "§8┃ §fAnnulé l' §cEnchère" : "§8┃ §fDémarré l' §aEnchère");
             wool.setItemMeta(meta);
         }
         return wool;
