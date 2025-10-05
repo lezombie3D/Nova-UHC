@@ -148,6 +148,9 @@ public enum CommonString {
     INFO_OPERATION_CANCELLED,
     INFO_NO_CHANGES_MADE,
 
+    ARENA_JOIN,
+    ARENA_KILL,
+    ARENA_DEATH
     ;
 
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("HH:mm:ss");

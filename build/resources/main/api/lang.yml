@@ -152,3 +152,6 @@ message:
   INFO_PLEASE_WAIT: "§e⌛ Veuillez patienter..."
   INFO_OPERATION_CANCELLED: "§7◆ Opération annulée"
   INFO_NO_CHANGES_MADE: "§7◆ Aucune modification effectuée"
+  ARENA_JOIN : "%main_color%Arena §7» §c%player% §fa rejoint l'arène !"
+  ARENA_KILL : "%main_color%Arena §7» §c%player_arena% §fa été éliminé par §c%killer_arena%"
+  ARENA_DEATH : "%main_color%Arena §7» §c%player_arena% §fest mort."

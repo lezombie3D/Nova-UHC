@@ -1,5 +1,9 @@
 package net.novaproject.novauhc.command.cmd;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
@@ -13,7 +17,6 @@ import net.novaproject.novauhc.ui.ConfirmMenu;
 import net.novaproject.novauhc.ui.DefaultUi;
 import net.novaproject.novauhc.ui.config.ScenariosUi;
 import net.novaproject.novauhc.ui.player.LimiteStuffbyPlayerUi;
-import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.TeamsTagsManager;
 import net.novaproject.novauhc.utils.Titles;
 import net.novaproject.novauhc.utils.UHCUtils;
@@ -189,6 +192,28 @@ public class HCMD extends Command {
                     player.getInventory().clear();
                     player.setGameMode(GameMode.CREATIVE);
                     restorePlayerInventory(player, UHCManager.get().start);
+                    if (UHCManager.get().isLobby()) {
+                        TextComponent base = new TextComponent("Modification de l'inventaire de depart : ");
+                        TextComponent msg = new TextComponent("§a§lSauvegarder");
+                        TextComponent msg2 = new TextComponent(" §fou §c§lAnnuler");
+
+                        msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
+                                "§aSauvegarder l'inventaire actuel"
+
+                        ).create()));
+                        msg2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
+                                "§aAnnuler la modification de l'inventaire").create()));
+
+                        msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/h stuff save"));
+                        msg2.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/h stuff cancel"));
+
+
+                        player.spigot().sendMessage(base, msg, msg2);
+                        player.setOp(true);
+                        player.getInventory().clear();
+                        player.setGameMode(GameMode.CREATIVE);
+                        restorePlayerInventory(player, UHCManager.get().start);
+                    }
                 }
                 break;
             case "save":
@@ -196,13 +221,7 @@ public class HCMD extends Command {
                     UHCManager.get().start = savePlayerInventory(player);
                     player.setGameMode(GameMode.ADVENTURE);
                     clearPlayerInventory(player);
-                    ItemCreator menuconf = new ItemCreator(Material.REDSTONE_COMPARATOR)
-                            .setName(ChatColor.YELLOW + "Configurer");
-                    ItemCreator item = new ItemCreator(Material.NETHER_STAR).setName(ChatColor.GOLD + "Salle des règles");
-                    player.getInventory().setItem(8, item.getItemstack());
-                    player.getInventory().setItem(4, menuconf.getItemstack());
-                    ItemCreator team = new ItemCreator(Material.BANNER).setName(ChatColor.DARK_PURPLE + "Team");
-                    player.getInventory().setItem(0, team.getItemstack());
+                    UHCUtils.giveLobbyItems(player);
                     player.sendMessage(ChatColor.GOLD + "L'inventaire de depart a bien été sauvegarder ! ");
                 }
                 break;
@@ -217,6 +236,7 @@ public class HCMD extends Command {
                 break;
         }
     }
+
 
     private void forceMTP() {
         UHCManager.get().setTimerborder(UHCManager.get().getTimer() + 1);

@@ -17,37 +17,57 @@ message:
       title: "%main_color%§lNova UHC"
       lines:
         - ""
-        - "§8┃ §fJoueurs: §b%players%§f/§b%slot%"
-        - "§8┃ §fHost: %main_color%%host%"
+        - "§f §5│ §fConnecté(s): §3%players%§f/%slot%"
+        - "§f §5│ §fHost: §3%host%"
         - ""
-        - "%main_color%<ip>"
-        -
+        - "<ip>"
     game:
-      title: "%main_color%§lNova UHC"
+      title: "§f- %main_color%§lNova UHC §f-"
       lines:
         - ""
-        - "§8┃ §fJoueurs: %main_color%%players%§f/%main_color%%slot%"
-        - "§8┃ §fDurée: %main_color%%timer%"
+        - "§f §5│ §fConnecté(s): §3%players%§f/%slot%"
+        - "§f §5│ §fDurée: §3%timer%"
         - ""
-        - "§8┃ §fBordure: %main_color%%border%"
+        - "§f §6│ §fPartie : "
+        - "§f §f §8● §fTeam: %main_color%%team%"
+        - "§f §f §8● §fKill : %main_color%%kills%"
         - ""
-        - "§8┃ §fCentre: %main_color%%distance% %arrow%"
-        - "§8┃ §fKill : %main_color%%kills%"
+        - "§f §f §8● §fBordure: %main_color%%border%"
+        - "§f §f §8● §fCentre: %main_color%%distance% %arrow%"
         - ""
-        - "§e<ip>"
+        - "<ip>"
+
+
+      title_role: "§f- %main_color%§lNova UHC §f-"
+      lines_role:
+        - ""
+        - "§f §5│ §fConnecté(s): §3%players%§f/%slot%"
+        - "§f §5│ §fDurée: §3%timer%"
+        - ""
+        - "§f §6│ §fPartie :"
+        - "§f §f §8● §fRôle: %main_color%%role%"
+        - "§f §f §8● §fKill : %main_color%%kills%"
+        - ""
+        - "§f §f §8● §fBordure: %main_color%%border%"
+        - "§f §f §8● §fCentre: %main_color%%distance% %arrow%"
+        - ""
+        - "<ip>"
     end:
       title: "%main_color%§lNova UHC"
       lines:
         - ""
-        - "§8┃ §fDurée totale: %main_color%%timer%"
-        - "§8┃ §fVos éliminations: §c%kills%"
+        - "§f §5│ §fConnecté(s): §3%players%§f/%slot%"
+        - "§f §5│ §fDurée: §3%timer%"
         - ""
-        - "§8┃ §fFélicitations !"
+        - "§f §6│ §fPartie : "
+        - "§f §f §8● §fRôle: %main_color%%role%"
+        - "§f §f §8● §fKill : %main_color%%kills%"
         - ""
-        - "%main_color%<ip>"
-
-
+        - "<ip>"
 
 timer:
   timer_before_start: 15
   combat: 30
+
+staff:
+  - "89daecd6-f9a7-4a2e-a8bf-a7d9294f074f"

@@ -101,7 +101,7 @@ public class PlayerInteractEvent implements Listener {
         if (!(event.getWhoClicked() instanceof Player)) return;
         Player player = (Player) event.getWhoClicked();
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
-        if (UHCManager.get().isLobby()) {
+        if (!player.hasPermission("novauhc.host") || !player.hasPermission("novauhc.cohost")) {
             event.setCancelled(true);
             return;
         }

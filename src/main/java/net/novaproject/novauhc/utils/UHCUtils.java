@@ -246,7 +246,7 @@ public class UHCUtils {
 
                 @Override
                 public void run() {
-                    int limit = 10000;
+                    int limit = 10000000;
                     int placed = 0;
 
                     while (index < blocks.length && placed++ < limit) {

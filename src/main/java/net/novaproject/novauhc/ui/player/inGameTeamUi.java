@@ -2,10 +2,7 @@ package net.novaproject.novauhc.ui.player;
 
 
 import net.novaproject.novauhc.CommonString;
-import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
-import net.novaproject.novauhc.scenario.Scenario;
-import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -94,13 +91,17 @@ public class inGameTeamUi extends CustomInventory {
 
     @Override
     public void open() {
-        if (ScenarioManager.get().getScenarioByName("SkyDef").map(Scenario::isActive).orElse(false)) {
+        /*if (ScenarioManager.get().getScenarioByName("SkyDef").map(Scenario::isActive).orElse(false)) {
             super.open();
             return;
         } else if (ScenarioManager.get().getScenarioByName("BeatTheSanta").map(Scenario::isActive).orElse(false)) {
             super.open();
             return;
         } else if (UHCManager.get().getTeam_size() == 1) {
+            CommonString.DISABLE_ACTION.send(getPlayer());
+            return;
+        }*/
+        if (UHCTeamManager.get().getTeams().isEmpty()) {
             CommonString.DISABLE_ACTION.send(getPlayer());
             return;
         }

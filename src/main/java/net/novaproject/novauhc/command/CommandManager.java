@@ -1,6 +1,7 @@
 package net.novaproject.novauhc.command;
 
 import net.novaproject.novauhc.Main;
+import net.novaproject.novauhc.arena.ArenaCommand;
 import net.novaproject.novauhc.command.cmd.*;
 import org.bukkit.command.*;
 import org.bukkit.plugin.Plugin;
@@ -48,7 +49,7 @@ public class CommandManager implements CommandExecutor, TabExecutor {
         register("doc", new DocumentCMD(), "");
         register("discord", new DiscordCMD(), "");
         register("config", new ConfigCMD(), "preconfig");
-
+        register("arena", new ArenaCommand(), "leave");
     }
 
     public void register(String name, Command command, String... aliases) {

@@ -6,9 +6,11 @@ import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
+import net.novaproject.novauhc.arena.ArenaUHC;
 import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioManager;
+import net.novaproject.novauhc.scenario.role.ScenarioRole;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.ui.config.Enchants;
 import net.novaproject.novauhc.utils.*;
@@ -198,6 +200,10 @@ public class UHCPlayer {
             for (PotionEffect effect : player.getActivePotionEffects()) {
                 player.removePotionEffect(effect.getType());
             }
+
+            if (ArenaUHC.get() == null) {
+                new ArenaUHC();
+            }
             TeamsTagsManager.setNameTag(player, "", "", "");
             PermissionAttachment attachment = player.addAttachment(Main.get());
             Main.getDatabaseManager().connectPlayer(player.getUniqueId());
@@ -205,6 +211,7 @@ public class UHCPlayer {
                 if (!player.hasPermission("novauhc.host")) {
                     attachment.setPermission("novauhc.host", true);
                 }
+
                 CommonString.WELCOME_HOST.send(player);
                 System.out.println(CommonString.WELCOME_HOST.getMessage(player));
                 TeamsTagsManager.setNameTag(player, "host", "§c§lHOST §r§c", "");
@@ -374,6 +381,12 @@ public class UHCPlayer {
                 title = CommonString.getMessage(title, uhcPlayer);
 
                 List<String> lines = config.getStringList("message.scoreboard." + phase + ".lines");
+                if (ScenarioManager.get().getActiveSpecialScenarios().stream()
+                        .anyMatch(scenario -> scenario instanceof ScenarioRole)) {
+                    lines = config.getStringList("message.scoreboard." + phase + ".lines_role");
+                    title = config.getString("message.scoreboard." + phase + ".title_role", "§6NovaUHC");
+                    title = CommonString.getMessage(title, uhcPlayer);
+                }
                 List<String> processedLines = lines.stream()
                         .map(line -> {
                             line = line.replace("<ip>", Common.get().getServerIp());

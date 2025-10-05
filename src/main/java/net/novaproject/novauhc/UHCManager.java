@@ -292,7 +292,7 @@ public class UHCManager {
 
         boolean win = false;
 
-        if (uhcTeamManager.getAliveTeams().size() <= 1) {
+        if (uhcTeamManager.getAliveTeams().size() > 1) {
 
             StringBuilder winner = new StringBuilder();
             StringBuilder teamMemeber = new StringBuilder();
@@ -310,7 +310,7 @@ public class UHCManager {
             }
             Bukkit.broadcastMessage(ChatColor.GOLD + " Félicitations à l'équipe " + winner + " : " + teamMemeber);
             win = true;
-        } else if (uhcPlayerManager.getPlayingOnlineUHCPlayers().size() <= 1) {
+        } else if (uhcPlayerManager.getPlayingOnlineUHCPlayers().size() == 1) {
 
             String winner = "";
             for (UHCPlayer player : uhcPlayerManager.getPlayingOnlineUHCPlayers()) {
