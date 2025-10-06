@@ -87,6 +87,7 @@ public enum CommonString {
     DISCORD_MESSAGE_HOVER,
     DOCUMENT_MESSAGE,
     DOCUMENT_MESSAGE_HOVER,
+    HOST_GIVE,
 
     // Messages d'interface
     WHITELIST_ENABLE_BUTTON,

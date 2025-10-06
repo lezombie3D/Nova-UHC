@@ -120,6 +120,7 @@ message:
   PLAYER_NOT_FOUND: "§c✗ Joueur introuvable ou hors ligne"
   FORCE_PVP_BROADCAST: "§c⚔ Le PVP a été forcé par l'host !"
   FORCE_MEETUP_BROADCAST: "§c♦ Le Meetup a été forcé par l'host !"
+  HOST_GIVE : "§a✓ §f%host% §a à donner %item% %amont%"
 
   # Messages d'erreur standardisés
   ERROR_INVALID_NUMBER: "§c✗ Nombre invalide. Veuillez entrer un nombre valide."
@@ -152,6 +153,6 @@ message:
   INFO_PLEASE_WAIT: "§e⌛ Veuillez patienter..."
   INFO_OPERATION_CANCELLED: "§7◆ Opération annulée"
   INFO_NO_CHANGES_MADE: "§7◆ Aucune modification effectuée"
-  ARENA_JOIN : "%main_color%Arena §7» §c%player% §fa rejoint l'arène !"
-  ARENA_KILL : "%main_color%Arena §7» §c%player_arena% §fa été éliminé par §c%killer_arena%"
-  ARENA_DEATH : "%main_color%Arena §7» §c%player_arena% §fest mort."
+  ARENA_JOIN: "%main_color%Arena §7» §c%player% §fa rejoint l'arène !"
+  ARENA_KILL: "%main_color%Arena §7» §c%player_arena% §fa été éliminé par §c%killer_arena%"
+  ARENA_DEATH: "%main_color%Arena §7» §c%player_arena% §fest mort."

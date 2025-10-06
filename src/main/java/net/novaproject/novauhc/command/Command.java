@@ -5,8 +5,11 @@
 
 package net.novaproject.novauhc.command;
 
+import net.novaproject.novauhc.uhcteam.UHCTeam;
+import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.scoreboard.Team;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +35,20 @@ public abstract class Command {
         String lastArg = commandArguments.getLastArgument();
         return Arrays.asList(strings).stream().filter((string) -> string.startsWith(lastArg)).collect(Collectors.toList());
     }
+
+    public static List<String> getTeams(CommandArguments commandArguments) {
+        String lastArg = commandArguments.getLastArgument();
+        return UHCTeamManager.get()
+                .getTeams()
+                .stream()
+                .map(UHCTeam::getTeam)
+                .map(Team::getName)
+                .map(name -> name.replace('§', '&').replace(" ", "_"))
+                .filter(name -> name.startsWith(lastArg))
+                .collect(Collectors.toList());
+    }
+
+
 
     public abstract void execute(CommandArguments args);
 

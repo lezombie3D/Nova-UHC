@@ -13,6 +13,7 @@ import net.novaproject.novauhc.command.CommandArguments;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
+import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.ui.ConfirmMenu;
 import net.novaproject.novauhc.ui.DefaultUi;
 import net.novaproject.novauhc.ui.config.ScenariosUi;
@@ -59,8 +60,23 @@ public class HCMD extends Command {
             case "scenario":
                 new ScenariosUi(player).open();
                 break;
-            case "reset":
-                UHCManager.get().reset();
+            case "give":
+                if (!UHCManager.get().isGame()) {
+                    CommonString.DISABLE_ACTION.send(player);
+                    return;
+                }
+                ItemStack item = player.getItemInHand().clone();
+
+                if (arguments.length == 2) {
+                    item.setAmount(Integer.parseInt(arguments[1]));
+                }
+
+                UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(p -> {
+                    Location loc = p.getPlayer().getLocation();
+                    loc.getWorld().dropItemNaturally(loc, item).setPickupDelay(0);
+                    String lang = CommonString.HOST_GIVE.getMessage().replace("%item%", item.getType().name()).replace("%amont%", "" + item.getAmount());
+                    p.getPlayer().sendMessage(lang);
+                });
                 break;
             case "config":
                 handleConfigCommand(player);
@@ -91,6 +107,8 @@ public class HCMD extends Command {
                 }
                 break;
             case "forceteam":
+                manageForceTeam(args);
+                break;
             case "heal":
                 finalHealManager();
                 break;
@@ -127,10 +145,10 @@ public class HCMD extends Command {
     public List<String> tabComplete(CommandArguments args) {
         String[] arguments = args.getArguments();
         if (arguments.length == 0) {
-            return getStrings(args, "scenario", "reset", "config", "bypass", "say", "title", "cohost", "revive", "forceteam", "heal", "limite", "forcepvp", "forcemtp", "whitelist", "stuff");
+            return getStrings(args, "scenario", "give", "config", "bypass", "say", "title", "cohost", "revive", "forceteam", "heal", "limite", "forcepvp", "forcemtp", "whitelist", "stuff");
         }
         if (arguments.length == 1) {
-            return getStrings(args, "scenario", "reset", "config", "bypass", "say", "title", "cohost", "revive", "forceteam", "heal", "limite", "forcepvp", "forcemtp", "whitelist", "stuff");
+            return getStrings(args, "scenario", "give", "config", "bypass", "say", "title", "cohost", "revive", "forceteam", "heal", "limite", "forcepvp", "forcemtp", "whitelist", "stuff");
         }
         String sub = arguments[0].toLowerCase();
         switch (sub) {
@@ -161,6 +179,14 @@ public class HCMD extends Command {
                     return getStrings(args, "clear", "list", "modif", "save", "cancel");
                 }
                 break;
+            case "forceteam":
+                if (arguments.length == 2) {
+                    return getOnlinePlayers(args);
+                }
+                if (arguments.length == 3) {
+                    return getTeams(args);
+                }
+                break;
         }
         return Collections.emptyList();
     }
@@ -173,6 +199,44 @@ public class HCMD extends Command {
         }
         new LimiteStuffbyPlayerUi(player, target.getPlayer()).open();
     }
+
+    private void manageForceTeam(CommandArguments args) {
+        if (args.getArguments().length < 3) {
+            args.getSender().sendMessage("§cUsage: /h forceteam <joueur> <team>");
+            return;
+        }
+
+        Player bukkitPlayer = Bukkit.getPlayer(args.getArgument(1));
+        if (bukkitPlayer == null) {
+            args.getSender().sendMessage("§cLe joueur spécifié est introuvable !");
+            return;
+        }
+
+        UHCPlayer target = UHCPlayerManager.get().getPlayer(bukkitPlayer);
+        if (target == null) {
+            args.getSender().sendMessage("§cLe joueur spécifié n'est pas dans la partie !");
+            return;
+        }
+
+        String teamName = args.getArgument(2);
+        teamName = teamName.replace("&", "§").replace("_", " ");
+
+        String finalTeamName = teamName;
+        Optional<UHCTeam> team = UHCTeamManager.get()
+                .getTeams()
+                .stream()
+                .filter(t -> t.getTeam().getName().equalsIgnoreCase(finalTeamName))
+                .findFirst();
+
+        if (!team.isPresent()) {
+            args.getSender().sendMessage("§cCette équipe n'existe pas !");
+            return;
+        }
+
+        target.forceSetTeam(team);
+        args.getSender().sendMessage("§aLe joueur " + target.getPlayer().getName() + " a été ajouté à l'équipe " + teamName + " !");
+    }
+
 
     private void startSTuff(Player player, String[] args) {
         if (args.length < 2) return;
@@ -269,7 +333,7 @@ public class HCMD extends Command {
                 new DefaultUi(player).open();
             }, () -> {
                 CommonString.CONFIG_CANNOT_INGAME.send(player);
-            }, null);
+            }, null).open();
         }
     }
 

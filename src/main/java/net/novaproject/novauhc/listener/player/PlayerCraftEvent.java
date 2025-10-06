@@ -1,6 +1,7 @@
 package net.novaproject.novauhc.listener.player;
 
 import net.novaproject.novauhc.CommonString;
+import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.scenario.normal.GoldenHead;
@@ -22,6 +23,7 @@ import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,25 +34,46 @@ public class PlayerCraftEvent implements Listener {
 
 
     @EventHandler
-    public void onCraft(CraftItemEvent event){
+    public void onCraft(CraftItemEvent event) {
+        if (!(event.getWhoClicked() instanceof Player)) return;
+        Player player = (Player) event.getWhoClicked();
 
-        ItemStack item = event.getRecipe().getResult();
-        ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
-            scenario.onCraft(item, event);
-        });
-        ShapedRecipe goldenHead = new ShapedRecipe(new ItemCreator(Material.GOLDEN_APPLE).setName(ChatColor.GOLD + "Golden Head").getItemstack());
+        ItemStack item = event.getRecipe().getResult().clone();
+
+        ShapedRecipe goldenHead = new ShapedRecipe(
+                new ItemCreator(Material.GOLDEN_APPLE)
+                        .setName(ChatColor.GOLD + "Golden Head")
+                        .getItemstack()
+        );
         goldenHead.shape("GGG", "GHG", "GGG");
         goldenHead.setIngredient('G', Material.GOLD_INGOT);
         goldenHead.setIngredient('H', new MaterialData(Material.SKULL_ITEM, (byte) 3));
+
         GoldenHead golden = ScenarioManager.get().getScenario(GoldenHead.class);
 
-        if (golden.isActive()) {
-            if (item == goldenHead.getResult()) {
-                CommonString.BLOCKED_CRAFT_ITEM.send((Player) event.getWhoClicked());
-                event.setCancelled(true);
-            }
+        if (golden.isActive() && item.isSimilar(goldenHead.getResult())) {
+            CommonString.BLOCKED_CRAFT_ITEM.send(player);
+            event.setCancelled(true);
+            player.updateInventory();
+            return;
         }
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (ItemStack invItem : player.getInventory().getContents()) {
+                    if (invItem != null && invItem.isSimilar(invItem)) {
+                        ScenarioManager.get().getActiveScenarios().forEach(scenario -> scenario.onCraft(invItem, event));
+                    }
+                }
+            }
+        }.runTaskLater(Main.get(), 2L);
+
+        ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
+            scenario.onCraft(item, event);
+        });
     }
+
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void EnchantItemEvent(EnchantItemEvent event) {
