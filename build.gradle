@@ -36,7 +36,7 @@ shadowJar {
     relocate 'org.bson', 'net.novauhc.libs.bson'
     relocate 'fr.mrmicky.fastboard', 'net.novauhc.libs.fastboard'
     archiveClassifier.set('')
-    destinationDirectory.set(file("F:\\plugin\\Plugin"))
+    //destinationDirectory.set(file("F:\\plugin\\Plugin"))
 }
 
 build.dependsOn shadowJar

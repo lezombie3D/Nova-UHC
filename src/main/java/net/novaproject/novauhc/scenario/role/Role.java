@@ -16,7 +16,9 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -32,8 +34,6 @@ public abstract class Role {
     public String getColor() {
         return camp.getColor();
     }
-
-
 
     public abstract ItemCreator getItem();
 

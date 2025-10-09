@@ -5,12 +5,17 @@ import net.novaproject.novauhc.scenario.role.ScenarioRole;
 import net.novaproject.novauhc.scenario.role.camps.Camps;
 import net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.dragon.Fatalis;
 import net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.dragon.WhiteFatalis;
+import net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.resistance.ResistanceProfile;
+import net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.status.StatusEffect;
+import net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.status.StatusFactory;
+import net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.status.StatusManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.UHCUtils;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -18,8 +23,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class DragonFall extends ScenarioRole<DragonRole> {
+
+    private StatusManager manager = StatusManager.getInstance();
     @Override
     public String getName() {
         return "Monster Hunter : DragonRole Fall";
@@ -74,14 +82,12 @@ public class DragonFall extends ScenarioRole<DragonRole> {
 
         UHCPlayer uhcVictim = UHCPlayerManager.get().getPlayer(victim);
         UHCPlayer uhcAttacker = UHCPlayerManager.get().getPlayer(attacker);
-
         if (uhcVictim == null || uhcAttacker == null) return;
 
-        event.setDamage(0.0);
+        event.setDamage(0.0D);
 
         DragonRole dragonVictim = getRoleByUHCPlayer(uhcVictim);
         DragonRole dragonAttacker = getRoleByUHCPlayer(uhcAttacker);
-
         if (dragonVictim == null || dragonAttacker == null) return;
 
         int currentHP = dragonVictim.getCurrentHP();
@@ -95,39 +101,66 @@ public class DragonFall extends ScenarioRole<DragonRole> {
         double critPercent = dragonAttacker.getCritDamage();
         double critChance = dragonAttacker.getCritChance();
 
-        double rawAttack = Math.pow(attackerForce / 100.0, 1.3) * 45;
-        double defenseReduction = defenderResistance / (defenderResistance + 1200.0);
+        double rawAttack = Math.pow(attackerForce / 100.0D, 1.3D) * 45.0D;
+        double defenseReduction = defenderResistance / (defenderResistance + 1200.0D);
+        long baseDamage = Math.round(rawAttack * (1.0D - defenseReduction));
 
-        long baseDamage = Math.round(rawAttack * (1 - defenseReduction));
-        double variation = 1 + ((Math.random() * 0.10) - 0.05);
+        double variation = 1.0D + ((Math.random() * 0.10D) - 0.05D);
         baseDamage = Math.round(baseDamage * variation);
 
+        ResistanceProfile resistProfile = dragonVictim.getResistanceProfile();
+        Map<ElementType, Double> elements = dragonAttacker.getElementPowers();
 
-        int weaknessCount = 0;
-        int immunityCount = 0;
-        for (Element element : dragonVictim.getWeakness()) {
-            if (dragonAttacker.getElement().contains(element)) {
-                weaknessCount++;
+        if (resistProfile != null && elements != null && !elements.isEmpty()) {
+            double totalMultiplier = 0.0D;
+            int count = 0;
+
+            for (Map.Entry<ElementType, Double> entry : elements.entrySet()) {
+                ElementType element = entry.getKey();
+                double power = entry.getValue(); // force élémentaire (0.0 à 1.5)
+                double resistance = resistProfile.getResistance(element); // résistance (-1.0 à +1.0)
+                double multiplier = (1.0D - resistance) * power;
+                totalMultiplier += multiplier;
+                count++;
             }
-        }
-        for (Element element : dragonVictim.getImmunity()) {
-            if (dragonAttacker.getElement().contains(element)) {
-                immunityCount++;
-            }
+
+            double averageMultiplier = totalMultiplier / (double) count;
+            baseDamage = Math.round(baseDamage * averageMultiplier);
         }
 
-        baseDamage = Math.round(baseDamage * (1 - 0.02 * weaknessCount));
-        baseDamage = Math.round(baseDamage * (1 + 0.02 * immunityCount));
         String display = "§c-" + baseDamage;
-        if ((int) (Math.random() * 100) < critChance) {
-            baseDamage = Math.round(baseDamage * (1 + critPercent / 100.0));
+        if ((int) (Math.random() * 100.0D) < critChance) {
+            baseDamage = Math.round(baseDamage * (1.0D + critPercent / 100.0D));
             display = "§c-✦" + baseDamage + "✦";
         }
-        dragonVictim.setCurrentHP(currentHP - (int) baseDamage);
+
+        if (elements != null && !elements.isEmpty()) {
+            for (Map.Entry<ElementType, Double> entry : elements.entrySet()) {
+                ElementType element = entry.getKey();
+                double power = entry.getValue();
+                double baseChance = dragonAttacker.getBlightChance(element);
+                double resistance = dragonVictim.getResistanceProfile().getResistance(element);
+
+                double finalChance = baseChance * power * (1.0D - resistance);
+                if (finalChance < 0) finalChance = 0.0D;
+
+                if (Math.random() * 100.0D < finalChance) {
+                    StatusEffect effect = StatusFactory.create(element, victim);
+                    if (effect != null) {
+                        manager.applyEffect(victim, effect);
+                    }
+                }
+            }
+        }
+
+
+        int finalHP = Math.max(0, currentHP - (int) baseDamage);
+        dragonVictim.setCurrentHP(finalHP);
 
         UHCUtils.spawnFloatingDamage(attacker, display);
-        UHCUtils.setRealHealth(dragonVictim.getMaxHP(), currentHP, victim, dragonVictim.getAbsortion());
+        UHCUtils.setRealHealth(dragonVictim.getMaxHP(), finalHP, victim, dragonVictim.getAbsortion());
     }
+
 
 
     @Override

@@ -5,6 +5,7 @@ import lombok.Setter;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.scenario.normal.GoldenHead;
 import net.novaproject.novauhc.scenario.role.Role;
+import net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.resistance.ResistanceProfile;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.ChatColor;
@@ -14,11 +15,19 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
 public abstract class DragonRole extends Role {
+
+
+    public DragonRole(){
+        this.resistanceProfile = new ResistanceProfile();
+        initResistances();
+    }
 
 
     private int currentHP;
@@ -28,6 +37,7 @@ public abstract class DragonRole extends Role {
     private int currentCritChance;
     private int Absortion = 0;
 
+    private ResistanceProfile resistanceProfile;
     public abstract int getMaxHP();
 
     public abstract int getStrength();
@@ -38,21 +48,29 @@ public abstract class DragonRole extends Role {
 
     public abstract int getCritChance();
 
-    public List<Element> getWeakness() {
-        return new ArrayList<>();
+    public abstract void initResistances();
+
+    private final Map<ElementType, Double> elementPowers = new EnumMap<>(ElementType.class);
+
+    public Map<ElementType, Double> getElementPowers() {
+        return elementPowers;
     }
 
-    public List<Element> getImmunity() {
-        return new ArrayList<>();
+    private final Map<ElementType, Double> blightChances = new EnumMap<ElementType, Double>(ElementType.class);
+
+    public double getBlightChance(ElementType type) {
+        Double val = blightChances.get(type);
+        return val == null ? 0.0D : val;
     }
 
-    public List<Element> getElement() {
-        return new ArrayList<>();
+    public void setBlightChance(ElementType type, double chance) {
+        blightChances.put(type, Math.max(0.0D, Math.min(100.0D, chance)));
     }
 
-    public List<Status> getPossibleStatus() {
-        return new ArrayList<>();
+    public void addElement(ElementType type, double power) {
+        elementPowers.put(type, power);
     }
+
 
     public DragonRole getEvolution() {
         return null;

@@ -7,6 +7,7 @@ import org.bukkit.Material;
 
 public class Fatalis extends DragonRole {
     public Fatalis() {
+        super();
         setCamp(Tiers.SS);
     }
 
@@ -54,5 +55,10 @@ public class Fatalis extends DragonRole {
     @Override
     public int getCritChance() {
         return 100;
+    }
+
+    @Override
+    public void initResistances() {
+
     }
 }

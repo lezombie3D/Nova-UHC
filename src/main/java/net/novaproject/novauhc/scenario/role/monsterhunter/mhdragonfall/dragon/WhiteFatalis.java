@@ -9,6 +9,7 @@ public class WhiteFatalis extends DragonRole {
 
 
     public WhiteFatalis() {
+        super();
         setCamp(Tiers.SS);
     }
 
@@ -46,6 +47,11 @@ public class WhiteFatalis extends DragonRole {
     @Override
     public int getCritChance() {
         return 10;
+    }
+
+    @Override
+    public void initResistances() {
+
     }
 
     @Override
