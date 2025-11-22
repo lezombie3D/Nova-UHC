@@ -11,18 +11,22 @@ import java.util.Map;
 
 public class ScenarioLangManager {
     private static final Map<String, String> TRANSLATIONS = new HashMap<>();
-    private static final String DEFAULT_MESSAGE = "§cMissing Translation";
 
     public static void loadMessages(FileConfiguration config, ScenarioLang[] values) {
         for (ScenarioLang key : values) {
             String path = key.getPath();
+
+            if (!config.contains(path)) {
+                config.set(path, key.getDefaultMessage());
+            }
+
             String message = config.getString(path);
-            TRANSLATIONS.put(path, message != null ? message.replace("&", "§") : DEFAULT_MESSAGE);
+            TRANSLATIONS.put(path, message != null ? message.replace("&", "§") : key.getDefaultMessage());
         }
     }
 
     public static String get(ScenarioLang key, UHCPlayer uhcPlayer, Map<String, Object> extraPlaceholders) {
-        String message = TRANSLATIONS.getOrDefault(key.getPath(), DEFAULT_MESSAGE);
+        String message = TRANSLATIONS.getOrDefault(key.getPath(), key.getDefaultMessage());
 
         Map<String, Object> placeholders = new HashMap<>(CommonString.getPlaceHolders(uhcPlayer));
         placeholders.putAll(key.getScenarioPlaceholders(uhcPlayer));
@@ -47,7 +51,7 @@ public class ScenarioLangManager {
     }
 
     public static String getMessage(ScenarioLang key, Map<String, Object> extraPlaceholders) {
-        String message = TRANSLATIONS.getOrDefault(key.getPath(), DEFAULT_MESSAGE);
+        String message = TRANSLATIONS.getOrDefault(key.getPath(), key.getDefaultMessage());
 
         if (extraPlaceholders != null) {
             for (Map.Entry<String, Object> entry : extraPlaceholders.entrySet()) {

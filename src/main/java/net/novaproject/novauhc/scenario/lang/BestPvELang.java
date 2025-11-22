@@ -8,12 +8,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum BestPvELang implements ScenarioLang {
-    LIST_QUIT,
-    LIST_JOIN,
-    GAIN_MESSAGE,
-    ;
+    LIST_QUIT("Vous avez quittez la list BestPve. Vous la rejoidnrais de nouveaux dans %best_timer%"),
+    LIST_JOIN("Vous avez rejoint la list BestPve. Attention a ne plus prendre de degats !"),
+    GAIN_MESSAGE("Vous avez gagné §a%heart_gain% §fcoeur(s) !");
 
+    private final String defaultMessage;
     private static FileConfiguration config;
+
+    BestPvELang(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    @Override
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 
     @Override
     public String getBasePath() {

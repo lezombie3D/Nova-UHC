@@ -9,11 +9,21 @@ import java.util.Map;
 
 public enum WeakestLinkLang implements ScenarioLang {
 
-    WEAKEST_PLAYER,
-    DAMAGE_TAKEN,
-    NO_LONGER_WEAKEST;
+    WEAKEST_PLAYER("§c[WeakestLink] §f%player% est maintenant le maillon faible ! (Dégâts x%multiplier%)"),
+    DAMAGE_TAKEN("§c[WeakestLink] §fVous êtes le maillon faible ! Vous prenez %multiplier%x plus de dégâts !"),
+    NO_LONGER_WEAKEST("§c[WeakestLink] §fVous n'êtes plus le maillon faible !");
 
+    private final String defaultMessage;
     private static FileConfiguration config;
+
+    WeakestLinkLang(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    @Override
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 
     @Override
     public String getBasePath() {

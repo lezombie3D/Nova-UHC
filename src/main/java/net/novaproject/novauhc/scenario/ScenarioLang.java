@@ -15,6 +15,8 @@ public interface ScenarioLang {
 
     void setConfig(FileConfiguration config);
 
+    String getDefaultMessage();
+
     default String getPath() {
         return getBasePath() + "." + name();
     }

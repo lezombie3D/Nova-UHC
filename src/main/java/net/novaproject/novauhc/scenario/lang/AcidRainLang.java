@@ -9,13 +9,23 @@ import java.util.Map;
 
 public enum AcidRainLang implements ScenarioLang {
 
-    ACID_RAIN_START,
-    ACID_RAIN_END,
-    ACID_RAIN_WARNING,
-    TAKING_DAMAGE,
-    SAFE_SHELTER;
+    ACID_RAIN_START("§2[AcidRain] §fPluie acide ! Abritez-vous sous des blocs !"),
+    ACID_RAIN_END("§2[AcidRain] §fLa pluie acide s'arrête."),
+    ACID_RAIN_WARNING("§2[AcidRain] §fPluie acide dans %time% secondes !"),
+    TAKING_DAMAGE("§2[AcidRain] §cVous prenez des dégâts de la pluie acide !"),
+    SAFE_SHELTER("§2[AcidRain] §fVous êtes à l'abri de la pluie acide.");
 
+    private final String defaultMessage;
     private static FileConfiguration config;
+
+    AcidRainLang(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    @Override
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 
     @Override
     public String getBasePath() {

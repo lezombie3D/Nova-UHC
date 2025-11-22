@@ -9,15 +9,25 @@ import java.util.Map;
 
 public enum MysteryTeamLang implements ScenarioLang {
 
-    TEAMS_ASSIGNED,
-    FIND_TEAMMATES,
-    TEAMMATE_FOUND,
-    TEAMS_REVEALED,
-    TEAM_ANNOUNCEMENT,
-    REVEAL_WARNING,
-    REVEAL_FORCED;
+    TEAMS_ASSIGNED("§5§l[MysteryTeam] §fLes équipes mystères ont été assignées !"),
+    FIND_TEAMMATES("§5[MysteryTeam] §fTrouvez vos coéquipiers en comparant vos bannières !"),
+    TEAMMATE_FOUND("§5[MysteryTeam] §f%teammate% §fest votre coéquipier ! (Équipe %team_name%)"),
+    TEAMS_REVEALED("§5§l[MysteryTeam] §fTOUTES LES ÉQUIPES SONT RÉVÉLÉES !"),
+    TEAM_ANNOUNCEMENT("§5[MysteryTeam] §fÉquipe %team_name%: %members%"),
+    REVEAL_WARNING("§5[MysteryTeam] §fRévélation des équipes dans %time% !"),
+    REVEAL_FORCED("§5[MysteryTeam] §fÉquipes révélées par un administrateur !");
 
+    private final String defaultMessage;
     private static FileConfiguration config;
+
+    MysteryTeamLang(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    @Override
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 
     @Override
     public String getBasePath() {

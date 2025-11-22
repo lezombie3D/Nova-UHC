@@ -9,17 +9,27 @@ import java.util.Map;
 
 public enum SoulBrotherLang implements ScenarioLang {
 
-    SOULS_SEPARATED,
-    WORLD_ASSIGNMENT,
-    REUNION_STARTED,
-    REUNION_MESSAGE,
-    SOUL_BROTHER_INFO,
-    REUNION_BONUS,
-    REUNION_WARNING,
-    REUNION_FORCED,
-    SOUL_BROTHER_UPDATE;
+    SOULS_SEPARATED("§d§l[SoulBrother] §fLes âmes sœurs sont séparées dans des mondes parallèles !"),
+    WORLD_ASSIGNMENT("§d[SoulBrother] §fVous êtes dans le monde %world_name% !"),
+    REUNION_STARTED("§d§l[SoulBrother] §fLES ÂMES SŒURS SE RETROUVENT !"),
+    REUNION_MESSAGE("§d[SoulBrother] §fVous avez été réuni avec votre âme sœur !"),
+    SOUL_BROTHER_INFO("§d[SoulBrother] §fVotre âme sœur est §d%brother_name% §f!"),
+    REUNION_BONUS("§d[SoulBrother] §fBonus de réunion reçu !"),
+    REUNION_WARNING("§d[SoulBrother] §fRéunion des âmes sœurs dans %time% !"),
+    REUNION_FORCED("§d[SoulBrother] §fRéunion forcée par un administrateur !"),
+    SOUL_BROTHER_UPDATE("§d[SoulBrother] §fVotre âme sœur %brother_name% est en %x%, %z% (Vie: %health%/20)");
 
+    private final String defaultMessage;
     private static FileConfiguration config;
+
+    SoulBrotherLang(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    @Override
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 
     @Override
     public String getBasePath() {
