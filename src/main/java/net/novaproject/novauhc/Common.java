@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 
 @Getter
 @Setter
@@ -57,6 +58,12 @@ public class Common {
         mbport = Main.get().getConfig().getString("mumble.port");
         arenaName = ConfigUtils.getWorldConfig().getString("arena_world.name");
         lobbyName = ConfigUtils.getWorldConfig().getString("world_lobby.lobby_target");
+
+        if (!ConfigUtils.getLangConfig().contains("main_color")){
+            FileConfiguration config = ConfigUtils.getLangConfig();
+            config.set("main_color", "§9");
+        }
+
         mainColor = ConfigUtils.getLangConfig().getString("main_color");
 
     }

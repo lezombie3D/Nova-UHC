@@ -173,6 +173,14 @@ public class ConfigUtils {
         return getConfig(LANG_CONFIG);
     }
 
+    public static void saveLangConfig(FileConfiguration config) {
+        try {
+            saveConfig(config, LANG_CONFIG);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static FileConfiguration getMenuConfig() {
         return getConfig(MENU_CONFIG);
     }
