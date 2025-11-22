@@ -91,6 +91,10 @@ public class ConfigUtils {
         });
     }
 
+    public static File getFile(FileConfiguration config) {
+        return new File(Main.get().getDataFolder(), REGISTERED_PATHS.contains(config.getString("path")) ? config.getString("path") : "");
+    }
+
     public static FileConfiguration getConfig(String path) {
         File file = new File(Main.get().getDataFolder(), path);
         return YamlConfiguration.loadConfiguration(file);
@@ -171,6 +175,14 @@ public class ConfigUtils {
 
     public static FileConfiguration getLangConfig() {
         return getConfig(LANG_CONFIG);
+    }
+
+    public static void saveLangConfig(FileConfiguration config) {
+        try {
+            saveConfig(config, LANG_CONFIG);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static FileConfiguration getMenuConfig() {
