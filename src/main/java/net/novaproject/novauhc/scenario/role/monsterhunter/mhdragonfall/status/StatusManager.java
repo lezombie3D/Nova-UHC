@@ -1,6 +1,7 @@
 package net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.status;
 
 import net.novaproject.novauhc.Main;
+import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -10,9 +11,9 @@ import java.util.*;
 public class StatusManager {
 
     private static StatusManager instance;
-    private final Map<UUID, List<StatusEffect>> activeEffects = new HashMap<UUID, List<StatusEffect>>();
+    private final Map<UUID, List<StatusEffect>> activeEffects = new HashMap<>();
 
-    public static StatusManager getInstance() {
+    public static StatusManager get() {
         if (instance == null) instance = new StatusManager();
         return instance;
     }
@@ -26,17 +27,11 @@ public class StatusManager {
         }.runTaskTimerAsynchronously(Main.get(), 0L, 20L);
     }
 
-    /**
-     * Applique un effet à un joueur
-     */
+
     public void applyEffect(Player player, StatusEffect effect) {
         if (player == null || effect == null) return;
 
-        List<StatusEffect> effects = activeEffects.get(player.getUniqueId());
-        if (effects == null) {
-            effects = new ArrayList<StatusEffect>();
-            activeEffects.put(player.getUniqueId(), effects);
-        }
+        List<StatusEffect> effects = activeEffects.computeIfAbsent(player.getUniqueId(), k -> new ArrayList<>());
 
         for (Iterator<StatusEffect> it = effects.iterator(); it.hasNext();) {
             StatusEffect existing = it.next();
@@ -61,7 +56,7 @@ public class StatusManager {
             List<StatusEffect> list = entry.getValue();
 
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null || !player.isOnline()) {
+            if (player == null || !player.isOnline() || !UHCPlayerManager.get().getPlayer(player).isPlaying()) {
                 playerIt.remove();
                 continue;
             }
@@ -94,6 +89,16 @@ public class StatusManager {
      */
     public List<StatusEffect> getEffects(Player player) {
         List<StatusEffect> list = activeEffects.get(player.getUniqueId());
-        return list == null ? Collections.<StatusEffect>emptyList() : new ArrayList<StatusEffect>(list);
+        return list == null ? Collections.emptyList() : new ArrayList<>(list);
+    }
+
+    public void stopEffect(Player player, StatusEffect effect) {
+        List<StatusEffect> effects = getEffects(player);
+        if (effects.contains(effect)) {
+            effect.end();
+            activeEffects.get(player.getUniqueId()).remove(effect);
+        } else {
+            player.sendMessage("Pas de effect : " + effect.getName());
+        }
     }
 }

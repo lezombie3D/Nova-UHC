@@ -188,13 +188,6 @@ public abstract class ScenarioRole<T extends Role> extends Scenario {
     }
 
     @Override
-    public void onFfCMD(Player player, String subCommand, String[] args) {
-        players_roles.forEach((player1, role) -> {
-            role.onFfCMD(player1, subCommand, args);
-        });
-    }
-
-    @Override
     public void onHit(Entity entity, Entity dammager, EntityDamageByEntityEvent event) {
         players_roles.forEach((uhcPlayer, role) ->
                 role.onHit(entity, dammager, event)

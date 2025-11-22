@@ -4,6 +4,7 @@ import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
+import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
@@ -72,11 +73,12 @@ public class ScatterTask extends BukkitRunnable {
         ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
             UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(uhcPlayer -> {
                 scenario.onStart(uhcPlayer.getPlayer());
-
             });
         });
 
-        new GameTask().runTaskTimer(Main.get(), 0, 20);
+        ScenarioManager.get().getActiveScenarios().forEach(Scenario::onGameStart);
+
+        new GameTask().runTaskTimer(Main.get(), 0, 20L);
     }
 
     private void onScatter(UHCPlayer uhcPlayer) {

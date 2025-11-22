@@ -98,29 +98,37 @@ public class PlayerInteractEvent implements Listener {
     }
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player)) return;
-        Player player = (Player) event.getWhoClicked();
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
-        if (!player.hasPermission("novauhc.host") || !player.hasPermission("novauhc.cohost")) {
-            event.setCancelled(true);
+
+        if (UHCManager.get().isLobby()) {
+            if (!player.hasPermission("novauhc.host") || !player.hasPermission("novauhc.cohost")) {
+                event.setCancelled(true);
+                player.updateInventory();
+            }
             return;
         }
+
         if (event.isShiftClick()) {
             ItemStack clicked = event.getCurrentItem();
             if (isDiamondArmor(clicked)) {
-                if (exceedsDiamondLimit(player)) {
+                if (exceedsDiamondLimit(player, uhcPlayer)) {
                     event.setCancelled(true);
                     player.playSound(player.getLocation(), Sound.ANVIL_LAND, 1, 1);
                     CommonString.EXEDED_LIMITE.send(player);
+                    player.updateInventory();
                 }
             }
             return;
         }
+
         if (event.getSlotType() == InventoryType.SlotType.ARMOR) {
             ItemStack cursor = event.getCursor();
             if (isDiamondArmor(cursor)) {
                 ItemStack current = event.getCurrentItem();
                 int currentPieces = countDiamondArmor(player);
+
                 if (isDiamondArmor(current)) {
                     currentPieces--;
                 }
@@ -129,6 +137,7 @@ public class PlayerInteractEvent implements Listener {
                     event.setCancelled(true);
                     player.playSound(player.getLocation(), Sound.ANVIL_LAND, 1, 1);
                     CommonString.EXEDED_LIMITE.send(player);
+                    player.updateInventory();
                 }
             }
         }
@@ -145,20 +154,16 @@ public class PlayerInteractEvent implements Listener {
 
     private int countDiamondArmor(Player player) {
         int count = 0;
-        ItemStack[] armor = player.getInventory().getArmorContents();
-
-        for (ItemStack item : armor) {
-            if (isDiamondArmor(item)) {
-                count++;
-            }
+        for (ItemStack item : player.getInventory().getArmorContents()) {
+            if (isDiamondArmor(item)) count++;
         }
         return count;
     }
 
-    private boolean exceedsDiamondLimit(Player player) {
-        UHCPlayer p = UHCPlayerManager.get().getPlayer(player);
-        return countDiamondArmor(player) >= p.getDiamondArmor();
+    private boolean exceedsDiamondLimit(Player player, UHCPlayer uhcPlayer) {
+        return countDiamondArmor(player) >= uhcPlayer.getDiamondArmor();
     }
+
 
     @EventHandler
     public void onConsume(PlayerItemConsumeEvent event) {

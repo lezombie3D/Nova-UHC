@@ -43,7 +43,7 @@ public class DragonStatsDisplay {
     private String formatStats(DragonRole dragon) {
         int hp = dragon.getCurrentHP();
         int maxHp = dragon.getMaxHP();
-        double resistance = dragon.getResistance();
+        double resistance = dragon.getCurrentResistance();
         double strength = dragon.getCurrentStrength();
         int abso = dragon.getAbsortion();
 

@@ -1,6 +1,6 @@
 package net.novaproject.novauhc.scenario.role.deathnote;
 
-import lombok.var;
+
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.scenario.role.deathnote.roles.DeathNoteRole;
@@ -17,12 +17,11 @@ public class KiraChatCMD implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
-        if (!(commandSender instanceof Player)) {
+        if (!(commandSender instanceof Player player)) {
             commandSender.sendMessage("Cette commande est réservée aux joueurs !");
             return true;
         }
 
-        Player player = (Player) commandSender;
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
 
         if (!ScenarioManager.get().isScenarioActive("Death Note UHC")) {

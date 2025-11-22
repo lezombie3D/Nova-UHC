@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissionAttachment;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -60,38 +61,50 @@ public class PlayerConnectionEvent implements Listener {
     public void onLogin(PlayerLoginEvent event) {
         Player player = event.getPlayer();
 
+        List<String> staffList = Main.get().getConfig().getStringList("staff");
+        boolean isStaff = staffList.contains(player.getUniqueId().toString());
+
         if (firstPlayerUUID == null) {
             firstPlayerUUID = player.getUniqueId().toString();
             setHost(player);
-            event.setResult(PlayerLoginEvent.Result.ALLOWED);
+            event.allow();
             return;
-        } else {
-            if (player.getUniqueId().toString().equals(firstPlayerUUID)) {
-                setHost(player);
-                event.setResult(PlayerLoginEvent.Result.ALLOWED);
-                return;
-            }
         }
-        if (!Bukkit.getServer().getWhitelistedPlayers().contains(player) && Bukkit.hasWhitelist()) {
+
+        if (player.getUniqueId().toString().equals(firstPlayerUUID)) {
+            setHost(player);
+            event.allow();
+            return;
+        }
+
+        if (isStaff) {
+            event.allow();
+            PermissionAttachment attachment = player.addAttachment(Main.get());
+            attachment.setPermission("novauhc.host", true);
+            return;
+        }
+
+        if (Bukkit.hasWhitelist() && !Bukkit.getWhitelistedPlayers().contains(player)) {
             event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, CommonString.KICK_WHITELIST.getMessage());
             return;
         }
+
         if (!UHCManager.get().isSpectator() && UHCManager.get().isGame()) {
             if (UHCPlayerManager.get().getPlayer(player) == null) {
                 event.disallow(PlayerLoginEvent.Result.KICK_OTHER, CommonString.KICK_SPEC.getMessage());
                 return;
             }
         }
+
         int slot = UHCManager.get().getSlot();
         int playersize = UHCPlayerManager.get().getPlayingOnlineUHCPlayers().size();
 
         if (playersize >= slot) {
             event.disallow(PlayerLoginEvent.Result.KICK_FULL, CommonString.KICK_FULL.getMessage());
-
         }
-
-
     }
+
+
 
 
 

@@ -2,7 +2,6 @@ package net.novaproject.novauhc.utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import lombok.var;
 import net.minecraft.server.v1_8_R3.*;
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.Main;

@@ -7,8 +7,10 @@ group = 'NovaUHC'
 version = '0.1'
 
 compileJava.options.encoding = 'UTF-8'
-sourceCompatibility = 1.8
-
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 repositories {
     mavenCentral()
 
@@ -27,6 +29,13 @@ dependencies {
     implementation 'com.github.azbh111:spigot-1.8.8:R'
     compileOnly("org.projectlombok:lombok:1.18.38")
     annotationProcessor("org.projectlombok:lombok:1.18.38")
+
+    implementation platform('eu.cloudnetservice.cloudnet:bom:4.0.0-RC10')
+    implementation 'eu.cloudnetservice.cloudnet:driver'
+    implementation 'eu.cloudnetservice.cloudnet:wrapper-jvm'
+    implementation 'eu.cloudnetservice.cloudnet:bridge'
+    implementation 'eu.cloudnetservice.cloudnet:platform-inject-api'
+
 }
 
 
@@ -36,7 +45,7 @@ shadowJar {
     relocate 'org.bson', 'net.novauhc.libs.bson'
     relocate 'fr.mrmicky.fastboard', 'net.novauhc.libs.fastboard'
     archiveClassifier.set('')
-    //destinationDirectory.set(file("F:\\plugin\\Plugin"))
+    destinationDirectory.set(file("F:\\plugin\\Plugin"))
 }
 
 build.dependsOn shadowJar

@@ -115,13 +115,19 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        Location loc = player.getLocation();
 
+        if (UHCManager.get().isLobby()) {
+
+            if (loc.getBlockY() < 0) {
+                player.teleport(Common.get().getLobbySpawn());
+            }
+        }
         ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
             scenario.onMove(player, event);
         });
 
         if (player.getGameMode() == GameMode.SPECTATOR) {
-            Location loc = player.getLocation();
             if (loc.getBlockY() < 0) {
                 Location newLoc = loc.clone();
                 newLoc.setY(0);

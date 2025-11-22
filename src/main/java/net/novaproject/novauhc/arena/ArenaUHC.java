@@ -2,11 +2,13 @@ package net.novaproject.novauhc.arena;
 
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
+import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.UHCUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -29,6 +32,7 @@ public class ArenaUHC implements Listener {
     private static ArenaUHC instance;
     private final List<ArenaZone> zones = new ArrayList<>();
     private final Map<Player, ArenaZone> players = new HashMap<>();
+    private final List<Player> ignoringTeleport = new ArrayList<>();
     public ArenaUHC() {
         instance = this;
         if (!ConfigUtils.getWorldConfig().getBoolean("arena.active")) {
@@ -48,6 +52,9 @@ public class ArenaUHC implements Listener {
             public void run() {
                 for (ArenaZone zone : zones) {
                     checkPlayers(zone);
+                }
+                if (!UHCManager.get().isLobby()) {
+                    cancel();
                 }
             }
         }.runTaskTimer(Main.get(), 1, 1);
@@ -72,6 +79,7 @@ public class ArenaUHC implements Listener {
     }
 
     private void addPlayer(Player player, ArenaZone zone) {
+        if (!(UHCManager.get().getGameState() == UHCManager.GameState.LOBBY)) return;
         if (players.containsKey(player)) return;
 
         players.put(player, zone);
@@ -111,6 +119,31 @@ public class ArenaUHC implements Listener {
         players.remove(player);
     }
 
+    public void removePlayer(Player player, Location loc) {
+        if (!players.containsKey(player)) return;
+
+        ignoringTeleport.add(player);
+
+        if (player.isOnline()) {
+            player.teleport(loc);
+
+            PlayerInventory inventory = player.getInventory();
+            inventory.clear();
+            inventory.setArmorContents(null);
+
+            UHCUtils.giveLobbyItems(player);
+            player.setHealth(player.getMaxHealth());
+        }
+
+        players.remove(player);
+
+        Bukkit.getScheduler().runTaskLater(Main.get(), () -> ignoringTeleport.remove(player), 2L);
+    }
+
+
+
+
+
     @SafeVarargs
     private final void broadcast(String message, SimpleEntry<String, Object>... variables) {
         for (Player player : players.keySet()) {
@@ -124,8 +157,7 @@ public class ArenaUHC implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player)) return;
-        Player player = (Player) event.getEntity();
+        if (!(event.getEntity() instanceof Player player)) return;
         if (!players.containsKey(player)) return;
 
         if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
@@ -137,10 +169,8 @@ public class ArenaUHC implements Listener {
         boolean dead = player.getHealth() - event.getFinalDamage() <= 0;
 
         if (dead) {
-            if (event instanceof EntityDamageByEntityEvent) {
-                EntityDamageByEntityEvent entityEvent = (EntityDamageByEntityEvent) event;
-                if (entityEvent.getDamager() instanceof Player) {
-                    Player damager = (Player) entityEvent.getDamager();
+            if (event instanceof EntityDamageByEntityEvent entityEvent) {
+                if (entityEvent.getDamager() instanceof Player damager) {
                     broadcast(CommonString.ARENA_KILL.getMessage(),
                             new SimpleEntry<>("%player_arena%", player.getName()),
                             new SimpleEntry<>("%killer_arena%", damager.getName()));
@@ -156,6 +186,22 @@ public class ArenaUHC implements Listener {
             removePlayer(player);
         }
     }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onTeleport(PlayerTeleportEvent event) {
+        Player player = event.getPlayer();
+
+        if (ignoringTeleport.contains(player)) return;
+
+        if (!players.containsKey(player)) return;
+
+        ArenaZone zone = players.get(player);
+        Location to = event.getTo();
+        if (to != null && !zone.contains(to)) {
+            removePlayer(player, to);
+        }
+    }
+
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {

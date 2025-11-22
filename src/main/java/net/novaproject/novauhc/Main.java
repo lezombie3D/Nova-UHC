@@ -8,6 +8,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import net.novaproject.novauhc.command.CommandManager;
 import net.novaproject.novauhc.database.DatabaseManager;
+import net.novaproject.novauhc.utils.CloudNet;
 import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.nms.NMSPatcher;
 import net.novaproject.novauhc.world.generation.BiomeReplacer;
@@ -23,6 +24,7 @@ public class Main extends JavaPlugin {
     private CommandManager commandManager;
     private MongoClient mongoClient;
     private MongoDatabase database;
+    private CloudNet cloudNet;
 
 
     public static Main get() {
@@ -56,6 +58,7 @@ public class Main extends JavaPlugin {
         common = new Common();
         ConfigUtils.setup();
         BiomeReplacer.init();
+        cloudNet = new CloudNet();
     }
 
     @Override
@@ -97,5 +100,9 @@ public class Main extends JavaPlugin {
             e.printStackTrace();
             getServer().getPluginManager().disablePlugin(this);
         }
+    }
+
+    public CloudNet getCloudNet() {
+        return cloudNet;
     }
 }

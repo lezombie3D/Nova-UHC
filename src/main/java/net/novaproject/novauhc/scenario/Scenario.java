@@ -110,6 +110,10 @@ public abstract class Scenario {
 
     }
 
+    public void onGameStart() {
+
+    }
+
     public ScenarioLang[] getLang() {
         return null;
     }

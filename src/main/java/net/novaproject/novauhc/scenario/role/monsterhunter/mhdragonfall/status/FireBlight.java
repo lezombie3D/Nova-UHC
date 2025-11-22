@@ -1,42 +1,48 @@
 package net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.status;
 
-import net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.status.StatusEffect;
+import net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.DragonRole;
 import org.bukkit.Effect;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class FireBlight extends StatusEffect {
 
-    private final Player target;
-    private int ticks;
-
-    public FireBlight(Player target) {
-        super("FireBlight");
-        this.target = target;
-        this.ticks = 5; // 5 secondes
+    public FireBlight(Player target, String name, int duration, DragonRole dragon) {
+        super(target, name, duration, dragon);
     }
+
 
     @Override
     public void start() {
-        target.sendMessage("§c🔥 Vous êtes en proie aux flammes !");
+        getTarget().sendMessage("§c🔥 Vous êtes en proie aux flammes !");
     }
 
     @Override
     public void tick() {
-        if (!target.isOnline()) {
+        super.tick();
+
+        Player target = getTarget();
+
+        if (target.getLocation().getBlock().getType() == Material.WATER ||
+                target.getLocation().getBlock().getType() == Material.STATIONARY_WATER) {
             end();
             return;
         }
 
-        target.getWorld().spigot().playEffect(target.getLocation(), Effect.MOBSPAWNER_FLAMES, 0, 0, 0.3F, 0.3F, 0.3F, 0.01F, 5, 30);
-        if (ticks % 20 == 0) target.damage(1.0D);
+        target.getWorld().spigot().playEffect(
+                target.getLocation(),
+                Effect.MOBSPAWNER_FLAMES,
+                0, 0,
+                0.3F, 0.3F, 0.3F,
+                0.01F, 5, 30
+        );
 
-        ticks--;
-        if (ticks <= 0) end();
+        getDragon().damage((double) getDragon().getCurrentStrength() / 20, target);
     }
 
     @Override
     public void end() {
         super.end();
-        target.sendMessage("§7🔥 Le feu s'est éteint.");
+        getTarget().sendMessage("§7🔥 Le feu s'est éteint.");
     }
 }

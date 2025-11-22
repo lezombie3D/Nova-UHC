@@ -2,23 +2,7 @@ package net.novaproject.novauhc.scenario;
 
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.normal.*;
-import net.novaproject.novauhc.scenario.special.MysteryTeam;
-import net.novaproject.novauhc.scenario.special.SoulBrother;
-import net.novaproject.novauhc.scenario.special.beatthesanta.BeatTheSanta;
-import net.novaproject.novauhc.scenario.special.fallenkigdom.FallenKingdom;
-import net.novaproject.novauhc.scenario.special.flowerpower.FlowerPower;
-import net.novaproject.novauhc.scenario.special.gonefish.GoneFIsh;
-import net.novaproject.novauhc.scenario.special.king.King;
-import net.novaproject.novauhc.scenario.special.legend.Legend;
-import net.novaproject.novauhc.scenario.special.netheribus.NetheriBus;
-import net.novaproject.novauhc.scenario.special.random.RandomCraft;
-import net.novaproject.novauhc.scenario.special.random.RandomDrop;
-import net.novaproject.novauhc.scenario.special.skydef.SkyDef;
-import net.novaproject.novauhc.scenario.special.skyhigt.SkyHigh;
-import net.novaproject.novauhc.scenario.special.slavemarket.SlaveMarket;
-import net.novaproject.novauhc.scenario.special.superheros.SuperHeros;
-import net.novaproject.novauhc.scenario.special.taupegun.TaupeGun;
-import net.novaproject.novauhc.scenario.special.teamatfirstseigth.TeamAtFirstSeigth;
+import net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.DragonFall;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +49,7 @@ public class ScenarioManager {
         addScenario(new LongShoot());
         addScenario(new BloodCycle());
         addScenario(new GapRoulette());
-        addScenario(new SkyDef());
+
         addScenario(new NoWoodenTool());
         addScenario(new AutoRevive());
         addScenario(new FastFurnace());
@@ -116,14 +100,13 @@ public class ScenarioManager {
         addScenario(new NineSlot());
         addScenario(new Fallout());
 
-        addScenario(new SoulBrother());
-        addScenario(new MysteryTeam());
+
 
         addScenario(new Genie());
         addScenario(new PotentialPermanent());
         addScenario(new LootCrate());
 
-        addScenario(new BeatTheSanta());
+        /*addScenario(new BeatTheSanta());
         addScenario(new FallenKingdom());
         addScenario(new FlowerPower());
         addScenario(new GoneFIsh());
@@ -137,9 +120,11 @@ public class ScenarioManager {
         addScenario(new SuperHeros());
         addScenario(new TaupeGun());
         addScenario(new TeamAtFirstSeigth());
+        addScenario(new SoulBrother());
+        addScenario(new MysteryTeam());*/
 
         //addScenario(new DeathNote());
-        //addScenario(new DragonFall());
+        addScenario(new DragonFall());
     }
 
 

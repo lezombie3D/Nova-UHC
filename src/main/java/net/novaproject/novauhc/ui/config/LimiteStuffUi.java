@@ -34,16 +34,26 @@ public class LimiteStuffUi extends CustomInventory {
         addItem(new ActionItem(3, diamond.setAmount(UHCManager.get().getDiamondArmor())) {
             @Override
             public void onClick(InventoryClickEvent e) {
-                if (e.isLeftClick() && UHCManager.get().getDiamondArmor() < 4) {
-                    UHCManager.get().setDiamondArmor(UHCManager.get().getDiamondArmor() + 1);
-                    openAll();
-                }
-                if (e.isRightClick() && UHCManager.get().getDiamondArmor() > 0) {
-                    UHCManager.get().setDiamondArmor(UHCManager.get().getDiamondArmor() - 1);
+                int current = UHCManager.get().getDiamondArmor();
+                if (e.isLeftClick()) {
+                    int newValue = Math.min(current + 1, 4);
+                    UHCPlayerManager.get().getOnlineUHCPlayers().forEach(uhcPlayer -> {
+                        uhcPlayer.setDiamondArmor(newValue);
+                    });
+                    UHCManager.get().setDiamondArmor(newValue);
                     openAll();
                 }
 
+                if (e.isRightClick()) {
+                    int newValue = Math.max(current - 1, 0);
+                    UHCPlayerManager.get().getOnlineUHCPlayers().forEach(uhcPlayer -> {
+                        uhcPlayer.setDiamondArmor(newValue);
+                    });
+                    openAll();
+                    UHCManager.get().setDiamondArmor(newValue);
+                }
             }
+
         });
         ItemCreator protection = new ItemCreator(Material.ENCHANTED_BOOK)
                 .setName("§8┃ §f" + Common.get().getMainColor() + "Limite de Protection en Diamant")
@@ -56,13 +66,23 @@ public class LimiteStuffUi extends CustomInventory {
         addItem(new ActionItem(5, protection.setAmount(UHCManager.get().getProtectionMax())) {
             @Override
             public void onClick(InventoryClickEvent e) {
-                if (e.isLeftClick() && UHCManager.get().getProtectionMax() < 4) {
-                    UHCManager.get().setProtectionMax(UHCManager.get().getProtectionMax() + 1);
+                int current = UHCManager.get().getProtectionMax();
+                if (e.isLeftClick()) {
+                    int newValue = Math.min(current + 1, 4);
+                    UHCPlayerManager.get().getOnlineUHCPlayers().forEach(uhcPlayer -> {
+                        uhcPlayer.setProtectionMax(newValue);
+                    });
+                    UHCManager.get().setProtectionMax(newValue);
                     openAll();
                 }
-                if (e.isRightClick() && UHCManager.get().getProtectionMax() > 0) {
-                    UHCManager.get().setProtectionMax(UHCManager.get().getProtectionMax() - 1);
+
+                if (e.isRightClick()) {
+                    int newValue = Math.max(current - 1, 0);
+                    UHCPlayerManager.get().getOnlineUHCPlayers().forEach(uhcPlayer -> {
+                        uhcPlayer.setProtectionMax(newValue);
+                    });
                     openAll();
+                    UHCManager.get().setProtectionMax(newValue);
                 }
             }
 
@@ -82,22 +102,19 @@ public class LimiteStuffUi extends CustomInventory {
                 @Override
                 public void onClick(InventoryClickEvent e) {
                     if (e.isLeftClick()) {
-                        UHCPlayerManager.get().getOnlineUHCPlayers().forEach(uhcPlayer -> {
-                            int current = uhcPlayer.getEnchantLimits().get(enchants);
-                            int newValue = Math.min(current + 1, enchants.getMax());
-                            uhcPlayer.setEnchantLimit(enchants, newValue);
-                        });
                         enchants.addConfigValue();
+                        UHCPlayerManager.get().getOnlineUHCPlayers().forEach(uhcPlayer -> {
+                            uhcPlayer.setEnchantLimit(enchants, enchants.getConfigValue());
+                        });
+
                         openAll();
                     }
 
                     if (e.isRightClick()) {
-                        UHCPlayerManager.get().getOnlineUHCPlayers().forEach(uhcPlayer -> {
-                            int current = uhcPlayer.getEnchantLimits().get(enchants);
-                            int newValue = Math.max(current - 1, enchants.getMin());
-                            uhcPlayer.setEnchantLimit(enchants, newValue);
-                        });
                         enchants.removeConfigValue();
+                        UHCPlayerManager.get().getOnlineUHCPlayers().forEach(uhcPlayer -> {
+                            uhcPlayer.setEnchantLimit(enchants, enchants.getConfigValue());
+                        });
                         openAll();
                     }
                 }

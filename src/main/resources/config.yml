@@ -18,6 +18,7 @@ mumble:
   ip: ""
 doc: "https://mystouille.gitbook.io/nova-code"
 discord: "https://discord.gg/TGMM7bPwTb"
-license:
+staff:
+  - "89daecd6-f9a7-4a2e-a8bf-a7d9294f074f"
 ## PlaceHolder utilisable :
 

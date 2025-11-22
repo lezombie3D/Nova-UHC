@@ -14,9 +14,11 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.ShortCooldownManager;
 import net.novaproject.novauhc.utils.UHCUtils;
-import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -24,10 +26,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class DragonFall extends ScenarioRole<DragonRole> {
-
-    private StatusManager manager = StatusManager.getInstance();
+    private final Map<UUID, Long> lavaDamageCooldown = new HashMap<>();
+    private final StatusManager manager = StatusManager.get();
     @Override
     public String getName() {
         return "Monster Hunter : DragonRole Fall";
@@ -74,17 +77,25 @@ public class DragonFall extends ScenarioRole<DragonRole> {
 
     @Override
     public void onHit(Entity entity, Entity damager, EntityDamageByEntityEvent event) {
-        if (!(entity instanceof Player) || !(damager instanceof Player)) return;
+        super.onHit(entity, damager, event);
+        if (!(entity instanceof Player victim)) return;
+        Player attacker = null;
+        boolean isProjectile = false;
 
-        // Victime = entity, Attaquant = damager
-        Player victim = (Player) entity;
-        Player attacker = (Player) damager;
+        if (damager instanceof Player) {
+            attacker = (Player) damager;
+        } else if (damager instanceof Arrow proj) {
+            if (proj.getShooter() instanceof Player) {
+                attacker = (Player) proj.getShooter();
+                isProjectile = true;
+            }
+        }
+
+        if (attacker == null) return;
 
         UHCPlayer uhcVictim = UHCPlayerManager.get().getPlayer(victim);
         UHCPlayer uhcAttacker = UHCPlayerManager.get().getPlayer(attacker);
         if (uhcVictim == null || uhcAttacker == null) return;
-
-        event.setDamage(0.0D);
 
         DragonRole dragonVictim = getRoleByUHCPlayer(uhcVictim);
         DragonRole dragonAttacker = getRoleByUHCPlayer(uhcAttacker);
@@ -95,6 +106,9 @@ public class DragonFall extends ScenarioRole<DragonRole> {
             event.setDamage(Integer.MAX_VALUE);
             return;
         }
+
+        event.setDamage(0.0);
+        victim.setNoDamageTicks(10);
 
         double attackerForce = dragonAttacker.getCurrentStrength();
         double defenderResistance = dragonVictim.getResistance();
@@ -108,6 +122,12 @@ public class DragonFall extends ScenarioRole<DragonRole> {
         double variation = 1.0D + ((Math.random() * 0.10D) - 0.05D);
         baseDamage = Math.round(baseDamage * variation);
 
+        if (isProjectile) {
+            double projectileMult = dragonAttacker.getProjectileMultiplier();
+            baseDamage = Math.round(baseDamage * projectileMult);
+        }
+
+
         ResistanceProfile resistProfile = dragonVictim.getResistanceProfile();
         Map<ElementType, Double> elements = dragonAttacker.getElementPowers();
 
@@ -117,8 +137,8 @@ public class DragonFall extends ScenarioRole<DragonRole> {
 
             for (Map.Entry<ElementType, Double> entry : elements.entrySet()) {
                 ElementType element = entry.getKey();
-                double power = entry.getValue(); // force élémentaire (0.0 à 1.5)
-                double resistance = resistProfile.getResistance(element); // résistance (-1.0 à +1.0)
+                double power = entry.getValue();
+                double resistance = resistProfile.getResistance(element);
                 double multiplier = (1.0D - resistance) * power;
                 totalMultiplier += multiplier;
                 count++;
@@ -127,6 +147,7 @@ public class DragonFall extends ScenarioRole<DragonRole> {
             double averageMultiplier = totalMultiplier / (double) count;
             baseDamage = Math.round(baseDamage * averageMultiplier);
         }
+
 
         String display = "§c-" + baseDamage;
         if ((int) (Math.random() * 100.0D) < critChance) {
@@ -140,19 +161,19 @@ public class DragonFall extends ScenarioRole<DragonRole> {
                 double power = entry.getValue();
                 double baseChance = dragonAttacker.getBlightChance(element);
                 double resistance = dragonVictim.getResistanceProfile().getResistance(element);
+                int duration = dragonAttacker.getBlightDuration(element);
 
                 double finalChance = baseChance * power * (1.0D - resistance);
                 if (finalChance < 0) finalChance = 0.0D;
 
                 if (Math.random() * 100.0D < finalChance) {
-                    StatusEffect effect = StatusFactory.create(element, victim);
+                    StatusEffect effect = StatusFactory.create(element, victim, duration, getRoleByUHCPlayer(uhcVictim));
                     if (effect != null) {
-                        manager.applyEffect(victim, effect);
+                        StatusManager.get().applyEffect(victim, effect);
                     }
                 }
             }
         }
-
 
         int finalHP = Math.max(0, currentHP - (int) baseDamage);
         dragonVictim.setCurrentHP(finalHP);
@@ -162,10 +183,64 @@ public class DragonFall extends ScenarioRole<DragonRole> {
     }
 
 
-
     @Override
     public void onDamage(Player player, EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player victim)) return;
 
+        UHCPlayer uhcVictim = UHCPlayerManager.get().getPlayer(victim);
+        if (uhcVictim == null || !uhcVictim.isPlaying()) {
+            event.setCancelled(true);
+            return;
+        }
+
+
+        EntityDamageEvent.DamageCause cause = event.getCause();
+        if (cause == EntityDamageEvent.DamageCause.FALL ||
+                cause == EntityDamageEvent.DamageCause.DROWNING ||
+                cause == EntityDamageEvent.DamageCause.SUFFOCATION) {
+            event.setCancelled(true);
+            return;
+        }
+
+        UUID uuid = victim.getUniqueId();
+        long now = System.currentTimeMillis();
+        long last = lavaDamageCooldown.getOrDefault(uuid, 0L);
+
+        if (cause == EntityDamageEvent.DamageCause.LAVA ||
+                cause == EntityDamageEvent.DamageCause.FIRE ||
+                cause == EntityDamageEvent.DamageCause.FIRE_TICK) {
+
+            if (now - last >= 500) {
+                DragonRole dragonVictim = getRoleByUHCPlayer(uhcVictim);
+                if (dragonVictim == null) {
+                    event.setCancelled(true);
+                    return;
+                }
+
+                int damage = (cause == EntityDamageEvent.DamageCause.LAVA) ? 100 : 20;
+
+                int newHP = Math.max(0, dragonVictim.getCurrentHP() - damage);
+                dragonVictim.setCurrentHP(newHP);
+                lavaDamageCooldown.put(uuid, now);
+
+                UHCUtils.spawnFloatingDamage(victim, "§4✦ §c-" + damage + " §4✦");
+                victim.playSound(victim.getLocation(), Sound.NOTE_PLING, 1f, 1f);
+
+                UHCUtils.setRealHealth(dragonVictim.getMaxHP(), newHP, victim, dragonVictim.getAbsortion());
+
+                if (newHP <= 0) {
+                    event.setDamage(Integer.MAX_VALUE);
+                }
+
+            }
+
+
+            return;
+        }
+
+
+        ShortCooldownManager.startCombat(uuid, uuid);
     }
+
 
 }

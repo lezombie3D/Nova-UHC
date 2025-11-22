@@ -35,8 +35,7 @@ public class PlayerCraftEvent implements Listener {
 
     @EventHandler
     public void onCraft(CraftItemEvent event) {
-        if (!(event.getWhoClicked() instanceof Player)) return;
-        Player player = (Player) event.getWhoClicked();
+        if (!(event.getWhoClicked() instanceof Player player)) return;
 
         ItemStack item = event.getRecipe().getResult().clone();
 
@@ -87,6 +86,8 @@ public class PlayerCraftEvent implements Listener {
             if (isDiamondArmor(event.getItem()) && event.getEnchantsToAdd().containsKey(Enchantment.PROTECTION_ENVIRONMENTAL)) {
                 int level = event.getEnchantsToAdd().get(Enchantment.PROTECTION_ENVIRONMENTAL);
                 if (level <= uhcPlayer.getProtectionMax()) {
+                    event.setCancelled(true);
+                    CommonString.BLOCKED_ENCHANT.send(player);
                     return;
                 }
             }
@@ -98,14 +99,12 @@ public class PlayerCraftEvent implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onAnvil(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player))
+        if (!(event.getWhoClicked() instanceof Player player))
             return;
-        Player player = (Player) event.getWhoClicked();
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
         Inventory inv = event.getClickedInventory();
-        if (!(inv instanceof AnvilInventory))
+        if (!(inv instanceof AnvilInventory anvil))
             return;
-        AnvilInventory anvil = (AnvilInventory) inv;
         InventoryView view = event.getView();
         int rawSlot = event.getRawSlot();
         if (rawSlot != view.convertSlot(rawSlot) || rawSlot != 2)

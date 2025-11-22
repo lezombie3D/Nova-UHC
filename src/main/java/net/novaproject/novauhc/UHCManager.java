@@ -1,11 +1,15 @@
 package net.novaproject.novauhc;
 
 
+import eu.cloudnetservice.driver.document.DocumentFactory;
+import eu.cloudnetservice.driver.document.property.DocProperty;
+import eu.cloudnetservice.driver.service.ServiceInfoSnapshot;
 import lombok.Getter;
 import lombok.Setter;
 import net.novaproject.novauhc.ability.AbilityManager;
 import net.novaproject.novauhc.command.CommandManager;
 import net.novaproject.novauhc.listener.ListenerManager;
+import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.task.ScatterTask;
@@ -14,10 +18,12 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.ui.config.Enchants;
+import net.novaproject.novauhc.utils.CloudNet;
 import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.Titles;
 import net.novaproject.novauhc.utils.UHCUtils;
 import net.novaproject.novauhc.world.utils.SimpleBorder;
+import org.bson.Document;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -29,7 +35,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -40,6 +46,7 @@ public class UHCManager {
     }
 
     public Map<String, ItemStack[]> start = new HashMap<>();
+    public static final DocProperty<String> NOVA = DocProperty.property("NovaUHC", String.class);
     private WaitState waitState = WaitState.LOBBY_STATE;
     private UHCTeamManager uhcTeamManager;
     private AbilityManager abilityManager;
@@ -76,6 +83,12 @@ public class UHCManager {
         Bukkit.getWhitelistedPlayers().forEach(wl -> {
             wl.setWhitelisted(false);
         });
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                gameToDoc();
+            }
+        }.runTaskLater(Main.get(), 20 * 60);
 
     }
 
@@ -211,6 +224,21 @@ public class UHCManager {
 
     }
 
+    private void gameToDoc() {
+        Document document = new Document();
+
+        document.append("host", PlayerConnectionEvent.getHost().getName());
+        document.append("waiting", isLobby());
+        document.append("players_online", getUhcPlayerManager().getOnlineUHCPlayers().size());
+        document.append("players_max", getSlot());
+        document.append("open", Bukkit.getServer().hasWhitelist());
+        int teams = team_size;
+        document.append("team_size", teams == 1 ? "FFA" : "To" + teams);
+        ServiceInfoSnapshot serviceInfoSnapshot = CloudNet.get().getServiceInfo();
+        serviceInfoSnapshot.provider().updateProperties(eu.cloudnetservice.driver.document.Document.newDocument(DocumentFactory.json()).writeProperty(NOVA, document.toJson()));
+        CloudNet.get().getWrapperServiceInfoHolder().publishServiceInfoUpdate(serviceInfoSnapshot);
+    }
+
     public boolean isLobby() {
         return gameState == GameState.LOBBY || gameState == GameState.SCATTERING;
     }
@@ -285,40 +313,35 @@ public class UHCManager {
     }
 
     public void checkVictory() {
-        System.out.println(getGameState().name());
         if (gameState != GameState.INGAME) {
             return;
         }
 
         boolean win = false;
 
-        if (uhcTeamManager.getAliveTeams().size() > 1) {
+        List<UHCTeam> aliveTeams = uhcTeamManager.getAliveTeams();
+        List<UHCPlayer> alivePlayers = uhcPlayerManager.getPlayingOnlineUHCPlayers();
 
-            StringBuilder winner = new StringBuilder();
-            StringBuilder teamMemeber = new StringBuilder();
+        List<UHCPlayer> soloPlayers = alivePlayers.stream()
+                .filter(p -> !p.getTeam().isPresent())
+                .collect(Collectors.toList());
 
-            for (UHCPlayer player : uhcPlayerManager.getPlayingOnlineUHCPlayers()) {
-                Optional<UHCTeam> team = player.getTeam();
-                if (team.isPresent()) {
-                    winner.append(team.get().getName()).append(" ");
-                    for (UHCPlayer teamM : team.get().getPlayers()) {
-                        teamMemeber.append(teamM.getPlayer().getName()).append(" ");
-                    }
-                    break;
-                }
+        if (aliveTeams.size() == 1 && soloPlayers.isEmpty()) {
 
-            }
-            Bukkit.broadcastMessage(ChatColor.GOLD + " Félicitations à l'équipe " + winner + " : " + teamMemeber);
-            win = true;
-        } else if (uhcPlayerManager.getPlayingOnlineUHCPlayers().size() == 1) {
+            UHCTeam team = aliveTeams.get(0);
+            String winner = team.getName();
+            String teamMembers = team.getPlayers().stream()
+                    .map(p -> p.getPlayer().getName())
+                    .collect(Collectors.joining(", "));
 
-            String winner = "";
-            for (UHCPlayer player : uhcPlayerManager.getPlayingOnlineUHCPlayers()) {
-                winner = player.getPlayer().getDisplayName();
-            }
-            Bukkit.broadcastMessage(ChatColor.GOLD + " Félicitations au joueur : " + winner);
+            Bukkit.broadcastMessage(ChatColor.GOLD + " Félicitations à l'équipe " + winner + " : " + teamMembers);
             win = true;
 
+        } else if (aliveTeams.isEmpty() && soloPlayers.size() == 1) {
+
+            UHCPlayer player = soloPlayers.get(0);
+            Bukkit.broadcastMessage(ChatColor.GOLD + " Félicitations au joueur : " + player.getPlayer().getDisplayName());
+            win = true;
         }
 
         for (Scenario scenario : ScenarioManager.get().getActiveScenarios()) {
@@ -330,8 +353,8 @@ public class UHCManager {
         if (win) {
             endGame();
         }
-
     }
+
 
     private void fireWork(Player p) {
 
