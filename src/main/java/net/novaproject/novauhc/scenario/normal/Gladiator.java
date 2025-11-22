@@ -57,10 +57,7 @@ public class Gladiator extends Scenario {
     public void onHit(Entity entity, Entity damager, EntityDamageByEntityEvent event) {
         if (!isActive()) return;
 
-        if (!(entity instanceof Player) || !(damager instanceof Player)) return;
-
-        Player victim = (Player) entity;
-        Player attacker = (Player) damager;
+        if (!(entity instanceof Player victim) || !(damager instanceof Player attacker)) return;
 
         // Check if both players are playing
         UHCPlayer uhcVictim = UHCPlayerManager.get().getPlayer(victim);

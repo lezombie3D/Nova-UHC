@@ -106,7 +106,7 @@ public class ArenaUHC implements Listener {
         ArenaZone zone = players.get(player);
 
         if (player.isOnline()) {
-            player.teleport(zone.getExit());
+            player.teleport(zone.exit());
 
             PlayerInventory inventory = player.getInventory();
             inventory.clear();

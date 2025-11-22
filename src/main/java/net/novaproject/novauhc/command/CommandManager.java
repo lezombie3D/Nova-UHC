@@ -23,8 +23,7 @@ public class CommandManager implements CommandExecutor, TabExecutor {
 
     public CommandManager(JavaPlugin javaPlugin) {
         this.javaPlugin = javaPlugin;
-        if (javaPlugin.getServer().getPluginManager() instanceof SimplePluginManager) {
-            SimplePluginManager manager = (SimplePluginManager) javaPlugin.getServer().getPluginManager();
+        if (javaPlugin.getServer().getPluginManager() instanceof SimplePluginManager manager) {
 
             try {
                 Field field = SimplePluginManager.class.getDeclaredField("commandMap");

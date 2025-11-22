@@ -287,17 +287,6 @@ public class SimonSays extends Scenario {
         DAMAGE, HUNGER, SLOWNESS, BLINDNESS, WEAKNESS
     }
 
-    private static class SimonCommand {
-        final String name;
-        final String description;
-        final int duration;
-        final CommandType type;
-
-        SimonCommand(String name, String description, int duration, CommandType type) {
-            this.name = name;
-            this.description = description;
-            this.duration = duration;
-            this.type = type;
-        }
+    private record SimonCommand(String name, String description, int duration, CommandType type) {
     }
 }

@@ -258,7 +258,7 @@ public enum CommonString {
         if (uhcPlayer != null && uhcPlayer.getPlayer() != null) {
             placeHolders.put("%player%", uhcPlayer.getPlayer().getName());
             placeHolders.put("%kills%", uhcPlayer.getKill());
-            placeHolders.put("%team%", uhcPlayer.getTeam().isPresent() ? uhcPlayer.getTeam().get().getName() : "Solo");
+            placeHolders.put("%team%", uhcPlayer.getTeam().isPresent() ? uhcPlayer.getTeam().get().name() : "Solo");
             placeHolders.put("%state%", uhcPlayer.isPlaying() ? "En jeu" : "Mort");
             placeHolders.put("%health%", uhcPlayer.getPlayer().getHealth());
             placeHolders.put("%mined_diamond%", uhcPlayer.getMinedDiamond());

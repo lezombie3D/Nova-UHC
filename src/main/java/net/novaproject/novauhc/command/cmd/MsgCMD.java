@@ -17,9 +17,7 @@ import java.util.Map;
 public class MsgCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) return false;
-
-        Player player = (Player) sender;
+        if (!(sender instanceof Player player)) return false;
 
         if (args.length < 2) {
             CommonString.MSG_USAGE.send(player);

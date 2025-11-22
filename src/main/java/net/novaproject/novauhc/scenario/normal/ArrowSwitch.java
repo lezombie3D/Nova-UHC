@@ -30,12 +30,10 @@ public class ArrowSwitch extends Scenario {
     public void onHit(Entity entity, Entity dammager, EntityDamageByEntityEvent event) {
         if (entity.getType() != EntityType.PLAYER) return;
 
-        if (dammager instanceof Arrow) {
+        if (dammager instanceof Arrow f) {
             Player taper = (Player) event.getEntity();
 
-            Arrow f = (Arrow) dammager;
-            if (f.getShooter() instanceof Player) {
-                Player shooter = (Player) f.getShooter();
+            if (f.getShooter() instanceof Player shooter) {
 
                 Location personne_taper = taper.getLocation();
                 Location personne_tappant = shooter.getLocation();

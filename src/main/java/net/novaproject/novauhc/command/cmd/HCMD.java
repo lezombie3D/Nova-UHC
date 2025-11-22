@@ -37,11 +37,10 @@ public class HCMD extends Command {
     @Override
     public void execute(CommandArguments args) {
         CommandSender sender = args.getSender();
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("Cette commande est réservée aux joueurs !");
             return;
         }
-        Player player = (Player) sender;
         String[] arguments = args.getArguments();
 
         if (!player.hasPermission("novauhc.host") && !player.hasPermission("novauhc.cohost")) {
@@ -470,7 +469,7 @@ public class HCMD extends Command {
         if (target.getTeam().isPresent()) {
             UHCTeam team = target.getTeam().get();
             target.setTeam(Optional.of(team));
-            TeamsTagsManager.setNameTag(target.getPlayer(), team.getName(), team.getPrefix(), "");
+            TeamsTagsManager.setNameTag(target.getPlayer(), team.name(), team.prefix(), "");
             target.setPlaying(true);
             target.getPlayer().setGameMode(GameMode.SURVIVAL);
             target.getPlayer().teleport(location);

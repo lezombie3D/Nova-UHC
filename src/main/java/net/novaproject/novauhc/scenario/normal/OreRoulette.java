@@ -199,15 +199,6 @@ public class OreRoulette extends Scenario {
     }
 
     // Inner class to represent roulette items
-    private static class RouletteItem {
-        final Material material;
-        final int amount;
-        final int weight;
-
-        RouletteItem(Material material, int amount, int weight) {
-            this.material = material;
-            this.amount = amount;
-            this.weight = weight;
-        }
+    private record RouletteItem(Material material, int amount, int weight) {
     }
 }

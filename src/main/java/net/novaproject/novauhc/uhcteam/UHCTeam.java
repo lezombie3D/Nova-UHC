@@ -16,15 +16,8 @@ import org.bukkit.scoreboard.Team;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UHCTeam {
-
-    private final DyeColor dyeColor;
-    private final String prefix;
-    private final String name;
-    private final Pattern[] patterns;
-    private final int teamSize;
-    private final boolean isCustom;
-
+public record UHCTeam(DyeColor dyeColor, String prefix, String name, Pattern[] patterns, int teamSize,
+                      boolean isCustom) {
 
     public UHCTeam(DyeColor dyeColor, String prefix, String name, Pattern[] patterns, int teamSize, boolean isCustom) {
         this.dyeColor = dyeColor;
@@ -43,30 +36,6 @@ public class UHCTeam {
         }
     }
 
-    public boolean isCustom() {
-        return isCustom;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public DyeColor getDyeColor() {
-        return dyeColor;
-    }
-
-    public Pattern[] getPatterns() {
-        return patterns;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public int getTeamSize() {
-        return teamSize;
-    }
-
     public Team getTeam() {
 
         return Bukkit.getScoreboardManager().getMainScoreboard().getTeam(name);
@@ -76,7 +45,7 @@ public class UHCTeam {
     public ItemStack getItem() {
         List<String> lore = new ArrayList<>();
         lore.add("");
-        for (int i = 0; i < getTeamSize(); i++) {
+        for (int i = 0; i < teamSize(); i++) {
             lore.add("§b➤ " + (getPlayers().size() < i + 1 ? "" : getPlayers().get(i).getPlayer().getName()));
         }
         lore.add("");
@@ -85,7 +54,7 @@ public class UHCTeam {
 
         ItemStack banner = new ItemStack(Material.BANNER);
         BannerMeta meta = (BannerMeta) banner.getItemMeta();
-        meta.setDisplayName(getName());
+        meta.setDisplayName(name());
         meta.setLore(lore);
         meta.setBaseColor(dyeColor);
 
@@ -102,7 +71,7 @@ public class UHCTeam {
     public ItemCreator getBanner() {
         ItemStack banner = new ItemStack(Material.BANNER);
         BannerMeta meta = (BannerMeta) banner.getItemMeta();
-        meta.setDisplayName(getName());
+        meta.setDisplayName(name());
         meta.setBaseColor(dyeColor);
 
         List<Pattern> p = new ArrayList<>();

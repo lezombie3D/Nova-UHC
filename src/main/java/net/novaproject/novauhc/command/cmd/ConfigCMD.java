@@ -22,11 +22,10 @@ public class ConfigCMD extends Command {
 
     @Override
     public void execute(CommandArguments args) {
-        if (!(args.getSender() instanceof Player)) {
+        if (!(args.getSender() instanceof Player player)) {
             args.getSender().sendMessage(ChatColor.RED + "Commande réservée aux joueurs.");
             return;
         }
-        Player player = (Player) args.getSender();
         UUID playerUUID = player.getUniqueId();
         String[] arguments = args.getArguments();
 

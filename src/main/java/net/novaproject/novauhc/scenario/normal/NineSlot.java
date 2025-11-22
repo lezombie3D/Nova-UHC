@@ -191,8 +191,7 @@ public class NineSlot extends Scenario {
     public void onInventoryClick(InventoryClickEvent event) {
         if (!isActive()) return;
 
-        if (!(event.getWhoClicked() instanceof Player)) return;
-        Player player = (Player) event.getWhoClicked();
+        if (!(event.getWhoClicked() instanceof Player player)) return;
 
         // Block access to main inventory slots
         if (event.getSlotType() == InventoryType.SlotType.CONTAINER &&

@@ -43,7 +43,7 @@ public class AutoRevive extends Scenario {
                 if (uhcPlayer.getTeam().isPresent()) {
                     UHCTeam team = uhcPlayer.getTeam().get();
                     uhcPlayer.setTeam(Optional.of(team));
-                    TeamsTagsManager.setNameTag(uhcPlayer.getPlayer(), team.getName(), team.getPrefix(), "");
+                    TeamsTagsManager.setNameTag(uhcPlayer.getPlayer(), team.name(), team.prefix(), "");
                     uhcPlayer.setPlaying(true);
                     uhcPlayer.getPlayer().setGameMode(GameMode.SURVIVAL);
                     uhcPlayer.getPlayer().teleport(location);

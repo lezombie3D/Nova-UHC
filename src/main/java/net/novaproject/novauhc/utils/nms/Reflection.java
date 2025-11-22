@@ -163,7 +163,7 @@ public class Reflection {
 
     public static Object getHandle(Object obj) {
         try {
-            return getMethod(obj.getClass(), "getHandle", new Class[0]).invoke(obj);
+            return getMethod(obj.getClass(), "getHandle").invoke(obj);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

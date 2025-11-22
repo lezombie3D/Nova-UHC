@@ -61,7 +61,7 @@ public class LuckyOre extends Scenario {
 
                     String oreName = getOreName(blockType);
                     Bukkit.broadcastMessage("§6§l[LuckyOre] §f" + player.getName() +
-                            " §fa trouvé " + reward.getDescription() +
+                            " §fa trouvé " + reward.description() +
                             " §fen minant du " + oreName + " !");
 
                     player.getWorld().strikeLightning(player.getLocation());
@@ -139,7 +139,7 @@ public class LuckyOre extends Scenario {
     }
 
     private void giveReward(Player player, LuckyReward reward) {
-        switch (reward.getType()) {
+        switch (reward.type()) {
             case ITEM:
                 ItemStack item = reward.getItem();
                 if (item != null) {
@@ -154,7 +154,7 @@ public class LuckyOre extends Scenario {
 
             case EFFECT:
                 @SuppressWarnings("unchecked")
-                List<PotionEffect> effects = (List<PotionEffect>) reward.getData();
+                List<PotionEffect> effects = (List<PotionEffect>) reward.data();
                 if (effects != null) {
                     for (PotionEffect effect : effects) {
                         player.addPotionEffect(effect);
@@ -189,28 +189,7 @@ public class LuckyOre extends Scenario {
         ITEM, EFFECT
     }
 
-    private static class LuckyReward {
-        private final RewardType type;
-        private final String description;
-        private final Object data;
-
-        public LuckyReward(RewardType type, String description, Object data) {
-            this.type = type;
-            this.description = description;
-            this.data = data;
-        }
-
-        public RewardType getType() {
-            return type;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public Object getData() {
-            return data;
-        }
+    private record LuckyReward(RewardType type, String description, Object data) {
 
         public ItemStack getItem() {
             return type == RewardType.ITEM ? (ItemStack) data : null;

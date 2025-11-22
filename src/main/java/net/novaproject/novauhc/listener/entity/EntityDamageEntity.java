@@ -25,10 +25,9 @@ public class EntityDamageEntity implements Listener {
     @EventHandler
     public void EntityTakeDamage(EntityDamageEvent event) {
 
-        if (!(event.getEntity() instanceof Player)) {
+        if (!(event.getEntity() instanceof Player player)) {
             return;
         }
-        Player player = (Player) event.getEntity();
 
 
         ScenarioManager.get().getActiveScenarios().forEach(scenario -> {

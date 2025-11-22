@@ -1,6 +1,7 @@
 
-package net.novaproject.novauhc.utils;
+package net.novaproject.novauhc.cloudnet;
 
+import eu.cloudnetservice.driver.document.DocumentFactory;
 import eu.cloudnetservice.driver.event.EventManager;
 import eu.cloudnetservice.driver.inject.InjectionLayer;
 import eu.cloudnetservice.driver.provider.CloudServiceFactory;
@@ -13,13 +14,27 @@ import eu.cloudnetservice.modules.bridge.BridgeDocProperties;
 import eu.cloudnetservice.modules.bridge.BridgeServiceHelper;
 import eu.cloudnetservice.modules.bridge.player.PlayerManager;
 import eu.cloudnetservice.modules.bridge.player.executor.PlayerExecutor;
-import eu.cloudnetservice.wrapper.holder.WrapperServiceInfoHolder;
+import eu.cloudnetservice.wrapper.impl.holder.WrapperServiceInfoHolder;
 import net.novaproject.novauhc.Main;
+import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
+import org.bson.Document;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CloudNet {
+
+
+    public CloudNet() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                gameToDoc();
+            }
+        }.runTaskTimer(Main.get(), 20, 20);
+    }
     public static CloudNet get() {
         return Main.get().getCloudNet();
     }
@@ -109,4 +124,20 @@ public class CloudNet {
     public ServiceTask getTask(String task) {
         return this.getServiceTaskProvider().serviceTask(task);
     }
+
+    private void gameToDoc() {
+        Document document = new Document();
+
+        document.append("host", PlayerConnectionEvent.getHost().getName());
+        document.append("waiting", isLobby());
+        document.append("players_online", getUhcPlayerManager().getOnlineUHCPlayers().size());
+        document.append("players_max", getSlot());
+        document.append("open", Bukkit.getServer().hasWhitelist());
+        int teams = team_size;
+        document.append("team_size", teams == 1 ? "FFA" : "To" + teams);
+        ServiceInfoSnapshot serviceInfoSnapshot = CloudNet.get().getServiceInfo();
+        serviceInfoSnapshot.provider().updateProperties(eu.cloudnetservice.driver.document.Document.newDocument(DocumentFactory.json()).writeProperty(NOVA, document.toJson()));
+        CloudNet.get().getWrapperServiceInfoHolder().publishServiceInfoUpdate(serviceInfoSnapshot);
+    }
+
 }

@@ -74,8 +74,8 @@ public class UHCTeamManager {
     public void removeTeam(UHCTeam team) {
         teams.remove(team);
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-        if (scoreboard.getTeam(team.getName()) != null) {
-            scoreboard.getTeam(team.getName()).unregister();
+        if (scoreboard.getTeam(team.name()) != null) {
+            scoreboard.getTeam(team.name()).unregister();
         }
     }
 
@@ -136,7 +136,7 @@ public class UHCTeamManager {
     public void fillTeams() {
         List<UHCTeam> fillableTeams = new ArrayList<>();
         for (UHCTeam team : teams) {
-            if (team.getPlayers().size() < team.getTeamSize()) {
+            if (team.getPlayers().size() < team.teamSize()) {
                 fillableTeams.add(team);
             }
         }
@@ -146,7 +146,7 @@ public class UHCTeamManager {
             if (!uhcPlayer.getTeam().isPresent() && !fillableTeams.isEmpty()) {
                 UHCTeam team = fillableTeams.get(random.nextInt(fillableTeams.size()));
                 uhcPlayer.setTeam(Optional.of(team));
-                if (team.getPlayers().size() == team.getTeamSize()) {
+                if (team.getPlayers().size() == team.teamSize()) {
                     fillableTeams.remove(team);
                 }
             }
@@ -161,15 +161,6 @@ public class UHCTeamManager {
         });
     }
 
-    private static class TeamTemplate {
-        final String name;
-        final String prefix;
-        final DyeColor dyeColor;
-
-        TeamTemplate(String name, String prefix, DyeColor dyeColor) {
-            this.name = name;
-            this.prefix = prefix;
-            this.dyeColor = dyeColor;
-        }
+    private record TeamTemplate(String name, String prefix, DyeColor dyeColor) {
     }
 }

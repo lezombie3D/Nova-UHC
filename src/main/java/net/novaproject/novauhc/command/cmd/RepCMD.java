@@ -15,9 +15,7 @@ import java.util.UUID;
 public class RepCMD implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) return false;
-
-        Player player = (Player) sender;
+        if (!(sender instanceof Player player)) return false;
 
         if (args.length < 1) {
             player.sendMessage("§cUsage: /r <message>");

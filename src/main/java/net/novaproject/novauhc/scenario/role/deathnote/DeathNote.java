@@ -327,7 +327,7 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
             p.sendMessage("§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯");
             p.sendMessage("§6§l[DEATH NOTE UHC - VICTOIRE]");
             p.sendMessage("");
-            p.sendMessage("§fÉquipe gagnante : " + winningTeam.getPrefix() + winningTeam.getName());
+            p.sendMessage("§fÉquipe gagnante : " + winningTeam.prefix() + winningTeam.name());
             p.sendMessage("§fType de victoire : " + victoryType);
             p.sendMessage("");
 
@@ -516,13 +516,10 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
      * Gère la commande /dnote reveal
      */
     private void handleRevealCommand(UHCPlayer player, DeathNoteRole role) {
-        if (!(role instanceof net.novaproject.novauhc.scenario.role.deathnote.roles.KiraRole)) {
+        if (!(role instanceof KiraRole kira)) {
             player.getPlayer().sendMessage("§c[Death Note] §fSeuls les Kira peuvent se révéler !");
             return;
         }
-
-        net.novaproject.novauhc.scenario.role.deathnote.roles.KiraRole kira =
-                (net.novaproject.novauhc.scenario.role.deathnote.roles.KiraRole) role;
 
         if (kira.revealIdentity()) {
             // Annoncer publiquement
@@ -540,13 +537,10 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
      * Gère la commande /dnote abandon
      */
     private void handleAbandonCommand(UHCPlayer player, DeathNoteRole role) {
-        if (!(role instanceof net.novaproject.novauhc.scenario.role.deathnote.roles.KiraRole)) {
+        if (!(role instanceof KiraRole kira)) {
             player.getPlayer().sendMessage("§c[Death Note] §fSeuls les Kira peuvent utiliser le pouvoir d'abandon !");
             return;
         }
-
-        net.novaproject.novauhc.scenario.role.deathnote.roles.KiraRole kira =
-                (net.novaproject.novauhc.scenario.role.deathnote.roles.KiraRole) role;
 
         if (kira.useAbandonPower()) {
             player.getPlayer().sendMessage("§9[Death Note] §fVous avez activé le pouvoir d'abandon ! Vous paraissez innocent pendant 20 minutes.");
@@ -559,7 +553,7 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
      * Gère la commande /dnote investigate <nom>
      */
     private void handleInvestigateCommand(UHCPlayer player, String[] args, DeathNoteRole role) {
-        if (!(role instanceof net.novaproject.novauhc.scenario.role.deathnote.roles.EnqueteurRole)) {
+        if (!(role instanceof EnqueteurRole enqueteur)) {
             player.getPlayer().sendMessage("§c[Death Note] §fSeuls les Enquêteurs peuvent enquêter !");
             return;
         }
@@ -576,9 +570,6 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
             return;
         }
 
-        net.novaproject.novauhc.scenario.role.deathnote.roles.EnqueteurRole enqueteur =
-                (net.novaproject.novauhc.scenario.role.deathnote.roles.EnqueteurRole) role;
-
         enqueteur.investigate(player, target);
     }
 
@@ -586,7 +577,7 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
      * Gère la commande /dnote analyze <nom>
      */
     private void handleAnalyzeCommand(UHCPlayer player, String[] args, DeathNoteRole role) {
-        if (!(role instanceof net.novaproject.novauhc.scenario.role.deathnote.roles.NearRole)) {
+        if (!(role instanceof NearRole near)) {
             player.getPlayer().sendMessage("§c[Death Note] §fSeuls Near peut analyser !");
             return;
         }
@@ -603,9 +594,6 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
             return;
         }
 
-        net.novaproject.novauhc.scenario.role.deathnote.roles.NearRole near =
-                (net.novaproject.novauhc.scenario.role.deathnote.roles.NearRole) role;
-
         near.performAnalysis(player, target);
     }
 
@@ -613,7 +601,7 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
      * Gère la commande /dnote detect <nom>
      */
     private void handleDetectCommand(UHCPlayer player, String[] args, DeathNoteRole role) {
-        if (!(role instanceof net.novaproject.novauhc.scenario.role.deathnote.roles.NearRole)) {
+        if (!(role instanceof NearRole near)) {
             player.getPlayer().sendMessage("§c[Death Note] §fSeuls Near peut détecter les Kira !");
             return;
         }
@@ -630,9 +618,6 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
             return;
         }
 
-        net.novaproject.novauhc.scenario.role.deathnote.roles.NearRole near =
-                (net.novaproject.novauhc.scenario.role.deathnote.roles.NearRole) role;
-
         near.useKiraDetector(player, target);
     }
 
@@ -640,13 +625,10 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
      * Gère la commande /dnote form
      */
     private void handleFormCommand(UHCPlayer player, DeathNoteRole role) {
-        if (!(role instanceof net.novaproject.novauhc.scenario.role.deathnote.roles.MelloRole)) {
+        if (!(role instanceof MelloRole mello)) {
             player.getPlayer().sendMessage("§c[Death Note] §fSeuls Mello peut changer de forme !");
             return;
         }
-
-        net.novaproject.novauhc.scenario.role.deathnote.roles.MelloRole mello =
-                (net.novaproject.novauhc.scenario.role.deathnote.roles.MelloRole) role;
 
         if (mello.changeForm(player)) {
             // Mettre à jour l'équipe Kira si nécessaire
@@ -658,7 +640,7 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
      * Gère la commande /dnote pact <nom>
      */
     private void handlePactCommand(UHCPlayer player, String[] args, DeathNoteRole role) {
-        if (!(role instanceof net.novaproject.novauhc.scenario.role.deathnote.roles.ShinigamiRole)) {
+        if (!(role instanceof ShinigamiRole shinigami)) {
             player.getPlayer().sendMessage("§c[Death Note] §fSeuls les Shinigami peuvent faire des pactes !");
             return;
         }
@@ -675,9 +657,6 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
             return;
         }
 
-        net.novaproject.novauhc.scenario.role.deathnote.roles.ShinigamiRole shinigami =
-                (net.novaproject.novauhc.scenario.role.deathnote.roles.ShinigamiRole) role;
-
         shinigami.makePactWithKira(player, target);
     }
 
@@ -685,13 +664,10 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
      * Gère la commande /dnote track
      */
     private void handleTrackCommand(UHCPlayer player, DeathNoteRole role) {
-        if (!(role instanceof net.novaproject.novauhc.scenario.role.deathnote.roles.ShinigamiRole)) {
+        if (!(role instanceof ShinigamiRole shinigami)) {
             player.getPlayer().sendMessage("§c[Death Note] §fSeuls les Shinigami peuvent tracker !");
             return;
         }
-
-        net.novaproject.novauhc.scenario.role.deathnote.roles.ShinigamiRole shinigami =
-                (net.novaproject.novauhc.scenario.role.deathnote.roles.ShinigamiRole) role;
 
         shinigami.useTracker(player);
     }
@@ -753,8 +729,8 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
 
         for (UHCTeam team : aliveTeams) {
             TeamStats stats = getTeamStats(team);
-            p.sendMessage("§8• " + team.getPrefix() + team.getName() + " §7: §a" + stats.getGentils().size() +
-                    " gentils, §c" + stats.getTraitors().size() + " traîtres");
+            p.sendMessage("§8• " + team.prefix() + team.name() + " §7: §a" + stats.gentils().size() +
+                    " gentils, §c" + stats.traitors().size() + " traîtres");
         }
         p.sendMessage("");
 
@@ -931,34 +907,7 @@ public class DeathNote extends ScenarioRole<DeathNoteRole> {
     /**
      * Classe pour stocker les statistiques d'une équipe
      */
-    public static class TeamStats {
-        private final UHCTeam team;
-        private final List<UHCPlayer> gentils;
-        private final List<UHCPlayer> traitors;
-        private final List<UHCPlayer> unknown;
-
-        public TeamStats(UHCTeam team, List<UHCPlayer> gentils, List<UHCPlayer> traitors, List<UHCPlayer> unknown) {
-            this.team = team;
-            this.gentils = gentils;
-            this.traitors = traitors;
-            this.unknown = unknown;
-        }
-
-        public UHCTeam getTeam() {
-            return team;
-        }
-
-        public List<UHCPlayer> getGentils() {
-            return gentils;
-        }
-
-        public List<UHCPlayer> getTraitors() {
-            return traitors;
-        }
-
-        public List<UHCPlayer> getUnknown() {
-            return unknown;
-        }
+    public record TeamStats(UHCTeam team, List<UHCPlayer> gentils, List<UHCPlayer> traitors, List<UHCPlayer> unknown) {
 
         public int getTotalAlive() {
             return gentils.size() + traitors.size() + unknown.size();

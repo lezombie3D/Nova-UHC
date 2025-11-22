@@ -61,12 +61,10 @@ public class DeathNoteManager {
     public boolean useDeathNote(UHCPlayer kira, String targetName, int episode) {
         // Vérifier que le joueur peut utiliser le Death Note
         DeathNoteRole kiraRole = scenario.getRoleByUHCPlayer(kira);
-        if (!(kiraRole instanceof KiraRole)) {
+        if (!(kiraRole instanceof KiraRole kiraRoleInstance)) {
             kira.getPlayer().sendMessage("§c[Death Note] §fVous n'êtes pas Kira !");
             return false;
         }
-
-        KiraRole kiraRoleInstance = (KiraRole) kiraRole;
 
         // Vérifier le cooldown
         if (isOnCooldown(kira)) {
@@ -177,8 +175,7 @@ public class DeathNoteManager {
     private void notifyInvestigators(UHCPlayer target, int seconds) {
         for (UHCPlayer player : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
             DeathNoteRole role = scenario.getRoleByUHCPlayer(player);
-            if (role instanceof EnqueteurRole) {
-                EnqueteurRole enqueteur = (EnqueteurRole) role;
+            if (role instanceof EnqueteurRole enqueteur) {
                 enqueteur.showDeathNoteTimer(player, target, seconds);
             }
         }

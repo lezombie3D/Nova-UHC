@@ -27,8 +27,7 @@ public class Cripple extends Scenario {
 
     @Override
     public void onPlayerTakeDamage(Entity entity, EntityDamageEvent event) {
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player) {
             if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 30, 0, false, false));
             }

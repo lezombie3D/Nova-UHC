@@ -31,8 +31,7 @@ public class RewardLongShot extends Scenario {
     public void onHit(Entity entity, Entity dammager, EntityDamageByEntityEvent event) {
         if (dammager instanceof Projectile && dammager.getType().equals(EntityType.ARROW)) {
             Projectile projectile = (Projectile) event.getDamager();
-            if (projectile.getShooter() instanceof Player) {
-                Player shooter = (Player) projectile.getShooter();
+            if (projectile.getShooter() instanceof Player shooter) {
                 if (shooter.getLocation().distance(event.getEntity().getLocation()) >= 75) {
                     event.setDamage(event.getDamage() * 1.5);
                     shooter.setHealth(shooter.getHealth() + 2);

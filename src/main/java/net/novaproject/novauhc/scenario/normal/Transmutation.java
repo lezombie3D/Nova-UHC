@@ -68,8 +68,7 @@ public class Transmutation extends Scenario {
 
         // Check for transmutation crafting recipes
         Recipe recipe = event.getRecipe();
-        if (recipe instanceof ShapelessRecipe) {
-            ShapelessRecipe shapelessRecipe = (ShapelessRecipe) recipe;
+        if (recipe instanceof ShapelessRecipe shapelessRecipe) {
 
             // Check if this is a transmutation recipe
             if (isTransmutationRecipe(shapelessRecipe)) {
@@ -195,18 +194,7 @@ public class Transmutation extends Scenario {
     }
 
     // Inner class for transmutation recipes
-    public static class TransmutationRecipe {
-        public final Material inputMaterial;
-        public final int inputAmount;
-        public final Material outputMaterial;
-        public final int outputAmount;
-
-        public TransmutationRecipe(Material inputMaterial, int inputAmount,
-                                   Material outputMaterial, int outputAmount) {
-            this.inputMaterial = inputMaterial;
-            this.inputAmount = inputAmount;
-            this.outputMaterial = outputMaterial;
-            this.outputAmount = outputAmount;
-        }
+    public record TransmutationRecipe(Material inputMaterial, int inputAmount, Material outputMaterial,
+                                      int outputAmount) {
     }
 }

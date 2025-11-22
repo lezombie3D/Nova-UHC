@@ -6,24 +6,30 @@ import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import lombok.Getter;
+import net.novaproject.novauhc.cloudnet.CloudNet;
 import net.novaproject.novauhc.command.CommandManager;
 import net.novaproject.novauhc.database.DatabaseManager;
-import net.novaproject.novauhc.utils.CloudNet;
 import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.nms.NMSPatcher;
 import net.novaproject.novauhc.world.generation.BiomeReplacer;
 import org.bson.Document;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
     private static Main instance;
     private static UHCManager uhcManager;
+    @Getter
     private static Common common;
+    @Getter
     private static DatabaseManager databaseManager;
+    @Getter
     private CommandManager commandManager;
     private MongoClient mongoClient;
     private MongoDatabase database;
+    @Getter
     private CloudNet cloudNet;
 
 
@@ -33,18 +39,6 @@ public class Main extends JavaPlugin {
 
     public static UHCManager getUHCManager() {
         return uhcManager;
-    }
-
-    public static DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
-    public static Common getCommon() {
-        return common;
-    }
-
-    public CommandManager getCommandManager() {
-        return commandManager;
     }
 
     public MongoDatabase getMongoDB() {
@@ -58,7 +52,6 @@ public class Main extends JavaPlugin {
         common = new Common();
         ConfigUtils.setup();
         BiomeReplacer.init();
-        cloudNet = new CloudNet();
     }
 
     @Override
@@ -68,6 +61,8 @@ public class Main extends JavaPlugin {
         commandManager = new CommandManager(this);
         common.setup();
         uhcManager.setup();
+        if (Bukkit.getPluginManager().getPlugin("CloudNet-Bridge") != null)
+            cloudNet = new CloudNet();
         databaseManager = new DatabaseManager();
         new NMSPatcher(this);
 
@@ -102,7 +97,4 @@ public class Main extends JavaPlugin {
         }
     }
 
-    public CloudNet getCloudNet() {
-        return cloudNet;
-    }
 }

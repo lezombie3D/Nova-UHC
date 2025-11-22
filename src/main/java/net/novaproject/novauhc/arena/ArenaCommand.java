@@ -9,8 +9,7 @@ public class ArenaCommand extends Command {
     @Override
     public void execute(CommandArguments commandArguments) {
 
-        if (commandArguments.getSender() instanceof Player) {
-            Player player = (Player) commandArguments.getSender();
+        if (commandArguments.getSender() instanceof Player player) {
             ArenaUHC arenaUHC = ArenaUHC.get();
 
             if (arenaUHC == null) {

@@ -11,9 +11,7 @@ public class BiomeReplacer {
             Field biomeF = BiomeBase.class.getDeclaredField("biomes");
             biomeF.setAccessible(true);
 
-            if (biomeF.get(null) instanceof BiomeBase[]) {
-
-                BiomeBase[] biomes = (BiomeBase[]) biomeF.get(null);
+            if (biomeF.get(null) instanceof BiomeBase[] biomes) {
 
                 swap(biomes, BiomeBase.JUNGLE, BiomeBase.FOREST);
                 swap(biomes, BiomeBase.OCEAN, BiomeBase.PLAINS);

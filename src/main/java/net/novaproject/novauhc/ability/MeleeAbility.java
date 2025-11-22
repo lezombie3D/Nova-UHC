@@ -18,8 +18,7 @@ public abstract class MeleeAbility extends Ability {
 
     @Override
     public void onAttack(UHCPlayer victimP, EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Player)) return;
-        Player player = (Player) event.getDamager();
+        if (!(event.getDamager() instanceof Player player)) return;
         setTarget(victimP);
         tryUse(player);
     }

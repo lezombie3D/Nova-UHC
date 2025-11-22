@@ -30,8 +30,7 @@ public class SafeMiner extends Scenario {
     @Override
     public void onPlayerTakeDamage(Entity entity, EntityDamageEvent event) {
         if (actived) {
-            if (event.getEntity() instanceof Player) {
-                Player player = (Player) event.getEntity();
+            if (event.getEntity() instanceof Player player) {
                 if (player.getLocation().getY() <= getConfig().getInt("max_height")) {
                     event.setCancelled(true);
                 }

@@ -140,8 +140,7 @@ public class KiraChatManager {
         DeathNoteRole role = scenario.getRoleByUHCPlayer(player);
         if (role == null) return "Inconnu";
 
-        if (role instanceof MelloRole) {
-            MelloRole mello = (MelloRole) role;
+        if (role instanceof MelloRole mello) {
             return "Mello " + mello.getCurrentForm().getName();
         }
 

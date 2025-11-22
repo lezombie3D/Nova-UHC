@@ -70,8 +70,7 @@ public class BestPvE extends Scenario {
 
     @Override
     public void onPlayerTakeDamage(Entity entity, EntityDamageEvent event) {
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player) {
             if (listPve.contains(player)) {
                 listPve.remove(player);
                 if (!listOutPve.contains(player)) {

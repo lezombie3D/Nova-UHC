@@ -1,15 +1,12 @@
 package net.novaproject.novauhc;
 
 
-import eu.cloudnetservice.driver.document.DocumentFactory;
 import eu.cloudnetservice.driver.document.property.DocProperty;
-import eu.cloudnetservice.driver.service.ServiceInfoSnapshot;
 import lombok.Getter;
 import lombok.Setter;
 import net.novaproject.novauhc.ability.AbilityManager;
 import net.novaproject.novauhc.command.CommandManager;
 import net.novaproject.novauhc.listener.ListenerManager;
-import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.task.ScatterTask;
@@ -18,12 +15,10 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.ui.config.Enchants;
-import net.novaproject.novauhc.utils.CloudNet;
 import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.Titles;
 import net.novaproject.novauhc.utils.UHCUtils;
 import net.novaproject.novauhc.world.utils.SimpleBorder;
-import org.bson.Document;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -83,12 +78,7 @@ public class UHCManager {
         Bukkit.getWhitelistedPlayers().forEach(wl -> {
             wl.setWhitelisted(false);
         });
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                gameToDoc();
-            }
-        }.runTaskLater(Main.get(), 20 * 60);
+
 
     }
 
@@ -224,20 +214,6 @@ public class UHCManager {
 
     }
 
-    private void gameToDoc() {
-        Document document = new Document();
-
-        document.append("host", PlayerConnectionEvent.getHost().getName());
-        document.append("waiting", isLobby());
-        document.append("players_online", getUhcPlayerManager().getOnlineUHCPlayers().size());
-        document.append("players_max", getSlot());
-        document.append("open", Bukkit.getServer().hasWhitelist());
-        int teams = team_size;
-        document.append("team_size", teams == 1 ? "FFA" : "To" + teams);
-        ServiceInfoSnapshot serviceInfoSnapshot = CloudNet.get().getServiceInfo();
-        serviceInfoSnapshot.provider().updateProperties(eu.cloudnetservice.driver.document.Document.newDocument(DocumentFactory.json()).writeProperty(NOVA, document.toJson()));
-        CloudNet.get().getWrapperServiceInfoHolder().publishServiceInfoUpdate(serviceInfoSnapshot);
-    }
 
     public boolean isLobby() {
         return gameState == GameState.LOBBY || gameState == GameState.SCATTERING;
@@ -329,7 +305,7 @@ public class UHCManager {
         if (aliveTeams.size() == 1 && soloPlayers.isEmpty()) {
 
             UHCTeam team = aliveTeams.get(0);
-            String winner = team.getName();
+            String winner = team.name();
             String teamMembers = team.getPlayers().stream()
                     .map(p -> p.getPlayer().getName())
                     .collect(Collectors.joining(", "));

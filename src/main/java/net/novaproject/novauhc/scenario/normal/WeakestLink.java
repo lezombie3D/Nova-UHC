@@ -83,9 +83,7 @@ public class WeakestLink extends Scenario {
     public void onHit(Entity entity, Entity damager, EntityDamageByEntityEvent event) {
         if (!isActive()) return;
 
-        if (!(entity instanceof Player) || !(damager instanceof Player)) return;
-
-        Player victim = (Player) entity;
+        if (!(entity instanceof Player victim) || !(damager instanceof Player)) return;
 
         // Check if victim is the weakest link
         if (isWeakestLink(victim)) {

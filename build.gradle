@@ -1,51 +1,63 @@
-plugins {
-    id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
-}
+apply plugin: 'java'
 
 group = 'NovaUHC'
 version = '0.1'
 
 compileJava.options.encoding = 'UTF-8'
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
+
 repositories {
     mavenCentral()
 
-    maven { url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
-    maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url = "https://repo.papermc.io/repository/maven-public/" }
+}
+
+repositories {
+
+    mavenCentral()
+
+    maven {
+        name = 'papermc'
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+
+    maven {
+        name = 'aerogel'
+        url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+    }
+
+    maven {
+        url = 'https://jitpack.io'
+    }
+
+    maven { url "https://repo.dmulloy2.net/repository/public/" }
+
     maven { url = "https://maven.enginehub.org/repo/" }
 
 }
 
+configurations {
+    extraLibs
+}
 
 dependencies {
-    implementation 'fr.mrmicky:fastboard:2.1.4'
-    implementation 'org.mongodb:mongodb-driver-sync:5.3.0'
-    implementation 'org.json:json:20230618'
-    implementation 'com.github.azbh111:spigot-1.8.8:R'
-    compileOnly("org.projectlombok:lombok:1.18.38")
-    annotationProcessor("org.projectlombok:lombok:1.18.38")
+    implementation group: 'com.github.azbh111', name: 'spigot-1.8.8', version: 'R'
 
-    implementation platform('eu.cloudnetservice.cloudnet:bom:4.0.0-RC10')
-    implementation 'eu.cloudnetservice.cloudnet:driver'
-    implementation 'eu.cloudnetservice.cloudnet:wrapper-jvm'
-    implementation 'eu.cloudnetservice.cloudnet:bridge'
+    implementation platform('eu.cloudnetservice.cloudnet:bom:4.0.0-RC15')
+    implementation 'eu.cloudnetservice.cloudnet:driver-api'
+    implementation 'eu.cloudnetservice.cloudnet:wrapper-jvm-impl'
+    implementation 'eu.cloudnetservice.cloudnet:bridge-api'
     implementation 'eu.cloudnetservice.cloudnet:platform-inject-api'
+    implementation('dev.derklaro.aerogel:aerogel:2.0.0-SNAPSHOT')
 
+    extraLibs 'fr.mrmicky:fastboard:2.1.3'
+    extraLibs 'org.mongodb:mongodb-driver-sync:5.3.0'
+    compileOnly("org.projectlombok:lombok:1.18.42")
+    annotationProcessor("org.projectlombok:lombok:1.18.42")
+    configurations.implementation.extendsFrom(configurations.extraLibs)
 }
 
-
-shadowJar {
-
-    relocate 'com.mongodb', 'net.novauhc.libs.mongodb'
-    relocate 'org.bson', 'net.novauhc.libs.bson'
-    relocate 'fr.mrmicky.fastboard', 'net.novauhc.libs.fastboard'
-    archiveClassifier.set('')
-    destinationDirectory.set(file("F:\\plugin\\Plugin"))
+jar {
+    from {
+        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
-
-build.dependsOn shadowJar

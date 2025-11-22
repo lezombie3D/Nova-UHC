@@ -11,11 +11,11 @@ public enum LGCamps implements Camps {
     LOUP_GAROU("Loups-Garous", "§c§l", Material.REDSTONE, null, true),
     SOLITAIRE("Solitaire", "§e§l", Material.DIAMOND, null, true),
 
-    // Sous-camps
     COUPLE("Couple", "§d§l", Material.RED_ROSE, SOLITAIRE, false),
     ANGE("Ange", "§b§l", Material.FEATHER, SOLITAIRE, false),
     ASSASIN("Assasin", "§b§l", Material.DIAMOND, SOLITAIRE, false),
     ;
+
 
     @Delegate
     private final Camps delegate;
@@ -24,4 +24,6 @@ public enum LGCamps implements Camps {
         this.delegate = new AbstractCamp(name, color, material, parent, mainCamp) {
         };
     }
+
+
 }

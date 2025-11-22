@@ -110,10 +110,9 @@ public class AnvilUi {
 		this.listener = new Listener(){
 			@EventHandler
 			public void onInventoryClick(InventoryClickEvent event){
-				if(event.getWhoClicked() instanceof Player){
-					Player clicker = (Player) event.getWhoClicked();
+                if (event.getWhoClicked() instanceof Player clicker) {
 
-					if(event.getInventory().equals(inv)){
+                    if (event.getInventory().equals(inv)) {
 						event.setCancelled(true);
 
 						ItemStack item = event.getCurrentItem();
@@ -148,9 +147,8 @@ public class AnvilUi {
 
 			@EventHandler
 			public void onInventoryClose(InventoryCloseEvent event){
-				if(event.getPlayer() instanceof Player){
-					Player player = (Player) event.getPlayer();
-					Inventory inv = event.getInventory();
+                if (event.getPlayer() instanceof Player player) {
+                    Inventory inv = event.getInventory();
 
 					if(inv.equals(AnvilUi.this.inv)){
 						inv.clear();
@@ -177,8 +175,7 @@ public class AnvilUi {
         this.listener = new Listener() {
             @EventHandler
             public void onInventoryClick(InventoryClickEvent event) {
-                if (event.getWhoClicked() instanceof Player) {
-                    Player clicker = (Player) event.getWhoClicked();
+                if (event.getWhoClicked() instanceof Player clicker) {
 
                     if (event.getInventory().equals(inv)) {
                         event.setCancelled(true);
@@ -215,8 +212,7 @@ public class AnvilUi {
 
             @EventHandler
             public void onInventoryClose(InventoryCloseEvent event) {
-                if (event.getPlayer() instanceof Player) {
-                    Player player = (Player) event.getPlayer();
+                if (event.getPlayer() instanceof Player player) {
                     Inventory inv = event.getInventory();
 
                     if (inv.equals(AnvilUi.this.inv)) {

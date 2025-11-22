@@ -259,7 +259,7 @@ public class ParkourMaster extends Scenario {
         cleanupParkour(challenge);
 
         // Announce completion
-        player.sendMessage("§a§l[ParkourMaster] §fParcours complété ! Récompense : " + reward.getDescription());
+        player.sendMessage("§a§l[ParkourMaster] §fParcours complété ! Récompense : " + reward.description());
         Bukkit.broadcastMessage("§a[ParkourMaster] §f" + player.getName() + " a complété un parcours !");
 
         // Effects
@@ -345,9 +345,9 @@ public class ParkourMaster extends Scenario {
 
     private void giveReward(Player player, ParkourReward reward) {
         if (player.getInventory().firstEmpty() != -1) {
-            player.getInventory().addItem(reward.getItem());
+            player.getInventory().addItem(reward.item());
         } else {
-            player.getWorld().dropItemNaturally(player.getLocation(), reward.getItem());
+            player.getWorld().dropItemNaturally(player.getLocation(), reward.item());
             player.sendMessage("§a[ParkourMaster] §fInventaire plein ! Récompense jetée au sol.");
         }
     }
@@ -402,20 +402,10 @@ public class ParkourMaster extends Scenario {
         }
     }
 
-    private static class ParkourReward {
-        private final String description;
-        private final ItemStack item;
+    private record ParkourReward(String description, ItemStack item) {
 
-        public ParkourReward(String description, ItemStack item) {
-            this.description = description;
-            this.item = item;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public ItemStack getItem() {
+        @Override
+        public ItemStack item() {
             return item.clone();
         }
     }
