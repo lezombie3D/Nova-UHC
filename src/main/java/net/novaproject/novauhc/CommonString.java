@@ -177,10 +177,12 @@ public enum CommonString {
         TRANSLATIONS.clear();
         for (CommonString lang : values()) {
             String path = "message." + lang.name();
-            String message = config.getString(path);
-            if (message == null) {
+
+            if (!config.contains(path)) {
                 config.set(path, lang.getDefaultMessage());
             }
+
+            String message = config.getString(path);
             TRANSLATIONS.put(lang, message != null ? message.replace("&", "§") : lang.getDefaultMessage());
         }
         saveLangConfig(config);
