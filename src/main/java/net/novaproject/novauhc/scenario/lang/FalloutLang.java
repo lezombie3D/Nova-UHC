@@ -9,16 +9,26 @@ import java.util.Map;
 
 public enum FalloutLang implements ScenarioLang {
 
-    FALLOUT_STARTED,
-    FALLOUT_INSTRUCTION,
-    FALLOUT_WARNING,
-    FALLOUT_PREPARE,
-    RADIATION_LIGHT,
-    RADIATION_MODERATE,
-    RADIATION_SEVERE,
-    FALLOUT_FORCED;
+    FALLOUT_STARTED("§c§l[Fallout] §fLES RADIATIONS COMMENCENT !"),
+    FALLOUT_INSTRUCTION("§c[Fallout] §fDescendez sous Y=%safe_y% pour éviter les radiations !"),
+    FALLOUT_WARNING("§c[Fallout] §fRadiations dans %time% !"),
+    FALLOUT_PREPARE("§c[Fallout] §fPréparez vos abris souterrains !"),
+    RADIATION_LIGHT("§c[Fallout] §fVous êtes exposé aux radiations !"),
+    RADIATION_MODERATE("§c[Fallout] §fRadiation modérée ! Trouvez un abri !"),
+    RADIATION_SEVERE("§c[Fallout] §fRadiation SÉVÈRE ! Descendez immédiatement !"),
+    FALLOUT_FORCED("§c[Fallout] §fRadiations forcées par un administrateur !");
 
+    private final String defaultMessage;
     private static FileConfiguration config;
+
+    FalloutLang(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    @Override
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 
     @Override
     public String getBasePath() {

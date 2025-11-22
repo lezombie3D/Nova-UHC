@@ -9,11 +9,21 @@ import java.util.Map;
 
 public enum VampireLang implements ScenarioLang {
 
-    KILL_HEAL,
-    SUN_DAMAGE,
-    SUN_DAMAGE_SEVERE;
+    KILL_HEAL("§c[Vampire] §fVous avez récupéré %heal_hearts% cœur(s) en tuant %victim% !"),
+    SUN_DAMAGE("§c[Vampire] §fVous brûlez au soleil ! Équipez un casque ou trouvez de l'ombre !"),
+    SUN_DAMAGE_SEVERE("§c[Vampire] §fVous gelez ! Trouvez de la chaleur rapidement !");
 
+    private final String defaultMessage;
     private static FileConfiguration config;
+
+    VampireLang(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    @Override
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 
     @Override
     public String getBasePath() {

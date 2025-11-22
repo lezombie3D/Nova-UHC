@@ -9,14 +9,24 @@ import java.util.Map;
 
 public enum GladiatorLang implements ScenarioLang {
 
-    ARENA_CREATED,
-    TELEPORTING,
-    COMBAT_STARTED,
-    COMBAT_TIMEOUT,
-    WINNER_ANNOUNCED,
-    ARENA_CLEANUP;
+    ARENA_CREATED("§4[Gladiator] §fArène créée ! Combat entre %player1% et %player2% !"),
+    TELEPORTING("§4[Gladiator] §fTéléportation dans l'arène dans %seconds% secondes..."),
+    COMBAT_STARTED("§4[Gladiator] §fQue le combat commence ! Bonne chance !"),
+    COMBAT_TIMEOUT("§4[Gladiator] §fTemps écoulé ! Les deux combattants sont téléportés."),
+    WINNER_ANNOUNCED("§4[Gladiator] §f%winner% remporte le duel !"),
+    ARENA_CLEANUP("§4[Gladiator] §fArène nettoyée.");
 
+    private final String defaultMessage;
     private static FileConfiguration config;
+
+    GladiatorLang(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    @Override
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 
     @Override
     public String getBasePath() {

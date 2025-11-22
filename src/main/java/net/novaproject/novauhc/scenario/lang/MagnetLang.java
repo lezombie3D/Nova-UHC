@@ -9,9 +9,19 @@ import java.util.Map;
 
 public enum MagnetLang implements ScenarioLang {
 
-    MAGNET_ACTIVATED;
+    MAGNET_ACTIVATED("§6[Magnet] §fMinerais attirés dans un rayon de %radius% blocs !");
 
+    private final String defaultMessage;
     private static FileConfiguration config;
+
+    MagnetLang(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    @Override
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 
     @Override
     public String getBasePath() {

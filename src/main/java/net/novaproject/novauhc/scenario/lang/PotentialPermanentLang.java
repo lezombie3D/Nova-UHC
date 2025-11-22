@@ -9,13 +9,23 @@ import java.util.Map;
 
 public enum PotentialPermanentLang implements ScenarioLang {
 
-    HEALTH_STATUS,
-    KILL_CONVERSION,
-    KILL_ANNOUNCEMENT,
-    STARTING_HEALTH,
-    CONVERSION_INFO;
+    HEALTH_STATUS("§e[PotentialPermanent] §fVie permanente : %permanent_hearts% cœurs | Absorption : %absorption_hearts% cœurs"),
+    KILL_CONVERSION("§e[PotentialPermanent] §fKill ! %converted_hearts% cœur(s) d'absorption convertis en vie permanente !"),
+    KILL_ANNOUNCEMENT("§e[PotentialPermanent] §f%player% a maintenant %permanent_hearts% cœurs permanents !"),
+    STARTING_HEALTH("§e[PotentialPermanent] §fVous commencez avec %permanent_hearts% cœurs permanents + %absorption_hearts% cœurs d'absorption !"),
+    CONVERSION_INFO("§e[PotentialPermanent] §fTuez des joueurs pour convertir l'absorption en vie permanente !");
 
+    private final String defaultMessage;
     private static FileConfiguration config;
+
+    PotentialPermanentLang(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    @Override
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 
     @Override
     public String getBasePath() {

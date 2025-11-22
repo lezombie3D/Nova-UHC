@@ -9,15 +9,25 @@ import java.util.Map;
 
 public enum ParkourMasterLang implements ScenarioLang {
 
-    PARKOUR_SPAWNED,
-    PARKOUR_BROADCAST,
-    CHECKPOINT_REACHED,
-    PARKOUR_COMPLETED,
-    PARKOUR_FAILED,
-    PARKOUR_EXPIRED,
-    INVENTORY_FULL;
+    PARKOUR_SPAWNED("§a[ParkourMaster] §fUn parcours est apparu près de vous ! Complétez-le pour une récompense !"),
+    PARKOUR_BROADCAST("§a[ParkourMaster] §fUn parcours est apparu près de %player% !"),
+    CHECKPOINT_REACHED("§a[ParkourMaster] §fCheckpoint %current%/%total% atteint !"),
+    PARKOUR_COMPLETED("§a§l[ParkourMaster] §fParcours complété ! Récompense : %reward%"),
+    PARKOUR_FAILED("§c[ParkourMaster] §fVous avez échoué au parcours ! Réessayez la prochaine fois."),
+    PARKOUR_EXPIRED("§c[ParkourMaster] §fLe parcours a expiré !"),
+    INVENTORY_FULL("§a[ParkourMaster] §fInventaire plein ! Récompense jetée au sol.");
 
+    private final String defaultMessage;
     private static FileConfiguration config;
+
+    ParkourMasterLang(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    @Override
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 
     @Override
     public String getBasePath() {

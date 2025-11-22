@@ -9,10 +9,20 @@ import java.util.Map;
 
 public enum NinjaLang implements ScenarioLang {
 
-    KILL_INVISIBILITY,
-    INVISIBILITY_EXPIRED;
+    KILL_INVISIBILITY("§8[Ninja] §fVous devenez invisible pendant 10 secondes !"),
+    INVISIBILITY_EXPIRED("§8[Ninja] §fVotre invisibilité s'estompe...");
 
+    private final String defaultMessage;
     private static FileConfiguration config;
+
+    NinjaLang(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    @Override
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 
     @Override
     public String getBasePath() {
