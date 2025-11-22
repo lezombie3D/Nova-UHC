@@ -91,10 +91,6 @@ public class ConfigUtils {
         });
     }
 
-    public static File getFile(FileConfiguration config) {
-        return new File(Main.get().getDataFolder(), REGISTERED_PATHS.contains(config.getString("path")) ? config.getString("path") : "");
-    }
-
     public static FileConfiguration getConfig(String path) {
         File file = new File(Main.get().getDataFolder(), path);
         return YamlConfiguration.loadConfiguration(file);
