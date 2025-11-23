@@ -6,6 +6,7 @@ import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.TeamsTagsManager;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,9 +24,9 @@ public class PlayerConnectionEvent implements Listener {
 
     private static final Set<UUID> hosts = new HashSet<>();
     private static String firstPlayerUUID = null;
-    private static Player hostPlayer;
+    private static OfflinePlayer hostPlayer;
 
-    public static Player getHost() {
+    public static OfflinePlayer getHost() {
         return hostPlayer;
     }
 
@@ -35,7 +36,7 @@ public class PlayerConnectionEvent implements Listener {
         hosts.add(player.getUniqueId());
         TeamsTagsManager.setNameTag(player, "HOST", "§f[§5Host§f] ", "");
 
-        hostPlayer = player;
+        hostPlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
     }
 
     @EventHandler

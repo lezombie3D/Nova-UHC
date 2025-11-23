@@ -1,6 +1,7 @@
 package net.novaproject.novauhc.ui;
 
 import net.novaproject.novauhc.CommonString;
+import net.novaproject.novauhc.cloudnet.CloudNet;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ui.AnvilUi;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
@@ -125,6 +126,9 @@ public class WhiteListUi extends CustomInventory {
                     }
                 }
             });
+        }
+        if (CloudNet.get() != null) {
+            addMenu(53, new ItemCreator(Material.EMERALD), CloudNet.get().getCloudNetUi(getPlayer()));
         }
     }
 

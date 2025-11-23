@@ -1,7 +1,5 @@
 package net.novaproject.novauhc;
 
-
-import eu.cloudnetservice.driver.document.property.DocProperty;
 import lombok.Getter;
 import lombok.Setter;
 import net.novaproject.novauhc.ability.AbilityManager;
@@ -41,7 +39,7 @@ public class UHCManager {
     }
 
     public Map<String, ItemStack[]> start = new HashMap<>();
-    public static final DocProperty<String> NOVA = DocProperty.property("NovaUHC", String.class);
+
     private WaitState waitState = WaitState.LOBBY_STATE;
     private UHCTeamManager uhcTeamManager;
     private AbilityManager abilityManager;

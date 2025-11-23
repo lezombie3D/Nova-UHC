@@ -2,6 +2,7 @@
 package net.novaproject.novauhc.cloudnet;
 
 import eu.cloudnetservice.driver.document.DocumentFactory;
+import eu.cloudnetservice.driver.document.property.DocProperty;
 import eu.cloudnetservice.driver.event.EventManager;
 import eu.cloudnetservice.driver.inject.InjectionLayer;
 import eu.cloudnetservice.driver.provider.CloudServiceFactory;
@@ -15,19 +16,32 @@ import eu.cloudnetservice.modules.bridge.BridgeServiceHelper;
 import eu.cloudnetservice.modules.bridge.player.PlayerManager;
 import eu.cloudnetservice.modules.bridge.player.executor.PlayerExecutor;
 import eu.cloudnetservice.wrapper.impl.holder.WrapperServiceInfoHolder;
+import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
+import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
+import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
+import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.ui.AnvilUi;
+import net.novaproject.novauhc.utils.ui.CustomInventory;
+import net.novaproject.novauhc.utils.ui.item.ActionItem;
 import org.bson.Document;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CloudNet {
 
-
+    public static final DocProperty<String> NOVA = DocProperty.property("NovaUHC", String.class);
+    private String gameName;
     public CloudNet() {
+        System.out.println("CloudNet Active for UHC");
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -127,17 +141,63 @@ public class CloudNet {
 
     private void gameToDoc() {
         Document document = new Document();
-
-        document.append("host", PlayerConnectionEvent.getHost().getName());
-        document.append("waiting", isLobby());
-        document.append("players_online", getUhcPlayerManager().getOnlineUHCPlayers().size());
-        document.append("players_max", getSlot());
+        String host = Optional.ofNullable(PlayerConnectionEvent.getHost())
+                .map(H -> H.getName())
+                .orElse("Aucun");
+        String gamename = Optional.ofNullable(gameName)
+                .map(G -> "§5§l" + gameName)
+                .orElse("§5§lGame de : §e" + host);
+        document.append("game_name", gamename);
+        document.append("host", host);
+        document.append("waiting", UHCManager.get().isLobby());
+        document.append("players_online", UHCPlayerManager.get().getOnlineUHCPlayers().size());
+        document.append("players_max", UHCManager.get().getSlot());
         document.append("open", Bukkit.getServer().hasWhitelist());
-        int teams = team_size;
+        int teams = UHCManager.get().getTeam_size();
         document.append("team_size", teams == 1 ? "FFA" : "To" + teams);
         ServiceInfoSnapshot serviceInfoSnapshot = CloudNet.get().getServiceInfo();
         serviceInfoSnapshot.provider().updateProperties(eu.cloudnetservice.driver.document.Document.newDocument(DocumentFactory.json()).writeProperty(NOVA, document.toJson()));
         CloudNet.get().getWrapperServiceInfoHolder().publishServiceInfoUpdate(serviceInfoSnapshot);
     }
 
+
+    public CustomInventory getCloudNetUi(Player player) {
+        return new CustomInventory(player) {
+            @Override
+            public void setup() {
+                fillDesign(getConfig().getInt("menu.cloudnet.color"));
+
+                addItem(new ActionItem(0, new ItemCreator(Material.PAPER).setName("§2Modifier le nom de la parties")) {
+                    @Override
+                    public void onClick(InventoryClickEvent e) {
+                        new AnvilUi(getPlayer(), event -> {
+                            if (event.getSlot() == AnvilUi.AnvilSlot.OUTPUT) {
+                                String enteredText = event.getName();
+                                gameName = enteredText;
+                                CommonString.SUCCESSFUL_MODIFICATION.send(getPlayer());
+                                openAll();
+                            }
+
+                        }).setSlot("Nom de la parties").open();
+                    }
+                });
+
+            }
+
+            @Override
+            public String getTitle() {
+                return getConfig().getString("menu.cloudnet.title", "CloudNet • Paramètres");
+            }
+
+            @Override
+            public int getLines() {
+                return 5;
+            }
+
+            @Override
+            public boolean isRefreshAuto() {
+                return false;
+            }
+        };
+    }
 }

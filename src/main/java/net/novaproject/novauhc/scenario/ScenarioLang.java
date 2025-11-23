@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface ScenarioLang {
+
     String name();
 
     String getBasePath();
@@ -22,5 +23,6 @@ public interface ScenarioLang {
     default Map<String, Object> getScenarioPlaceholders(UHCPlayer player) {
         return new HashMap<>();
     }
+
 }
 

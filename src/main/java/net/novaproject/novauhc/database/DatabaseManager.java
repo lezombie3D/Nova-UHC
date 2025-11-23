@@ -31,8 +31,6 @@ public class DatabaseManager {
         this.configManager = new UHCConfigManager(uhc_config);
     }
 
-    // ===== UHC CONFIG METHODS =====
-
     public void saveUHCConfig(UUID uuid, UHCGameConfiguration config) {
         configManager.saveConfig(uuid, config);
     }
