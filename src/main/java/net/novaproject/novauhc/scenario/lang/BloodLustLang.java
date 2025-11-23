@@ -9,10 +9,20 @@ import java.util.Map;
 
 public enum BloodLustLang implements ScenarioLang {
 
-    KILL_BOOST,
-    BOOST_EXPIRED;
+    KILL_BOOST("§c[BloodLust] §fVous ressentez la soif de sang ! Speed II et Strength I pendant 30 secondes !"),
+    BOOST_EXPIRED("§c[BloodLust] §fVotre soif de sang s'estompe...");
 
+    private final String defaultMessage;
     private static FileConfiguration config;
+
+    BloodLustLang(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    @Override
+    public String getDefaultMessage() {
+        return defaultMessage;
+    }
 
     @Override
     public String getBasePath() {
