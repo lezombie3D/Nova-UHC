@@ -1,5 +1,9 @@
 package net.novaproject.novauhc.world.generation;
 
+import net.novaproject.novauhc.Common;
+import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioManager;
+import net.novaproject.novauhc.task.LoadingChunkTask;
 import org.bukkit.*;
 import org.bukkit.plugin.Plugin;
 
@@ -42,7 +46,11 @@ public class WorldGenerator {
         resetSpawnChunks(world);
         WaterFixer waterFixer = new WaterFixer(plugin);
         waterFixer.fixLiquids(world);
-        new WorldPopulator(world).setRoofed();
+        if (ScenarioManager.get().getActiveScenarios().stream().anyMatch(Scenario::needRooft)){
+            new WorldPopulator(world, WorldPopulator.CenterType.ROOFT);
+        }else{
+            LoadingChunkTask.create(world, Common.get().getNether(), (int) (world.getWorldBorder().getSize() / 2));
+        }
 
     }
 

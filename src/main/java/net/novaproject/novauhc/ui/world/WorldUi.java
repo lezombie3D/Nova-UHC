@@ -6,6 +6,7 @@ import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.task.LoadingChunkTask;
 import net.novaproject.novauhc.ui.DefaultUi;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.UHCUtils;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
 import net.novaproject.novauhc.utils.ui.item.ActionItem;
 import net.novaproject.novauhc.world.generation.WorldGenerator;
@@ -15,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class WorldUi extends CustomInventory {
 
@@ -81,10 +83,16 @@ public class WorldUi extends CustomInventory {
         addItem(new ActionItem(22, prev) {
             @Override
             public void onClick(InventoryClickEvent e) {
-                if (getPlayer().getWorld().getName().equals(Common.get().getArenaName())) {
+                if (getPlayer().getWorld().equals(Common.get().getArena())) {
                     getPlayer().teleport(Common.get().getLobbySpawn());
+                    getPlayer().getInventory().clear();
+                    UHCUtils.giveLobbyItems(getPlayer());
                 } else {
                     getPlayer().teleport(new Location(Common.get().getArena(), 0, 100, 0));
+                    getPlayer().setFlying(true);
+                    getPlayer().getInventory().clear();
+                    getPlayer().getInventory().setItem(0,new ItemCreator(Material.GRASS).setName("§8┃ §fRecrée l' §a§lArena").getItemstack());
+                    getPlayer().getInventory().setItem(8,new ItemCreator(Material.WOOD_DOOR).setName(name).getItemstack());
                 }
                 openAll();
             }

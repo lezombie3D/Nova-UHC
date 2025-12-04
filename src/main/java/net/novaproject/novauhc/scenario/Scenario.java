@@ -80,10 +80,6 @@ public abstract class Scenario {
         active = !active;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
     public void onBreak(Player player, Block block, BlockBreakEvent event) {
 
     }

@@ -16,54 +16,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class WorldPopulator {
+
     private final World arena;
+    private CenterType type;
 
-    public WorldPopulator(World arena) {
+    public WorldPopulator(World arena, CenterType type) {
         this.arena = arena;
+        this.type = type;
     }
 
-    public void setRoofed() {
-        if (ScenarioManager.get().getActiveScenarios().stream().anyMatch(Scenario::needRooft)) {
-            new BukkitRunnable() {
-                final int yInicial = 50;
-                int progress = 0;
-                int YChange = this.yInicial;
 
-                public void run() {
-                    int radius = 250;
-                    if (this.progress == 0)
-
-                        for (int x = -radius; x <= radius; x++) {
-                            for (int z = -radius; z <= radius; z++) {
-                                Block block = arena.getBlockAt(x, this.YChange, z);
-                                block.setBiome(Biome.ROOFED_FOREST);
-                                if (block.getType() == Material.LEAVES || block.getType() == Material.LEAVES_2 || block.getType() == Material.LOG || block.getType() == Material.LOG_2) {
-                                    block.setType(Material.AIR);
-                                    if (block.getLocation().add(0.0D, -1.0D, 0.0D).getBlock().getType().equals(Material.DIRT))
-                                        block.getLocation().add(0.0D, -1.0D, 0.0D).getBlock().setType(Material.GRASS);
-                                } else if (block.getType() == Material.WATER || block.getType() == Material.STATIONARY_WATER) {
-                                    block.setType(Material.GRASS);
-                                }
-                            }
-                        }
-                    this.YChange++;
-                    this.progress++;
-                    for (Player player : Bukkit.getOnlinePlayers())
-                        new Titles().sendActionText(player, ChatColor.YELLOW + "Nettoyage du centre: " + ChatColor.GREEN + this.progress + "% \u00A78[\u00A7r" +
-                                ProgressBar.getProgressBar(this.progress, 80, 20, "|", ChatColor.YELLOW, ChatColor.GRAY) + "\u00A78]");
-                    if (this.progress >= 80) {
-                        cancel();
-
-                        WorldPopulator.this.addRooftTree();
-                    }
-                }
-            }.runTaskTimer(Main.get(), 1L, 5L);
-        } else {
-            LoadingChunkTask.create(arena, Common.get().getNether(), (int) (arena.getWorldBorder().getSize() / 2));
-        }
-    }
-
-    private void addRooftTree() {
+    private void generateRooftForest(){
         (new Thread(() -> (new BukkitRunnable() {
             final int yInicial = 50;
             int progress = 0;
@@ -96,6 +59,82 @@ public class WorldPopulator {
                 }
             }
         }).runTaskTimer(Main.get(), 1L, 5L))).start();
+    }
+
+    private void clearCenter() {
+        new BukkitRunnable() {
+            int progress = 0;
+            int y = 50;
+
+            @Override
+            public void run() {
+                int radius = 250;
+
+                for (int x = -radius; x <= radius; x++) {
+                    for (int z = -radius; z <= radius; z++) {
+                        Block block = arena.getBlockAt(x, y, z);
+
+                        block.setBiome(Biome.ROOFED_FOREST);
+
+                        Material type = block.getType();
+
+                        if (type == Material.LEAVES || type == Material.LEAVES_2
+                                || type == Material.LOG || type == Material.LOG_2) {
+
+                            block.setType(Material.AIR);
+
+                        } else if (type == Material.WATER || type == Material.STATIONARY_WATER) {
+
+                            block.setType(Material.GRASS);
+                        }
+                    }
+                }
+                for (Player player : Bukkit.getOnlinePlayers()) new Titles().sendActionText(player, ChatColor.YELLOW + "Nettoyage du centre: " + ChatColor.GREEN + this.progress + "% \u00A78[\u00A7r" + ProgressBar.getProgressBar(this.progress, 80, 20, "|", ChatColor.YELLOW, ChatColor.GRAY) + "\u00A78]");
+                progress++;
+                y++;
+
+                if (progress >= 80) {
+                    cancel();
+                    type.generate(WorldPopulator.this);
+                }
+            }
+
+        }.runTaskTimer(Main.get(), 1L, 5L);
+    }
+
+    public enum CenterType {
+
+        ROOFT {
+            @Override
+            public void generate(WorldPopulator populator) {
+                populator.clearCenter();
+                populator.generateRooftForest();
+            }
+        },
+
+        TAIGA {
+            @Override
+            public void generate(WorldPopulator populator) {
+                populator.clearCenter();
+                //populator.generateTaigaForest();
+            }
+        },
+
+        FOREST {
+            @Override
+            public void generate(WorldPopulator populator) {
+
+            }
+        },
+
+        FLAT {
+            @Override
+            public void generate(WorldPopulator populator) {
+                populator.clearCenter();
+            }
+        };
+
+        public abstract void generate(WorldPopulator populator);
     }
 
 }
