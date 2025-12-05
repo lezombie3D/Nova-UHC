@@ -114,6 +114,7 @@ public class WorldUi extends CustomInventory {
 
         addReturn(18, new DefaultUi(getPlayer()));
         addMenu(14, orepop, new OrePopulatorUi(getPlayer()));
+        addMenu(15,new ItemCreator(Material.SAPLING),new CenterUi(getPlayer()));
 
     }
 

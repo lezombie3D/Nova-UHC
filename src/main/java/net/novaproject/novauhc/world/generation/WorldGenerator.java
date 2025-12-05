@@ -5,6 +5,7 @@ import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.task.LoadingChunkTask;
 import org.bukkit.*;
+import org.bukkit.block.Biome;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -47,7 +48,7 @@ public class WorldGenerator {
         WaterFixer waterFixer = new WaterFixer(plugin);
         waterFixer.fixLiquids(world);
         if (ScenarioManager.get().getActiveScenarios().stream().anyMatch(Scenario::needRooft)){
-            new WorldPopulator(world, WorldPopulator.CenterType.ROOFT);
+            new WorldPopulator(world, WorldPopulator.CenterType.ROOFT, Biome.ROOFED_FOREST);
         }else{
             LoadingChunkTask.create(world, Common.get().getNether(), (int) (world.getWorldBorder().getSize() / 2));
         }
