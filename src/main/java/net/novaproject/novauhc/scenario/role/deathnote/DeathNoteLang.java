@@ -78,6 +78,11 @@ public enum DeathNoteLang implements ScenarioLang {
     }
 
     @Override
+    public String getDefaultMessage() {
+        return "";
+    }
+
+    @Override
     public Map<String, Object> getScenarioPlaceholders(UHCPlayer player) {
         Map<String, Object> placeholders = new HashMap<>();
 
