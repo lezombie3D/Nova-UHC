@@ -10,6 +10,7 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.ui.DefaultUi;
 import net.novaproject.novauhc.ui.inGameScenario;
 import net.novaproject.novauhc.ui.player.inGameTeamUi;
+import net.novaproject.novauhc.utils.UHCUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -53,6 +54,10 @@ public class PlayerInteractEvent implements Listener {
                             }
                         }
                         return;
+                    }
+                    if(item.getType() == Material.WOOD_DOOR && player.getWorld().equals(Common.get().getArena())){
+                        player.getInventory().clear();
+                        UHCUtils.giveLobbyItems(player);
                     }
                 }
                 if (item.isSimilar(Common.get().getTeamItem().getItemstack())) {

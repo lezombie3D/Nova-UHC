@@ -200,68 +200,32 @@ public enum CommonString {
         Map<String, Object> placeHolders = new HashMap<>();
         placeHolders.put("%time%", SIMPLE_DATE_FORMAT.format(new Date()));
         placeHolders.put("%date%", YEARS_FORMAT.format(new Date()));
-
-        try {
-            if (Common.get() != null && Common.get().getArena() != null) {
-                placeHolders.put("%border%", String.valueOf((int) Common.get().getArena().getWorldBorder().getSize()));
-            } else {
-                placeHolders.put("%border%", "N/A");
-            }
-        } catch (Exception e) {
+        if (Common.get() != null && Common.get().getArena() != null) {
+            placeHolders.put("%border%", String.valueOf((int) Common.get().getArena().getWorldBorder().getSize()));
+        } else {
             placeHolders.put("%border%", "N/A");
         }
-
-        try {
-            if (UHCManager.get() != null) {
-                placeHolders.put("%timer%", UHCManager.get().getTimerFormatted());
-                placeHolders.put("%gamestate%", UHCManager.get().getGameState().name());
-                placeHolders.put("%slot%", String.valueOf(UHCManager.get().getSlot()));
-                placeHolders.put("%diamond_limite%", String.valueOf(UHCManager.get().getDimamondLimit()));
-            } else {
-                placeHolders.put("%timer%", "00:00");
-                placeHolders.put("%gamestate%", "UNKNOWN");
-                placeHolders.put("%slot%", "0");
-                placeHolders.put("%diamond_limite%", "0");
-            }
-        } catch (Exception e) {
+        if (UHCManager.get() != null) {
+            placeHolders.put("%timer%", UHCManager.get().getTimerFormatted());
+            placeHolders.put("%gamestate%", UHCManager.get().getGameState().name());
+            placeHolders.put("%slot%", String.valueOf(UHCManager.get().getSlot()));
+            placeHolders.put("%diamond_limite%", String.valueOf(UHCManager.get().getDimamondLimit()));
+        } else {
             placeHolders.put("%timer%", "00:00");
             placeHolders.put("%gamestate%", "UNKNOWN");
             placeHolders.put("%slot%", "0");
             placeHolders.put("%diamond_limite%", "0");
         }
-
-        try {
-            if (Common.get() != null) {
-                placeHolders.put("%serveurname%", Common.get().getServername() != null ? Common.get().getServername() : "NovaUHC");
-                placeHolders.put("%main_color%", Common.get().getMainColor() != null ? Common.get().getMainColor() : "§e§l");
-                placeHolders.put("%infotag%", Common.get().getInfoTag() != null ? Common.get().getInfoTag() : "");
-                placeHolders.put("%servertag%", Common.get().getServertag() != null ? Common.get().getServertag() : "");
-                placeHolders.put("%servername%", Common.get().getServername() != null ? Common.get().getServername() : "NovaUHC");
-            } else {
-                placeHolders.put("%serveurname%", "NovaUHC");
-                placeHolders.put("%main_color%", "§e§l");
-                placeHolders.put("%infotag%", "");
-                placeHolders.put("%servertag%", "");
-                placeHolders.put("%servername%", "NovaUHC");
-            }
-        } catch (Exception e) {
-            placeHolders.put("%serveurname%", "NovaUHC");
-            placeHolders.put("%main_color%", "§e§l");
-            placeHolders.put("%infotag%", "");
-            placeHolders.put("%servertag%", "");
-            placeHolders.put("%servername%", "NovaUHC");
-        }
-
-        try {
-            if (UHCPlayerManager.get() != null) {
-                placeHolders.put("%players%", String.valueOf(UHCPlayerManager.get().getPlayingOnlineUHCPlayers().size()));
-            } else {
-                placeHolders.put("%players%", "0");
-            }
-        } catch (Exception e) {
+        placeHolders.put("%serveurname%", Common.get().getServername() != null ? Common.get().getServername() : "NovaUHC");
+        placeHolders.put("%main_color%", Common.get().getMainColor() != null ? Common.get().getMainColor() : "§e§l");
+        placeHolders.put("%infotag%", Common.get().getInfoTag() != null ? Common.get().getInfoTag() : "");
+        placeHolders.put("%servertag%", Common.get().getServertag() != null ? Common.get().getServertag() : "");
+        placeHolders.put("%servername%", Common.get().getServername() != null ? Common.get().getServername() : "NovaUHC");
+        if (UHCPlayerManager.get() != null) {
+            placeHolders.put("%players%", String.valueOf(UHCPlayerManager.get().getPlayingOnlineUHCPlayers().size()));
+        } else {
             placeHolders.put("%players%", "0");
         }
-
         try {
             placeHolders.put("%host%", PlayerConnectionEvent.getHost() != null ? PlayerConnectionEvent.getHost().getName() : "Aucun");
         } catch (Exception e) {
