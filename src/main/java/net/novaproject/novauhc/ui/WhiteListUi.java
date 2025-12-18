@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.ui;
 
+import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.cloudnet.CloudNet;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -128,7 +129,17 @@ public class WhiteListUi extends CustomInventory {
             });
         }
         if (CloudNet.get() != null) {
-            addMenu(53, new ItemCreator(Material.EMERALD), CloudNet.get().getCloudNetUi(getPlayer()));
+            ItemCreator cloud = new ItemCreator(Material.SLIME_BALL)
+                    .setName("§8┃ §fModifier l'affichage "+Common.get().getMainColor()+"Lobby")
+                    .addLore("")
+                    .addLore(" §8» §fAccès §f: §6§lHost")
+                    .addLore("")
+                    .addLore("  §8┃ §fPermet de Modifier l'"+ Common.get().getMainColor()+"affichage §fde la")
+                    .addLore("  §8┃ §fpartie dans les §6§lLobby.")
+                    .addLore("")
+                    .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
+                    .addLore("");
+            addMenu(53, cloud, CloudNet.get().getCloudNetUi(getPlayer()));
         }
     }
 

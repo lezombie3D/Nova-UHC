@@ -37,9 +37,7 @@ public record UHCTeam(DyeColor dyeColor, String prefix, String name, Pattern[] p
     }
 
     public Team getTeam() {
-
         return Bukkit.getScoreboardManager().getMainScoreboard().getTeam(name);
-
     }
 
     public ItemStack getItem() {
@@ -54,7 +52,7 @@ public record UHCTeam(DyeColor dyeColor, String prefix, String name, Pattern[] p
 
         ItemStack banner = new ItemStack(Material.BANNER);
         BannerMeta meta = (BannerMeta) banner.getItemMeta();
-        meta.setDisplayName(name());
+        meta.setDisplayName(prefix);
         meta.setLore(lore);
         meta.setBaseColor(dyeColor);
 

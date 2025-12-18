@@ -6,6 +6,7 @@ import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.task.LoadingChunkTask;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -48,7 +49,7 @@ public class WorldGenerator {
         WaterFixer waterFixer = new WaterFixer(plugin);
         waterFixer.fixLiquids(world);
         if (ScenarioManager.get().getActiveScenarios().stream().anyMatch(Scenario::needRooft)){
-            new WorldPopulator(world, WorldPopulator.CenterType.ROOFT, Biome.ROOFED_FOREST);
+            new WorldPopulator(world, CenterType.ROOFT, Biome.ROOFED_FOREST);
         }else{
             LoadingChunkTask.create(world, Common.get().getNether(), (int) (world.getWorldBorder().getSize() / 2));
         }
@@ -73,7 +74,7 @@ public class WorldGenerator {
         World world = Bukkit.getWorld(worldName);
         if (world != null) {
             world.getPlayers().forEach(player ->
-                    player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation())
+                    player.teleport(Common.get().getLobbySpawn(), PlayerTeleportEvent.TeleportCause.PLUGIN)
             );
             Bukkit.unloadWorld(world, false);
             File worldFolder = new File(Bukkit.getWorldContainer(), worldName);

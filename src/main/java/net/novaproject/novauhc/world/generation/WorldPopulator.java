@@ -24,7 +24,7 @@ public class WorldPopulator {
         clearCenter(biome);
     }
 
-    public void generateForest(TreeType one, TreeType two, TreeType three) {
+    public void generateForest(TreeType one, TreeType two, TreeType three, int chance1, int chance2, int chance3) {
         new BukkitRunnable() {
             final int radius = 250;
             int progress = 0;
@@ -38,10 +38,10 @@ public class WorldPopulator {
                         Block block = arena.getBlockAt(x, y, z);
                         if (block.getType() == Material.AIR && (block.getRelative(0, -1, 0).getType() == Material.DIRT
                                 || block.getRelative(0, -1, 0).getType() == Material.GRASS)) {
-                            int i = ThreadLocalRandom.current().nextInt(36);
-                            if (i <= 2) block.getWorld().generateTree(block.getLocation(), one);
-                            else if (i == 33) block.getWorld().generateTree(block.getLocation(), two);
-                            else if (i == 34) block.getWorld().generateTree(block.getLocation(), three);
+                            int i = ThreadLocalRandom.current().nextInt(100);
+                            if (i <= chance1) block.getWorld().generateTree(block.getLocation(), one);
+                            else if (i == chance2) block.getWorld().generateTree(block.getLocation(), two);
+                            else if (i == chance3) block.getWorld().generateTree(block.getLocation(), three);
                         }
                         processed++;
                     }
@@ -70,9 +70,9 @@ public class WorldPopulator {
                         Block block = arena.getBlockAt(x, y, z);
                         block.setBiome(biome);
                         Material type = block.getType();
-                        if (type == Material.LEAVES || type == Material.LEAVES_2 || type == Material.LOG || type == Material.LOG_2) {
+                        if (type == Material.LEAVES || type == Material.LEAVES_2 || type == Material.LOG || type == Material.LOG_2 || type == Material.HUGE_MUSHROOM_1 || type == Material.HUGE_MUSHROOM_2) {
                             block.setType(Material.AIR);
-                        } else if (type == Material.WATER) {
+                        } else if (type == Material.WATER || type == Material.STATIONARY_WATER || type == Material.LAVA || type == Material.STATIONARY_LAVA) {
                             block.setType(Material.GRASS);
                         }
                     }
@@ -91,7 +91,7 @@ public class WorldPopulator {
     private void sendProgress(String message, int progress, int max) {
         String bar = ProgressBar.getProgressBar(progress, max, 20, "|", ChatColor.YELLOW, ChatColor.GRAY);
         for (Player player : Bukkit.getOnlinePlayers()) {
-            new Titles().sendActionText(player, ChatColor.YELLOW + message + ": " + ChatColor.GREEN + progress + "% \u00A78[\u00A7r" + bar + "\u00A78]");
+            new Titles().sendActionText(player, ChatColor.YELLOW + message + ": " + ChatColor.GREEN + progress + "% §8[§r" + bar + "§8]");
         }
     }
 

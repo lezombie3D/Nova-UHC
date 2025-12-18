@@ -31,8 +31,8 @@ public class inGameTeamUi extends CustomInventory {
             @Override
             public void onClick(InventoryClickEvent e) {
                 getUHCPlayer().setTeam(Optional.empty());
-                if (getPlayer() == PlayerConnectionEvent.getHost()) {
-                    TeamsTagsManager.setNameTag(getPlayer(), "HOST", "§f[§5Host§f] ", "");
+                if (getPlayer() == PlayerConnectionEvent.getHost().getPlayer()) {
+                    TeamsTagsManager.setNameTag(getPlayer(), "host", "§c§lHOST §r§c", "");
                 }
                 openAll();
             }

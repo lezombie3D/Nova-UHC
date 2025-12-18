@@ -35,6 +35,9 @@ public class Common {
     private ItemCreator activeRole;
     private ItemCreator reglesItem;
 
+    private ItemCreator regenArena;
+    private ItemCreator changeSpawn;
+
 
     public static Common get() {
         return Main.getCommon();
@@ -75,6 +78,8 @@ public class Common {
         activeScenario = (new ItemCreator(Material.BOOK)).setName("§f§lScénarios actifs " + Common.get().getMainColor() + "§l▪ §f§lClic-droit");
         activeRole = (new ItemCreator(Material.PAPER)).setName("§f§lMode de Jeu actifs " + Common.get().getMainColor() + "§l▪ §f§lClic-droit");
         reglesItem = (new ItemCreator(Material.NETHER_STAR)).setName("§f§lTéléportation " + Common.get().getMainColor() + "§l▪ §f§lClic-droit");
+        regenArena = new ItemCreator(Material.GRASS).setName("§8┃ §fRecrée l'§a§lArena");
+        changeSpawn = new ItemCreator(Material.SAPLING).setName("§8┃ §fChanger le §6§lcentre §fde l'§a§lArena");
     }
 
     public World getArena() {

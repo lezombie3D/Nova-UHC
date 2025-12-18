@@ -42,7 +42,7 @@ public class WorldUi extends CustomInventory {
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
         ItemCreator world = new ItemCreator(Material.ENDER_PEARL)
-                .setName("§8┃ §fRecréer l'Arena")
+                .setName("§8┃ §fRecréer l'"+Common.get().getMainColor()+"Arena")
                 .addLore("")
                 .addLore(" §8» §fAccès §f: §6§lHost")
                 .addLore("")
@@ -53,7 +53,7 @@ public class WorldUi extends CustomInventory {
                 .addLore("");
 
         ItemCreator pregen = new ItemCreator(Material.GRASS)
-                .setName("§8┃ §fRedémarrer la Prégénération")
+                .setName("§8┃ §fRedémarrer la"+Common.get().getMainColor()+" Prégénération")
                 .addLore("")
                 .addLore(" §8» §fAccès §f: §6§lHost")
                 .addLore("")
@@ -79,6 +79,16 @@ public class WorldUi extends CustomInventory {
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
+        ItemCreator changeSpawn = new ItemCreator(Material.SAPLING)
+                .setName("§8┃ §fChanger le "+Common.get().getMainColor()+" Type de Centre")
+                .addLore("")
+                .addLore(" §8» §fAccès §f: §6§lHost")
+                .addLore("")
+                .addLore("  §8┃ §fPermet de Changer le type de centre")
+                .addLore("  §8┃ §fde l'"+Common.get().getMainColor()+"arène.")
+                .addLore("")
+                .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
+                .addLore("");
 
         addItem(new ActionItem(22, prev) {
             @Override
@@ -89,22 +99,22 @@ public class WorldUi extends CustomInventory {
                     UHCUtils.giveLobbyItems(getPlayer());
                 } else {
                     getPlayer().teleport(new Location(Common.get().getArena(), 0, 100, 0));
-                    getPlayer().setFlying(true);
                     getPlayer().getInventory().clear();
-                    getPlayer().getInventory().setItem(0,new ItemCreator(Material.GRASS).setName("§8┃ §fRecrée l' §a§lArena").getItemstack());
+                    getPlayer().getInventory().setItem(0,Common.get().getRegenArena().getItemstack());
+                    getPlayer().getInventory().setItem(4,Common.get().getChangeSpawn().getItemstack());
                     getPlayer().getInventory().setItem(8,new ItemCreator(Material.WOOD_DOOR).setName(name).getItemstack());
                 }
                 openAll();
             }
         });
-        addItem(new ActionItem(12, pregen) {
+        addItem(new ActionItem(10, pregen) {
             @Override
             public void onClick(InventoryClickEvent e) {
                 openAll();
                 LoadingChunkTask.create(Common.get().getArena(), Bukkit.getWorld(Common.get().getArenaName() + "_nether"), (int) Common.get().getArena().getWorldBorder().getSize() / 2);
             }
         });
-        addItem(new ActionItem(13, world) {
+        addItem(new ActionItem(2, world) {
             @Override
             public void onClick(InventoryClickEvent e) {
                 openAll();
@@ -113,8 +123,8 @@ public class WorldUi extends CustomInventory {
         });
 
         addReturn(18, new DefaultUi(getPlayer()));
-        addMenu(14, orepop, new OrePopulatorUi(getPlayer()));
-        addMenu(15,new ItemCreator(Material.SAPLING),new CenterUi(getPlayer()));
+        addMenu(6, orepop, new OrePopulatorUi(getPlayer()));
+        addMenu(16,changeSpawn,new CenterUi(getPlayer(),this));
 
     }
 

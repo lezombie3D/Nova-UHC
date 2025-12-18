@@ -7,18 +7,19 @@ public enum CenterType {
         ROOFT {
             @Override
             public void generate(WorldPopulator populator) {
-                populator.generateForest(TreeType.DARK_OAK, TreeType.BROWN_MUSHROOM, TreeType.RED_MUSHROOM);
+                populator.generateForest(TreeType.DARK_OAK, TreeType.BROWN_MUSHROOM, TreeType.RED_MUSHROOM,4,98,99);
             }
         },
         TAIGA {
             @Override
             public void generate(WorldPopulator populator) {
-                populator.generateForest(TreeType.BIG_TREE, TreeType.TALL_REDWOOD, TreeType.MEGA_REDWOOD);
+                populator.generateForest(TreeType.TALL_REDWOOD, TreeType.REDWOOD, TreeType.REDWOOD,4,98,99);
             }
         },
         FOREST {
             @Override
             public void generate(WorldPopulator populator) {
+                populator.generateForest(TreeType.TREE, TreeType.BIRCH, TreeType.JUNGLE,1,2,-1);
             }
         },
         FLAT {

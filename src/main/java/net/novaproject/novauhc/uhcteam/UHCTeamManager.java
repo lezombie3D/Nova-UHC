@@ -15,27 +15,24 @@ import java.util.*;
 public class UHCTeamManager {
 
     private final List<TeamTemplate> templates = Arrays.asList(
-            new TeamTemplate("Red", "§4", DyeColor.RED),
-            new TeamTemplate("Blue", "§1", DyeColor.BLUE),
-            new TeamTemplate("Green", "§2", DyeColor.GREEN),
-            new TeamTemplate("Yellow", "§e", DyeColor.YELLOW),
-            new TeamTemplate("Purple", "§5", DyeColor.PURPLE),
-            new TeamTemplate("Pink", "§d", DyeColor.PINK),
-            new TeamTemplate("White", "§f", DyeColor.WHITE),
-            new TeamTemplate("Gray", "§7", DyeColor.GRAY),
-            new TeamTemplate("Aqua", "§b", DyeColor.LIGHT_BLUE),
-            new TeamTemplate("Orange", "§6", DyeColor.ORANGE),
-            new TeamTemplate("Cyan", "§3", DyeColor.CYAN),
-            new TeamTemplate("Lime", "§a", DyeColor.LIME),
-            new TeamTemplate("Brown", "§c", DyeColor.BROWN),
-            new TeamTemplate("Magenta", "§d", DyeColor.MAGENTA),
-            new TeamTemplate("Black", "§0", DyeColor.BLACK),
-            new TeamTemplate("Dark Gray", "§8", DyeColor.GRAY)
+            new TeamTemplate("RED","§c§lRED §c", DyeColor.RED),
+            new TeamTemplate("BLUE","§9§lBLUE §9", DyeColor.BLUE),
+            new TeamTemplate("GREEN", "§2§lGREEN §2", DyeColor.GREEN),
+            new TeamTemplate("YELLOW", "§e§lYELLOW §e", DyeColor.YELLOW),
+            new TeamTemplate("PURPLE", "§5§lPURPLE §5", DyeColor.PURPLE),
+            new TeamTemplate("PINK", "§d§lPINK §d", DyeColor.PINK),
+            new TeamTemplate("WHITE", "§f§lWHITE §f", DyeColor.WHITE),
+            new TeamTemplate("GRAY", "§7§lGRAY §7", DyeColor.GRAY),
+            new TeamTemplate("AQUA", "§b§lAQUA §b", DyeColor.LIGHT_BLUE),
+            new TeamTemplate("ORANGE", "§6§lORANGE §6", DyeColor.ORANGE),
+            new TeamTemplate("CYAN", "§3§lCYAN §3", DyeColor.CYAN),
+            new TeamTemplate("LIME", "§a§lLIME §a", DyeColor.LIME),
+            new TeamTemplate("MAGENTA", "§d§lMAGENTA §d", DyeColor.MAGENTA)
     );
 
     private final List<UHCTeam> teams = new ArrayList<>();
     private final String[] symbols = {
-            "", "❤ ", "♣ ", "\u263C ", "\u2620 ", "\u2606 ", "⚡ ", "★ ", "✪ ", "☯ ", "☢ ",
+            "", "❤ ", "♣ ", "☼ ", "☠ ", "☆ ", "⚡ ", "★ ", "✪ ", "☯ ", "☢ ",
             "✧ ", "☘ ", "☀ ", "☁ ", "⚔ ", "❄ ", "♛ ", "♞ ", "✝ ", "☣ ", "♠ ", "♤ ", "⚙ ", "⚛ "
     };
     private final Pattern[][] patternTypes = {
@@ -101,7 +98,7 @@ public class UHCTeamManager {
         UHCTeam team = new UHCTeam(
                 template.dyeColor,
                 template.prefix + symbols[symbolt],
-                template.prefix + symbols[symbolt] + template.name,
+                symbols[symbolt] + template.name,
                 patternTypes[symbolt % patternTypes.length],
                 teamSize,
                 false

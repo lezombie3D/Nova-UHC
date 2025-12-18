@@ -22,9 +22,11 @@ import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.UHCUtils;
 import net.novaproject.novauhc.utils.ui.AnvilUi;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
 import net.novaproject.novauhc.utils.ui.item.ActionItem;
+import net.novaproject.novauhc.utils.ui.item.StaticItem;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -33,6 +35,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -163,17 +166,19 @@ public class CloudNet {
 
     public CustomInventory getCloudNetUi(Player player) {
         return new CustomInventory(player) {
+            private final String SOON = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmE1MmQ1NzlhZmUyZmRmN2I4ZWNmYTc0NmNkMDE2MTUwZDk2YmViNzUwMDliYjI3MzNhZGUxNWQ0ODdjNDJhMSJ9fX0=";
             @Override
             public void setup() {
                 fillDesign(getConfig().getInt("menu.cloudnet.color"));
 
-                addItem(new ActionItem(0, new ItemCreator(Material.PAPER).setName("§2Modifier le nom de la parties")) {
+                addItem(new ActionItem(13, new ItemCreator(Material.PAPER).setName("§8┃ §fModifier le §c§lnom de la §6§lpartie")
+                ) {
                     @Override
                     public void onClick(InventoryClickEvent e) {
                         new AnvilUi(getPlayer(), event -> {
                             if (event.getSlot() == AnvilUi.AnvilSlot.OUTPUT) {
                                 String enteredText = event.getName();
-                                gameName = enteredText;
+                                gameName = enteredText.replaceAll("&","§");
                                 CommonString.SUCCESSFUL_MODIFICATION.send(getPlayer());
                                 openAll();
                             }
@@ -181,7 +186,8 @@ public class CloudNet {
                         }).setSlot("Nom de la parties").open();
                     }
                 });
-
+                addItem(new StaticItem(11, UHCUtils.createCustomButon(SOON," §8§l┃ §f§lSoon", Arrays.asList("", CommonString.CLICK_HERE_TO_ACCESS.getMessage()))));
+                addItem(new StaticItem(15, UHCUtils.createCustomButon(SOON," §8§l┃ §f§lSoon", Arrays.asList("", CommonString.CLICK_HERE_TO_ACCESS.getMessage()))));
             }
 
             @Override
@@ -191,7 +197,7 @@ public class CloudNet {
 
             @Override
             public int getLines() {
-                return 5;
+                return 3;
             }
 
             @Override

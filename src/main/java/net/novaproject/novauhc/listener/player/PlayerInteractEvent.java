@@ -2,6 +2,7 @@ package net.novaproject.novauhc.listener.player;
 
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
+import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.scenario.normal.GoldenHead;
@@ -10,7 +11,9 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.ui.DefaultUi;
 import net.novaproject.novauhc.ui.inGameScenario;
 import net.novaproject.novauhc.ui.player.inGameTeamUi;
+import net.novaproject.novauhc.ui.world.CenterUi;
 import net.novaproject.novauhc.utils.UHCUtils;
+import net.novaproject.novauhc.world.generation.WorldGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -57,8 +60,18 @@ public class PlayerInteractEvent implements Listener {
                     }
                     if(item.getType() == Material.WOOD_DOOR && player.getWorld().equals(Common.get().getArena())){
                         player.getInventory().clear();
+                        player.teleport(Common.get().getLobbySpawn());
                         UHCUtils.giveLobbyItems(player);
                     }
+
+                    if(item.isSimilar(Common.get().getChangeSpawn().getItemstack())){
+                        new CenterUi(player.getPlayer(),null).open();
+                    }
+                    if(item.isSimilar(Common.get().getRegenArena().getItemstack())){
+                        new WorldGenerator(Main.get(), Common.get().getArenaName());
+                        UHCUtils.giveLobbyItems(player);
+                    }
+
                 }
                 if (item.isSimilar(Common.get().getTeamItem().getItemstack())) {
                     new inGameTeamUi(player).open();
