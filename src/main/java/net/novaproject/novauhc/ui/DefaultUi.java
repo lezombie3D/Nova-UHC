@@ -83,7 +83,7 @@ public class DefaultUi extends CustomInventory {
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
         ItemCreator stop = new ItemCreator(Material.BARRIER)
-                .setName("§8┃ §fStopper le serveur")
+                .setName("§8┃ §c§lStopper §fle serveur")
                 .addLore("")
                 .addLore(" §8» §fAccès §f: §6§lHost")
                 .addLore("")

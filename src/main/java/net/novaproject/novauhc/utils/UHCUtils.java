@@ -57,6 +57,12 @@ public class UHCUtils {
         return savedInventory;
     }
 
+    public static String formatValue(int value,int min) {
+        if (value == min) {
+            return ChatColor.RED + "Désactivé";
+        }
+        return ChatColor.GREEN + String.valueOf(value);
+    }
     public static void applyInfiniteEffects(PotionEffect[] effects, Player player) {
         for (PotionEffect activeEffect : effects) {
             player.getPlayer().removePotionEffect(activeEffect.getType());
@@ -293,7 +299,7 @@ public class UHCUtils {
 
                             final var packet = new PacketPlayOutBlockChange(nmsWorld, pos);
                             for (final var p : Bukkit.getServer().getOnlinePlayers()) {
-                                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
+                                if(location.getWorld().equals(p.getWorld())) ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
                             }
                         }
 

@@ -10,7 +10,7 @@ public enum DropItemRate {
     APPLE("Pommes", Material.APPLE, 0, 15),
     LEATHER("Cuirs", Material.LEATHER, 0, 0),
     FLINT("Silex", Material.FLINT, 0, 15),
-    ARROW("Fl\u00E8ches", Material.ARROW, 0, 0),
+    ARROW("Flèches", Material.ARROW, 0, 0),
     ENDERPEARL("Ender Pearls", Material.ENDER_PEARL, 0, 0);
 
     private final String name;

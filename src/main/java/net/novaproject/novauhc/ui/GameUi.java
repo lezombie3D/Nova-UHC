@@ -28,7 +28,7 @@ public class GameUi extends CustomInventory {
         int limit_diamss = UHCManager.get().getDimamondLimit();
         int border_time = UHCManager.get().getTimerborder();
         int pvp_time = UHCManager.get().getTimerpvp();
-        ItemCreator potion = (new ItemCreator(Material.POTION)).setName("§8┃ §fLimite de §9potions")
+        ItemCreator potion = (new ItemCreator(Material.POTION)).setName("§8┃ §fLimite de §9§lpotions")
                 .addLore("")
                 .addLore("  §8┃ §fVous permet de limiter la")
                 .addLore("  §8┃ §ffabrication de certaines potions")
@@ -51,14 +51,14 @@ public class GameUi extends CustomInventory {
                 .addLore("  §8┃ §ebordure §fdurant la partie.")
                 .addLore("");
         ItemCreator diams = new ItemCreator(Material.DIAMOND)
-                .setName("§8┃ §fLimite de §eDiamant§r (" + Common.get().getMainColor() + "§l" + limit_diamss + "§f)")
+                .setName("§8┃ §fLimite de §eDiamant§r (" + Common.get().getMainColor() + limit_diamss + "§f)")
                 .addLore("")
                 .addLore("  §8┃ §fVous permet de limiter le nombre")
                 .addLore("  §8┃ §fde diamants minables.")
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
-        ItemCreator enchant = (new ItemCreator(Material.ENCHANTED_BOOK)).setName("§8┃ §fLimite d'§benchantements")
+        ItemCreator enchant = (new ItemCreator(Material.ENCHANTED_BOOK)).setName("§8┃ §fLimite d'§b§lenchantements")
                 .addLore("")
                 .addLore("  §8┃ §fVous permet de définir")
                 .addLore("  §8┃ §fla limite des tous")
@@ -67,12 +67,12 @@ public class GameUi extends CustomInventory {
                 .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
                 .addLore("");
         ItemCreator verif = UHCUtils.createCustomButon("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTkzMmI5Yzc0NGIxYTgwYjEzOTQwYjc0NmM4MTFjMTUwN2Y3YWMyMDJhYTI2OGRhMDFiMzU0ZjU0NmJlYWY0NCJ9fX0=",
-                        "§8┃ §fVérifier inventaire par défaut", null
+                        "§8┃ §fVérifier les inventaire par défaut", null
                 )
                 .addLore("")
                 .addLore("  §8┃ §fVous permet de vérifer")
                 .addLore("  §8┃ §fl'inventaire par " + Common.get().getMainColor() + "défaut")
-                .addLore("  §8┃ §fdonné en début de partie.")
+                .addLore("  §8┃ §fdonné en §6§ldébut §fde partie ou a la §8§lmort §fd'un joueur.")
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
                 .addLore("");
@@ -94,22 +94,29 @@ public class GameUi extends CustomInventory {
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
                 .addLore("");
-        ItemCreator drop = (new ItemCreator(Material.APPLE)).setName("§8┃ §fTaux de §7drop")
+        ItemCreator drop = (new ItemCreator(Material.APPLE)).setName("§8┃ §fTaux de §7§ldrop")
                 .addLore("")
                 .addLore("  §8┃ §fVous permet de modifier les")
                 .addLore("  §8┃ §ftaux de drop de certains objets.")
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
-        addItem(new ActionItem(22, def) {
+        addItem(new ActionItem(18, def) {
             @Override
             public void onClick(InventoryClickEvent e) {
                 getPlayer().closeInventory();
-                Bukkit.dispatchCommand(getPlayer(), "h stuff modif");
+                Bukkit.dispatchCommand(getPlayer(), "h stuff start modif ");
             }
         });
-        addMenu(18, verif, new StuffUi(getPlayer()));
-        addItem(new StaticItem(26, death));
+        addItem(new ActionItem(26, death) {
+            @Override
+            public void onClick(InventoryClickEvent e) {
+                getPlayer().closeInventory();
+                Bukkit.dispatchCommand(getPlayer(), "h stuff death modif ");
+            }
+        });
+
+        addMenu(22,verif,new ChooseVerif(getPlayer()));
         addMenu(29, potion, new PotionUi(getPlayer()));
         addMenu(33, drop, new DropUi(getPlayer()));
         addMenu(15, diams, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, UHCManager.get().getDimamondLimit(), 0, 0, this) {

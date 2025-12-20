@@ -133,7 +133,7 @@ public class HCMD extends Command {
                 }
                 break;
             case "stuff":
-                startSTuff(player, arguments);
+                startStuff(player, arguments);
                 break;
             default:
                 player.sendMessage(ChatColor.RED + "Commande inconnue. Essayez /h pour plus d'informations.");
@@ -175,6 +175,8 @@ public class HCMD extends Command {
                 break;
             case "stuff":
                 if (arguments.length == 2) {
+                    return getStrings(args, "death", "start");
+                }else if (arguments.length == 3) {
                     return getStrings(args, "clear", "list", "modif", "save", "cancel");
                 }
                 break;
@@ -237,68 +239,75 @@ public class HCMD extends Command {
     }
 
 
-    private void startSTuff(Player player, String[] args) {
-        if (args.length < 2) return;
-        String arg = args[1];
-        switch (arg) {
+    private void startStuff(Player player, String[] args) {
+        if (args.length < 3) return;
+        if (!UHCManager.get().isLobby()) return;
+
+        String type = args[1];
+        String action = args[2];
+
+        Map<String, ItemStack[]> inventory =
+                type.equalsIgnoreCase("death") ? UHCManager.get().death : UHCManager.get().start;
+
+        switch (action) {
+
             case "clear":
-                UHCManager.get().start.clear();
-                player.sendMessage(ChatColor.RED + "Le Stuff de depart est clear.");
+                inventory.clear();
+                player.sendMessage(ChatColor.RED + "Le stuff a été supprimé.");
                 break;
+
             case "list":
-                String sb = "";
-                getInventoryContentsAsString(UHCManager.get().start);
-                player.sendMessage(ChatColor.RED + "Le contenu est : \n" + sb);
+                player.sendMessage(ChatColor.RED + "Contenu :\n" + getInventoryContentsAsString(inventory));
                 break;
+
             case "modif":
-                if (UHCManager.get().isLobby()) {
-                    player.getInventory().clear();
-                    player.setGameMode(GameMode.CREATIVE);
-                    restorePlayerInventory(player, UHCManager.get().start);
-                    if (UHCManager.get().isLobby()) {
-                        TextComponent base = new TextComponent("Modification de l'inventaire de depart : ");
-                        TextComponent msg = new TextComponent("§a§lSauvegarder");
-                        TextComponent msg2 = new TextComponent(" §fou §c§lAnnuler");
+                player.getInventory().clear();
+                player.setGameMode(GameMode.CREATIVE);
+                restorePlayerInventory(player, inventory);
 
-                        msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
-                                "§aSauvegarder l'inventaire actuel"
+                TextComponent base = new TextComponent("Modification du stuff : ");
+                TextComponent save = new TextComponent("§a§lSauvegarder");
+                TextComponent cancel = new TextComponent(" §fou §c§lAnnuler");
 
-                        ).create()));
-                        msg2.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
-                                "§aAnnuler la modification de l'inventaire").create()));
+                save.setHoverEvent(new HoverEvent(
+                        HoverEvent.Action.SHOW_TEXT,
+                        new ComponentBuilder("§aSauvegarder l'inventaire actuel").create()
+                ));
 
-                        msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/h stuff save"));
-                        msg2.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/h stuff cancel"));
+                cancel.setHoverEvent(new HoverEvent(
+                        HoverEvent.Action.SHOW_TEXT,
+                        new ComponentBuilder("§cAnnuler la modification").create()
+                ));
 
+                String cmd = "/h stuff " + (type.equalsIgnoreCase("death") ? "death " : "start ");
+                save.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd + "save"));
+                cancel.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, cmd + "cancel"));
 
-                        player.spigot().sendMessage(base, msg, msg2);
-                        player.setOp(true);
-                        player.getInventory().clear();
-                        player.setGameMode(GameMode.CREATIVE);
-                        restorePlayerInventory(player, UHCManager.get().start);
-                    }
-                }
+                player.spigot().sendMessage(base, save, cancel);
                 break;
+
             case "save":
-                if (UHCManager.get().isLobby()) {
+                if (type.equalsIgnoreCase("death")) {
+                    UHCManager.get().death = savePlayerInventory(player);
+                } else {
                     UHCManager.get().start = savePlayerInventory(player);
-                    player.setGameMode(GameMode.ADVENTURE);
-                    clearPlayerInventory(player);
-                    UHCUtils.giveLobbyItems(player);
-                    player.sendMessage(ChatColor.GOLD + "L'inventaire de depart a bien été sauvegarder ! ");
                 }
+
+                player.setGameMode(GameMode.ADVENTURE);
+                clearPlayerInventory(player);
+                UHCUtils.giveLobbyItems(player);
+
+                player.sendMessage(ChatColor.GOLD + "Le stuff a bien été sauvegardé !");
                 break;
+
             case "cancel":
-                if (UHCManager.get().isLobby()) {
-                    player.setGameMode(GameMode.ADVENTURE);
-                    clearPlayerInventory(player);
-                    UHCUtils.giveLobbyItems(player);
-                }
-                break;
-            default:
+                player.setGameMode(GameMode.ADVENTURE);
+                clearPlayerInventory(player);
+                UHCUtils.giveLobbyItems(player);
                 break;
         }
     }
+
 
 
     private void forceMTP() {

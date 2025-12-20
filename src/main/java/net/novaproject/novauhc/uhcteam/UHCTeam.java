@@ -43,9 +43,14 @@ public record UHCTeam(DyeColor dyeColor, String prefix, String name, Pattern[] p
     public ItemStack getItem() {
         List<String> lore = new ArrayList<>();
         lore.add("");
-        for (int i = 0; i < teamSize(); i++) {
-            lore.add("§b➤ " + (getPlayers().size() < i + 1 ? "" : getPlayers().get(i).getPlayer().getName()));
+        if(teamSize <= 8){
+            for (int i = 0; i < teamSize(); i++) {
+                lore.add("§b➤ " + (getPlayers().size() < i + 1 ? "" : getPlayers().get(i).getPlayer().getName()));
+            }
+        }else{
+            lore.add("§7Players: §b" + getPlayers().size() + "/" + teamSize());
         }
+
         lore.add("");
         lore.add(CommonString.CLICK_HERE_TO_APPLY.getMessage());
         lore.add("");

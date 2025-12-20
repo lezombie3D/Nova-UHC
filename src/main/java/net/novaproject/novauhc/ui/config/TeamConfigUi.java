@@ -9,6 +9,8 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.ui.DefaultUi;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.UHCUtils;
+import net.novaproject.novauhc.utils.ui.AnvilUi;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
 import net.novaproject.novauhc.utils.ui.item.ActionItem;
 import net.novaproject.novauhc.utils.ui.item.StaticItem;
@@ -32,17 +34,53 @@ public class TeamConfigUi extends CustomInventory {
         fillCadre(0);
         addReturn(18, new DefaultUi(getPlayer()));
 
-        ItemCreator updateTeam = new ItemCreator(Material.BOOK).setName(ChatColor.GOLD + "Update Team");
-        ItemCreator teamSize = new ItemCreator(Material.PAPER).setName(ChatColor.GRAY + "Nombre de joueur par equipe : " + formatValue(UHCManager.get().getTeam_size()));
-        ItemCreator desac = new ItemCreator(Material.BARRIER).setName(ChatColor.RED + "Désactiver les équipe.");
-        ItemCreator to2 = new ItemCreator(Material.BANNER).setName(ChatColor.DARK_PURPLE + "Equipe de 2.").setBasecolor(DyeColor.MAGENTA);
-        ItemCreator to3 = new ItemCreator(Material.BANNER).setName(ChatColor.DARK_GREEN + "Equipe de 3.").setBasecolor(DyeColor.GREEN);
-        ItemCreator to4 = new ItemCreator(Material.BANNER).setName(ChatColor.GREEN + "Equipe de 4.").setBasecolor(DyeColor.LIME);
-        ItemCreator to5 = new ItemCreator(Material.BANNER).setName(ChatColor.AQUA + "Equipe de 5.").setBasecolor(DyeColor.LIGHT_BLUE);
-        ItemCreator to6 = new ItemCreator(Material.BANNER).setName(ChatColor.BLUE + "Equipe de 6.").setBasecolor(DyeColor.BLUE);
-        ItemCreator to7 = new ItemCreator(Material.BANNER).setName(ChatColor.LIGHT_PURPLE + "Equipe de 7.").setBasecolor(DyeColor.CYAN);
+        ItemCreator updateTeam = new ItemCreator(Material.BOOK).setName("§8┃ §fMettre a jour les équipes")
+                .addLore("")
+                .addLore("  §8┃ §fMet a jours "+Common.get().getMainColor()+"toutes")
+                .addLore("  §8┃ §fles équipes en fonction de la")
+                .addLore("  §8┃ §fnouvelle taille définie.")
+                .addLore("")
+                .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
+                .addLore("");
+
+        ItemCreator teamSize = new ItemCreator(Material.PAPER).setName("§8┃ §fTaille des équipes actuel : §e§l"+ UHCUtils.formatValue(UHCManager.get().getTeam_size(),1));
+        ItemCreator custom = new ItemCreator(Material.REDSTONE_TORCH_ON).setName("§8┃ §fTaille des equipe §6§lCustom")
+                .addLore("")
+                .addLore("  §8┃ §fPerment de modifier le "+Common.get().getMainColor()+"nombre")
+                .addLore("  §8┃ §fde §6§ljoueur §fdans les equipes")
+                .addLore("  §8┃ §fcomme vous le §c§lsouhaitez.")
+                .addLore("")
+                .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
+                .addLore("");
+
+        ItemCreator desac = new ItemCreator(Material.BARRIER).setName("§8┃ §fDésactiver les équipes")
+                .addLore("")
+                .addLore("  §8┃ §fPermet de desactiver les "+Common.get().getMainColor()+"equipes.")
+                .addLore("")
+                .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
+                .addLore("");
 
         addItem(new StaticItem(4, teamSize));
+        addItem(new ActionItem(22, custom) {
+            @Override
+            public void onClick(InventoryClickEvent e) {
+                new AnvilUi(getPlayer(), event -> {
+                    if (event.getSlot() == AnvilUi.AnvilSlot.OUTPUT) {
+                        int enteredText = Integer.parseInt(event.getName());
+                        enteredText = Math.max(1, enteredText);
+                        UHCManager.get().setTeam_size(enteredText);
+                        CommonString.SUCCESSFUL_MODIFICATION.send(getPlayer());
+                        CommonString.TEAM_UPDATED.sendAll();
+                        ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
+                            scenario.onTeamUpdate();
+                        });
+
+                        openAll();
+                    }
+
+                }).setSlot("Nombre de joueur").open();
+            }
+        });
         addItem(new ActionItem(5, desac) {
             @Override
             public void onClick(InventoryClickEvent e) {
@@ -54,91 +92,13 @@ public class TeamConfigUi extends CustomInventory {
                 });
             }
         });
-
-        addItem(new ActionItem(10, to2
-                .addLore("")
-                .addLore(ChatColor.YELLOW + "► Clic pour activer " + ChatColor.GREEN + "TO2")
-                .addLore("")) {
-            @Override
-            public void onClick(InventoryClickEvent e) {
-                UHCManager.get().setTeam_size(2);
-                openAll();
-                Bukkit.broadcastMessage(Common.get().getInfoTag() + ChatColor.YELLOW + "Les teams de 2 sont maintenant activées");
-                ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
-                    scenario.onTeamUpdate();
-                });
-            }
-        });
-        addItem(new ActionItem(11, to3
-                .addLore("")
-                .addLore(ChatColor.YELLOW + "► Clic pour activer " + ChatColor.GREEN + "TO3")
-                .addLore("")) {
-            @Override
-            public void onClick(InventoryClickEvent e) {
-                UHCManager.get().setTeam_size(3);
-                openAll();
-                Bukkit.broadcastMessage(Common.get().getInfoTag() + ChatColor.YELLOW + "Les teams de 3 sont maintenant activées");
-                ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
-                    scenario.onTeamUpdate();
-                });
-            }
-        });
-        addItem(new ActionItem(12, to4
-                .addLore("")
-                .addLore(ChatColor.YELLOW + "► Clic pour activer " + ChatColor.GREEN + "TO4")
-                .addLore("")) {
-            @Override
-            public void onClick(InventoryClickEvent e) {
-                UHCManager.get().setTeam_size(4);
-                openAll();
-                Bukkit.broadcastMessage(Common.get().getInfoTag() + ChatColor.YELLOW + "Les teams de 4 sont maintenant activées");
-                ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
-                    scenario.onTeamUpdate();
-                });
-            }
-        });
-        addItem(new ActionItem(14, to5
-                .addLore("")
-                .addLore(ChatColor.YELLOW + "► Clic pour activer " + ChatColor.GREEN + "TO5")
-                .addLore("")) {
-            @Override
-            public void onClick(InventoryClickEvent e) {
-                UHCManager.get().setTeam_size(5);
-                openAll();
-                Bukkit.broadcastMessage(Common.get().getInfoTag() + ChatColor.YELLOW + "Les teams de 5 sont maintenant activées");
-                ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
-                    scenario.onTeamUpdate();
-                });
-            }
-        });
-        addItem(new ActionItem(15, to6
-                .addLore("")
-                .addLore(ChatColor.YELLOW + "► Clic pour activer " + ChatColor.GREEN + "TO6")
-                .addLore("")) {
-            @Override
-            public void onClick(InventoryClickEvent e) {
-                UHCManager.get().setTeam_size(6);
-                openAll();
-                Bukkit.broadcastMessage(Common.get().getInfoTag() + ChatColor.YELLOW + "Les teams de 6 sont maintenant activées");
-                ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
-                    scenario.onTeamUpdate();
-                });
-            }
-        });
-        addItem(new ActionItem(16, to7
-                .addLore("")
-                .addLore(ChatColor.YELLOW + "► Clic pour activer " + ChatColor.GREEN + "TO7")
-                .addLore("")) {
-            @Override
-            public void onClick(InventoryClickEvent e) {
-                UHCManager.get().setTeam_size(7);
-                openAll();
-                Bukkit.broadcastMessage(Common.get().getInfoTag() + ChatColor.YELLOW + "Les teams de 7 sont maintenant activées");
-                ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
-                    scenario.onTeamUpdate();
-                });
-            }
-        });
+        addTeamItem(10,2,DyeColor.LIGHT_BLUE);
+        addTeamItem(11,3,DyeColor.GREEN);
+        addTeamItem(12,4,DyeColor.RED);
+        addTeamItem(13,5,DyeColor.YELLOW);
+        addTeamItem(14,6,DyeColor.PURPLE);
+        addTeamItem(15,7,DyeColor.ORANGE);
+        addTeamItem(16,8,DyeColor.WHITE);
         addItem(new ActionItem(3, updateTeam) {
             @Override
             public void onClick(InventoryClickEvent e) {
@@ -170,11 +130,29 @@ public class TeamConfigUi extends CustomInventory {
         return false;
     }
 
-    private String formatValue(int value) {
-        if (value == 1) {
-            return ChatColor.RED + "Désactivé";
-        }
-        return ChatColor.GREEN + String.valueOf(value);
+
+    public void addTeamItem(int slot, int team_size,DyeColor color){
+        ItemCreator item = new ItemCreator(Material.BANNER).setName("§8┃ §fJoueur par equipe : §e§l"+team_size)
+                .setBasecolor(color).addallItemsflags()
+                .addLore("")
+                .addLore("  §8┃ §fPerment de modifier le "+Common.get().getMainColor()+"nombre")
+                .addLore("  §8┃ §fde §6§ljoueur §fdans les equipes.")
+                .addLore("")
+                .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
+                .addLore("");
+
+        addItem(new ActionItem(slot,item) {
+            @Override
+            public void onClick(InventoryClickEvent e) {
+                UHCManager.get().setTeam_size(team_size);
+                openAll();
+                CommonString.TEAM_UPDATED.sendAll();
+                ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
+                    scenario.onTeamUpdate();
+                });
+            }
+        });
     }
+
 
 }

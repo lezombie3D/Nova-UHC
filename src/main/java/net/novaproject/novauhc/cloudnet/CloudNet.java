@@ -171,7 +171,7 @@ public class CloudNet {
             public void setup() {
                 fillDesign(getConfig().getInt("menu.cloudnet.color"));
 
-                addItem(new ActionItem(13, new ItemCreator(Material.PAPER).setName("§8┃ §fModifier le §c§lnom de la §6§lpartie")
+                addItem(new ActionItem(13, new ItemCreator(Material.PAPER).setName("§8┃ §fModifier le §c§lnom §fde la §6§lpartie")
                 ) {
                     @Override
                     public void onClick(InventoryClickEvent e) {
@@ -183,7 +183,7 @@ public class CloudNet {
                                 openAll();
                             }
 
-                        }).setSlot("Nom de la parties").open();
+                        }).setSlot("Nom de la partie").open();
                     }
                 });
                 addItem(new StaticItem(11, UHCUtils.createCustomButon(SOON," §8§l┃ §f§lSoon", Arrays.asList("", CommonString.CLICK_HERE_TO_ACCESS.getMessage()))));

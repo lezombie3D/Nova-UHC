@@ -21,14 +21,14 @@ public class BorderConfig extends CustomInventory {
         double border_size = Common.get().getArena().getWorldBorder().getSize();
         long borderspeed = UHCManager.get().getReducSpeed();
         double targetsize = UHCManager.get().getTargetSize();
-        ItemCreator border = new ItemCreator(Material.STAINED_GLASS).setDurability((short) 3).setName("§8┃ §fBordure initiale §8(§c" + border_size + "§8)")
+        ItemCreator border = new ItemCreator(Material.STAINED_GLASS).setDurability((short) 3).setName("§8┃ §fBordure initiale §8("+Common.get().getMainColor()+ border_size + "§8)")
                 .addLore("")
                 .addLore("  §8┃ §fCliquez ici pour définir la taille")
                 .addLore("  §8┃ §fde la bordure initiale de la partie.")
                 .addLore("")
                 .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
                 .addLore("");
-        ItemCreator border_speed = (new ItemCreator(Material.WATCH)).setName("§8┃ §fVitesse de la bordure §8(§c" + borderspeed + " bloc(s)/s§8)")
+        ItemCreator border_speed = (new ItemCreator(Material.WATCH)).setName("§8┃ §fVitesse de la bordure §8("+Common.get().getMainColor()+ borderspeed + " bloc(s)/s§8)")
                 .addLore("")
                 .addLore("  §8┃ §fCliquez ici pour définir la vitesse")
                 .addLore("  §8┃ §fde réduction de la bordure.")

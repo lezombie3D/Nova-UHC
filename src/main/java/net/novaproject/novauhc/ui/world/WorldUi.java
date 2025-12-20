@@ -32,7 +32,7 @@ public class WorldUi extends CustomInventory {
         fillCorner(getConfig().getInt("menu.world.color"));
 
         ItemCreator orepop = new ItemCreator(Material.DIAMOND_PICKAXE)
-                .setName("§8┃ §fBoost des Minerais")
+                .setName("§8┃ §fBoost des §6§lMinerais")
                 .addLore("")
                 .addLore(" §8» §fAccès §f: §6§lHost")
                 .addLore("")
@@ -80,7 +80,7 @@ public class WorldUi extends CustomInventory {
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
         ItemCreator changeSpawn = new ItemCreator(Material.SAPLING)
-                .setName("§8┃ §fChanger le "+Common.get().getMainColor()+" Type de Centre")
+                .setName("§8┃ §fChanger le "+Common.get().getMainColor()+"Type de Centre")
                 .addLore("")
                 .addLore(" §8» §fAccès §f: §6§lHost")
                 .addLore("")

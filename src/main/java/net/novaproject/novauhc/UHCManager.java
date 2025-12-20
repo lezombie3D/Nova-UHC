@@ -39,7 +39,7 @@ public class UHCManager {
     }
 
     public Map<String, ItemStack[]> start = new HashMap<>();
-
+    public Map<String, ItemStack[]> death = new HashMap<>();
     private WaitState waitState = WaitState.LOBBY_STATE;
     private UHCTeamManager uhcTeamManager;
     private AbilityManager abilityManager;
