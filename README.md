@@ -1,6 +1,8 @@
 # NovaUHC
 
-NovaUHC is a comprehensive Minecraft UHC (Ultra Hardcore) plugin developed for Spigot 1.8.8. It offers a rich set of features including numerous scenarios, custom UI configurations, and CloudNet integration for competitive Minecraft gameplay.
+NovaUHC is a comprehensive Minecraft UHC (Ultra Hardcore) plugin suite developed for Spigot 1.8.8. It is structured as a multi-module project consisting of a core API and an "Ultimate" module containing additional high-level scenarios and game modes.
+
+It offers a rich set of features including numerous scenarios, custom UI configurations, and CloudNet integration for competitive Minecraft gameplay.
 
 ## 🚀 Features
 
@@ -64,13 +66,13 @@ A set of comprehensive menus allows hosts to configure the game in real-time:
     ```
 
 2.  **Configuration**:
-    *   **Main Config**: Edit `src/main/resources/config.yml` to set up your MongoDB connection:
+    *   **Main Config**: Edit `core/src/main/resources/config.yml` to set up your MongoDB connection:
         ```yaml
         mongodb:
           connectionString: "mongodb://username:password@host:port/?authSource=admin"
           name: "novauhc"
         ```
-    *   **Advanced Configs**: Explore `src/main/resources/api/` for detailed settings:
+    *   **Advanced Configs**: Explore `core/src/main/resources/api/` for detailed settings:
         - `generalconfig.yml`: Core game rules and timers.
         - `lang.yml`: Translation and message settings.
         - `worldconfig.yml`: World generation and lobby settings.
@@ -80,9 +82,11 @@ A set of comprehensive menus allows hosts to configure the game in real-time:
     ```bash
     ./gradlew build
     ```
-    The compiled `.jar` file will be generated in `build/libs/`.
+    The compiled `.jar` files will be generated in their respective module folders:
+    - Core: `core/build/libs/API.jar`
+    - Ultimate: `ultimate/build/libs/Ultimate.jar`
 
-    *Note: The `jar` task in `build.gradle` is currently configured to also copy the output to `F:\plugin\Plugin`. Update this path in `build.gradle` if needed.*
+    *Note: The `jar` task in both `core/build.gradle` and `ultimate/build.gradle` is currently configured to also copy the output to `F:\plugin\Plugin`. Update this path if needed.*
 
 ## 📜 Scripts & Commands
 
@@ -107,21 +111,33 @@ A set of comprehensive menus allows hosts to configure the game in real-time:
 
 ```
 API/
-├── src/main/java/net/novaproject/novauhc/
-│   ├── ability/          # Player abilities and special powers
-│   ├── arena/            # Arena and lobby logic
-│   ├── cloudnet/         # CloudNet 4 integration
-│   ├── command/          # Command registration and handling
-│   ├── database/         # MongoDB interactions and managers
-│   ├── listener/         # Event listeners (Player, Entity, etc.)
-│   ├── scenario/         # Large collection of UHC scenarios
-│   ├── task/             # Scheduled Bukkit tasks (Scatter, Timers)
-│   ├── uhcplayer/        # Player data and session management
-│   ├── uhcteam/          # Team logic and management
-│   ├── ui/               # GUI menu implementations
-│   ├── utils/            # Utility classes (NMS, Config, Items)
-│   └── world/            # World generation and population
-└── src/main/resources/   # Plugin assets and config files
+├── core/                 # Core UHC engine and API
+│   ├── src/main/java/net/novaproject/novauhc/
+│   │   ├── ability/      # Player abilities and special powers
+│   │   ├── arena/        # Arena and lobby logic
+│   │   ├── cloudnet/     # CloudNet 4 integration
+│   │   ├── command/      # Command registration and handling
+│   │   ├── database/     # MongoDB interactions and managers
+│   │   ├── listener/     # Event listeners (Player, Entity, etc.)
+│   │   ├── scenario/     # Large collection of UHC scenarios
+│   │   ├── task/         # Scheduled Bukkit tasks (Scatter, Timers)
+│   │   ├── uhcplayer/    # Player data and session management
+│   │   ├── uhcteam/      # Team logic and management
+│   │   ├── ui/           # GUI menu implementations
+│   │   ├── utils/        # Utility classes (NMS, Config, Items)
+│   │   └── world/        # World generation and population
+│   └── src/main/resources/ # Core assets and config files
+├── ultimate/             # Advanced scenarios and game modes
+│   ├── src/main/java/net/novaproject/ultimate/
+│   │   ├── beatthesanta/ # Beat the Santa game mode
+│   │   ├── fallenkigdom/ # Fallen Kingdom game mode
+│   │   ├── flowerpower/  # Flower Power scenario
+│   │   ├── legend/       # Legend scenario
+│   │   ├── skyhigt/      # Sky High scenario
+│   │   ├── taupegun/     # Taupe Gun scenario
+│   │   └── ...           # Many more unique scenarios
+│   └── src/main/resources/ # Ultimate module resources
+└── build.gradle          # Root build configuration
 ```
 
 ## ⚙️ Environment Variables

@@ -1,0 +1,23 @@
+configurations {
+    extraLibs
+    implementation.extendsFrom(extraLibs)
+}
+
+dependencies {
+
+    implementation project(':core')
+    implementation group: 'com.github.azbh111', name: 'spigot-1.8.8', version: 'R'
+
+    compileOnly 'org.projectlombok:lombok:1.18.42'
+    annotationProcessor 'org.projectlombok:lombok:1.18.42'
+}
+
+jar {
+    archiveFileName.set("Ultimate.jar")
+    from {
+        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    destinationDirectory.set(file("F:/plugin/Plugin"))
+}

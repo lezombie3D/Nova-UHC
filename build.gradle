@@ -1,67 +1,19 @@
-apply plugin: 'java'
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
 
-group = 'NovaUHC'
-version = '0.1'
+    group = 'NovaUHC'
+    version = '0.1'
 
-compileJava.options.encoding = 'UTF-8'
+    compileJava.options.encoding = 'UTF-8'
 
-repositories {
-    mavenCentral()
+    repositories {
+        mavenCentral()
 
-}
-
-repositories {
-
-    mavenCentral()
-
-    maven {
-        name = 'papermc'
-        url = 'https://repo.papermc.io/repository/maven-public/'
+        maven { url 'https://repo.papermc.io/repository/maven-public/' }
+        maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://repo.dmulloy2.net/repository/public/' }
+        maven { url 'https://maven.enginehub.org/repo/' }
     }
-
-    maven {
-        name = 'aerogel'
-        url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
-    }
-
-    maven {
-        url = 'https://jitpack.io'
-    }
-
-    maven { url "https://repo.dmulloy2.net/repository/public/" }
-
-    maven { url = "https://maven.enginehub.org/repo/" }
-
-}
-
-configurations {
-    extraLibs
-}
-
-dependencies {
-    implementation group: 'com.github.azbh111', name: 'spigot-1.8.8', version: 'R'
-
-    implementation platform('eu.cloudnetservice.cloudnet:bom:4.0.0-RC15')
-    implementation 'eu.cloudnetservice.cloudnet:driver-api'
-    implementation 'eu.cloudnetservice.cloudnet:wrapper-jvm-impl'
-    implementation 'eu.cloudnetservice.cloudnet:bridge-api'
-    implementation 'eu.cloudnetservice.cloudnet:platform-inject-api'
-    implementation('dev.derklaro.aerogel:aerogel:2.0.0-SNAPSHOT')
-    
-    //compileOnly 'com.lunarclient:apollo-api:1.2.0'
-
-    extraLibs 'fr.mrmicky:fastboard:2.1.3'
-    extraLibs 'org.mongodb:mongodb-driver-sync:5.3.0'
-    compileOnly("org.projectlombok:lombok:1.18.42")
-    annotationProcessor("org.projectlombok:lombok:1.18.42")
-    configurations.implementation.extendsFrom(configurations.extraLibs)
-}
-
-jar {
-    from {
-        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory.set(file("F:\\plugin\\Plugin"))
-
 }
