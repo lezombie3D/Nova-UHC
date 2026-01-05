@@ -1,6 +1,6 @@
 package net.novaproject.ultimate.slavemarket;
 
-import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 

@@ -61,7 +61,10 @@ public class ScenarioRoleUi<T extends Role> extends CustomInventory {
                 public void onClick(InventoryClickEvent e) {
                     Class<? extends T> roleClass = (Class<? extends T>) role.getClass();
                     int amount = scenario.getDefault_roles().get(role);
-
+                    if(e.isShiftClick()) {
+                        new RoleConfigUi(getPlayer(),role,ScenarioRoleUi.this).open();
+                        return;
+                    } else
                     if (e.isRightClick() && amount > 0) {
                         scenario.decrementRole(roleClass);
                     } else if (e.isLeftClick()) {

@@ -1,13 +1,17 @@
 package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.VariableType;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 
 public class BloodDiamonds extends Scenario {
+    @ScenarioVariable(name = "Quantité de dégâts", description = "Quantité de cœurs perdus en minant un diamant.",type = VariableType.DOUBLE)
+    private int damageAmount = 1;
 
     @Override
     public String getName() {
@@ -28,6 +32,6 @@ public class BloodDiamonds extends Scenario {
     public void onBreak(Player player, Block block, BlockBreakEvent event) {
         if (!isActive() || block.getType() != Material.DIAMOND_ORE) return;
 
-        player.damage(2.0);
+        player.damage(damageAmount);
     }
 }

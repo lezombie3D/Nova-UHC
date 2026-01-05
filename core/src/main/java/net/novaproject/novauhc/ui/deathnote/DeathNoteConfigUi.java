@@ -2,7 +2,7 @@ package net.novaproject.novauhc.ui.deathnote;
 
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.scenario.ScenarioManager;
-import net.novaproject.novauhc.scenario.role.deathnote.DeathNote;
+import net.novaproject.novauhc.scenario.role.scenario.deathnote.DeathNote;
 import net.novaproject.novauhc.ui.config.ScenariosUi;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ui.CustomInventory;

@@ -2,8 +2,8 @@ package net.novaproject.ultimate.skyhigt;
 
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.Scenario;
-import net.novaproject.novauhc.scenario.ScenarioLang;
-import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;

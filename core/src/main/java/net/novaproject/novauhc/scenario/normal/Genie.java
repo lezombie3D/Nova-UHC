@@ -2,9 +2,9 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
-import net.novaproject.novauhc.scenario.ScenarioLang;
-import net.novaproject.novauhc.scenario.ScenarioLangManager;
-import net.novaproject.novauhc.scenario.lang.GenieLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.lang.GenieLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;

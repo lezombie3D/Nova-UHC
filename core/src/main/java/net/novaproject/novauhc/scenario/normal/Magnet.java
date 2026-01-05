@@ -1,8 +1,8 @@
 package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.scenario.Scenario;
-import net.novaproject.novauhc.scenario.ScenarioLang;
-import net.novaproject.novauhc.scenario.lang.MagnetLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.lang.MagnetLang;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Location;
 import org.bukkit.Material;

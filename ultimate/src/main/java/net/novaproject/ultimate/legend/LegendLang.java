@@ -1,6 +1,6 @@
 package net.novaproject.ultimate.legend;
 
-import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.ultimate.legend.core.LegendData;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -93,7 +93,7 @@ public enum LegendLang implements ScenarioLang {
 
     @Override
     public String getBasePath() {
-        return "messages";
+        return "";
     }
 
     @Override

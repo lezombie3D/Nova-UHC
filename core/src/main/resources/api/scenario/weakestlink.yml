@@ -1,6 +1,0 @@
-damage_multiplier: 2.0
-update_interval: 300  # 5 minutes in seconds
-messages:
-  WEAKEST_PLAYER: "§c[WeakestLink] §f%player% est maintenant le maillon faible ! (Dégâts x%multiplier%)"
-  DAMAGE_TAKEN: "§c[WeakestLink] §fVous êtes le maillon faible ! Vous prenez %multiplier%x plus de dégâts !"
-  NO_LONGER_WEAKEST: "§c[WeakestLink] §fVous n'êtes plus le maillon faible !"

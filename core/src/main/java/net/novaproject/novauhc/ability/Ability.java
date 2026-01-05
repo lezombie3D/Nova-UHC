@@ -7,6 +7,7 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ShortCooldownManager;
+import net.novaproject.novauhc.utils.VariableType;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -18,19 +19,11 @@ import org.bukkit.inventory.ItemStack;
 
 @Getter
 @Setter
-public abstract class Ability {
+public abstract class Ability implements Cloneable {
 
+    @AbilityVariable(name = "Nombre d'utilisation", description = "Nombre d'utilisation de la capacité",type = VariableType.INTEGER)
+    private int maxUse = -1;
 
-    private final FileConfiguration abilityconfig;
-    private final String path = "api/ability/" + getAbilityPath() + ".yml";
-    private int maxUse;
-
-    public Ability() {
-        ConfigUtils.createDefaultFiles(path);
-        this.abilityconfig = ConfigUtils.getConfig(path);
-    }
-
-    public abstract String getAbilityPath();
 
     public abstract String getName();
 
@@ -40,9 +33,9 @@ public abstract class Ability {
         }
     }
 
-    public int getCooldown() {
-        return abilityconfig.getInt("cooldown");
-    }
+    public abstract boolean active();
+
+    public abstract int getCooldown();
 
     public Material getMaterial() {
         return Material.NETHER_STAR;
@@ -76,7 +69,7 @@ public abstract class Ability {
     public boolean tryUse(Player player) {
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
 
-        if (ShortCooldownManager.get(player, getAbilityPath()) != -1 || !uhcPlayer.isPlaying()) {
+        if (ShortCooldownManager.get(player, getName()+"Cooldown") != -1 || !uhcPlayer.isPlaying()) {
             return false;
         }
 
@@ -90,7 +83,7 @@ public abstract class Ability {
             if (cd == 0) {
                 return true;
             }
-            ShortCooldownManager.put(player, getAbilityPath(), cd * 1000L);
+            ShortCooldownManager.put(player, getName()+"Cooldown", cd * 1000L);
             return true;
         }
 
@@ -103,10 +96,13 @@ public abstract class Ability {
         if (cd == 0) {
             return true;
         }
-        ShortCooldownManager.put(player, getAbilityPath(), cd * 1000L);
+        ShortCooldownManager.put(player, getName()+"Cooldown", cd * 1000L);
         return true;
     }
 
+    public void onGive(UHCPlayer uhcPlayer) {
+        uhcPlayer.getPlayer().getInventory().addItem(getItemStack());
+    }
 
     public UHCPlayer getUHCPlayer(Player player) {
         return UHCPlayerManager.get().getPlayer(player);
@@ -136,4 +132,13 @@ public abstract class Ability {
     public void onConsume(PlayerItemConsumeEvent event) {
     }
 
+
+    @Override
+    public Ability clone() {
+        try {
+            return (Ability) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

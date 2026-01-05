@@ -43,22 +43,24 @@ public class BorderConfig extends CustomInventory {
                 .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
                 .addLore("");
         addMenu(12, border, new ConfigVarUi(getPlayer(), 500, 250, 100, 500, 250, 100, (int) border_size, 250, 4000, this) {
+
             @Override
-            public void onChange(int newValue) {
-                Common.get().getArena().getWorldBorder().setSize(newValue);
+            public void onChange(Number newValue) {
+                Common.get().getArena().getWorldBorder().setSize((Double) newValue);
             }
         });
         addMenu(13, border_speed, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, (int) borderspeed, 1, 15, this) {
+
             @Override
-            public void onChange(int newValue) {
-                UHCManager.get().setReducSpeed(newValue);
+            public void onChange(Number newValue) {
+                UHCManager.get().setReducSpeed((Long) newValue);
             }
         });
         addMenu(14, final_size, new ConfigVarUi(getPlayer(), 100, 50, 10, 100, 50, 10, (int) targetsize, 10, 500, this) {
 
             @Override
-            public void onChange(int newValue) {
-                UHCManager.get().setTargetSize(newValue);
+            public void onChange(Number newValue) {
+                UHCManager.get().setTargetSize((Double) newValue);
             }
         });
         addReturn(22, new DefaultUi(getPlayer()));

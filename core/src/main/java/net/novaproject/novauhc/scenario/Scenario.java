@@ -2,14 +2,20 @@ package net.novaproject.novauhc.scenario;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.novaproject.novauhc.Main;
+import net.novaproject.novauhc.scenario.lang.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
-import net.novaproject.novauhc.utils.ConfigUtils;
+import net.novaproject.novauhc.ui.config.ScenariosUi;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
+import org.bson.Document;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -26,7 +32,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Getter
 @Setter
@@ -69,16 +80,110 @@ public abstract class Scenario {
     }
 
     public boolean needRooft() {
-        return true;
+        return false;
     }
 
     public CustomInventory getMenu(Player player) {
+        for (Field field : this.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(ScenarioVariable.class)) {
+                return new ScenarioVariableMenu(player,this,new ScenariosUi(player,isSpecial()));
+            }
+        }
         return null;
     }
+
 
     public void toggleActive() {
         active = !active;
     }
+
+    public Document scenarioToDoc() {
+        Document doc = new Document();
+        for (Field field : this.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(ScenarioVariable.class)) {
+                field.setAccessible(true);
+                try {
+                    doc.append(field.getName(), field.get(this));
+                } catch (IllegalAccessException e) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Could not access field " + field.getName(), e);
+                }
+            }
+        }
+        return doc;
+    }
+
+    public void docToScenario(Document doc) {
+        if (doc == null) return;
+        for (Field field : this.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(ScenarioVariable.class)) {
+                if (doc.containsKey(field.getName())) {
+                    field.setAccessible(true);
+                    try {
+                        Object value = doc.get(field.getName());
+                        // Handle potential type mismatches from BSON (e.g. Integer to Double or vice-versa)
+                        if (value instanceof Number) {
+                            if (field.getType() == int.class || field.getType() == Integer.class) {
+                                field.set(this, ((Number) value).intValue());
+                            } else if (field.getType() == double.class || field.getType() == Double.class) {
+                                field.set(this, ((Number) value).doubleValue());
+                            } else if (field.getType() == float.class || field.getType() == Float.class) {
+                                field.set(this, ((Number) value).floatValue());
+                            } else if (field.getType() == long.class || field.getType() == Long.class) {
+                                field.set(this, ((Number) value).longValue());
+                            } else {
+                                field.set(this, value);
+                            }
+                        } else {
+                            field.set(this, value);
+                        }
+                    } catch (IllegalAccessException e) {
+                        Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Could not set field " + field.getName(), e);
+                    }
+                }
+            }
+        }
+    }
+
+
+    public void setup() {
+        if (getPath() == null) return;
+
+        String configPath = "api/scenario/" + getPath() + ".yml";
+        File file = new File(Main.get().getDataFolder(), configPath);
+
+        YamlConfiguration config = file.exists() ? YamlConfiguration.loadConfiguration(file) : new YamlConfiguration();
+
+        if (getLang() != null) {
+            for (ScenarioLang lang : getLang()) {
+                lang.setConfig(config);
+                if (!config.contains(lang.getPath())) {
+                    config.set(lang.getPath(), lang.getDefaultMessage());
+                }
+            }
+            ScenarioLangManager.loadMessages(config, getLang());
+        }
+
+        config.options().copyDefaults(true);
+
+        if (!file.exists()) {
+            try {
+                file.getParentFile().mkdirs();
+                config.save(file);
+                Bukkit.getLogger().info("Config scenario générée automatiquement : " + getPath() + ".yml");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        this.config = config;
+    }
+
+
+
+    public ScenarioLang[] getLang() {
+        return null;
+    }
+
 
     public void onBreak(Player player, Block block, BlockBreakEvent event) {
 
@@ -87,18 +192,7 @@ public abstract class Scenario {
     public void onEntityDeath(Entity entity, Player killer, EntityDeathEvent event) {
 
     }
-    public void setup(){
-        if (getPath() != null) {
-            String configPath = "api/scenario/" + getPath() + ".yml";
-            ConfigUtils.createDefaultFiles(configPath);
-            this.config = ConfigUtils.getConfig(configPath);
-        }
-        if (getLang() != null) {
-            for (ScenarioLang lang : getLang()) {
-                lang.setConfig(config);
-            }
-            ScenarioLangManager.loadMessages(config, getLang());
-        }
+    public void onSec(Player p){
 
     }
 
@@ -110,13 +204,6 @@ public abstract class Scenario {
 
     }
 
-    public ScenarioLang[] getLang() {
-        return null;
-    }
-
-    public void onSec(Player p){
-
-    }
     public void onDeath(UHCPlayer uhcPlayer, UHCPlayer killer, PlayerDeathEvent event) {
 
     }

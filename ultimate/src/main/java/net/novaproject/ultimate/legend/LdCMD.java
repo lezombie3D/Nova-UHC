@@ -4,7 +4,7 @@ import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.command.Command;
 import net.novaproject.novauhc.command.CommandArguments;
-import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;

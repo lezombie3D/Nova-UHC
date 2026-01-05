@@ -40,7 +40,7 @@ public class AbilityManager {
 
         for (Ability ability : abilities) {
             if (heldName.equals("§8» §f§l" + ability.getName() + " §8«")) {
-                long remaining = ShortCooldownManager.get(player, ability.getAbilityPath());
+                long remaining = ShortCooldownManager.get(player, ability.getName()+"Cooldown");
                 new Titles().sendActionText(player, remaining / 1000 + "s");
                 return;
             }

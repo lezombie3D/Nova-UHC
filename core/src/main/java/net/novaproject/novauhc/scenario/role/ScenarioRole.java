@@ -16,28 +16,83 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public abstract class ScenarioRole<T extends Role> extends Scenario {
 
+    /** CONFIG **/
     private final Map<Class<? extends T>, Integer> default_roles = new HashMap<>();
+    private final Map<Class<? extends T>, T> roleConfigs = new HashMap<>();
+
+    /** GAME **/
     private final Map<UHCPlayer, T> players_roles = new HashMap<>();
-    public boolean isgived = false;
+    private boolean isgived = false;
 
     public abstract Camps[] getCamps();
-    private final List<T> roles = new ArrayList<>();
+
+
+    public void addRole(Class<? extends T> roleClass) {
+        try {
+            T role = roleClass.getDeclaredConstructor().newInstance();
+            roleConfigs.put(roleClass, role);
+            default_roles.put(roleClass, 0);
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot register role " + roleClass.getName(), e);
+        }
+    }
+
+    public int getRoleAmount(Class<? extends T> roleClass) {
+        return default_roles.getOrDefault(roleClass, 0);
+    }
+
+    public void incrementRole(Class<? extends T> roleClass) {
+        default_roles.put(roleClass, getRoleAmount(roleClass) + 1);
+    }
+
+    public void decrementRole(Class<? extends T> roleClass) {
+        int current = getRoleAmount(roleClass);
+        if (current > 0) {
+            default_roles.put(roleClass, current - 1);
+        }
+    }
 
     public Map<T, Integer> getDefault_roles() {
+        Map<T, Integer> result = new TreeMap<>(Comparator.comparing(Role::getName));
+        default_roles.forEach((clazz, amount) ->
+                result.put(roleConfigs.get(clazz), amount)
+        );
+        return result;
+    }
 
-        Map<T, Integer> roles = new TreeMap<>(Comparator.comparing(Role::getName));
 
-        for (Map.Entry<Class<? extends T>, Integer> entry : default_roles.entrySet()) {
-            roles.put(createRoleInstance(entry.getKey()), entry.getValue());
+    public void giveRoles() {
+
+        Bukkit.broadcastMessage(CommonString.GIVING_ROLES.getMessage());
+
+        List<T> pool = new ArrayList<>();
+
+        default_roles.forEach((clazz, amount) -> {
+            T base = roleConfigs.get(clazz);
+            for (int i = 0; i < amount; i++) {
+                pool.add((T) base.clone());
+            }
+        });
+
+        Collections.shuffle(pool, new Random());
+
+        for (UHCPlayer player : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
+            if (pool.isEmpty()) break;
+
+            T role = pool.remove(0);
+            players_roles.put(player, role);
+            role.onGive(player);
         }
 
-        return roles;
+        isgived = true;
+    }
 
+    public T getRoleByUHCPlayer(UHCPlayer player) {
+        return players_roles.get(player);
     }
 
     @Override
@@ -50,153 +105,64 @@ public abstract class ScenarioRole<T extends Role> extends Scenario {
         return new ScenarioCampUi<>(player, this);
     }
 
-    public void addRole(Class<? extends T> roleClass) {
-        default_roles.put(roleClass, 0);
-    }
-
-    public int getRoleAmount(Class<? extends T> roleClass) {
-        return default_roles.getOrDefault(roleClass, 0);
-    }
-
-    public void incrementRole(Class<? extends T> roleClass) {
-        default_roles.put(roleClass, getRoleAmount(roleClass) + 1);
-    }
-
-    public void decrementRole(Class<? extends T> roleClass) {
-        if (getRoleAmount(roleClass) == 0) {
-            return;
-        }
-        default_roles.put(roleClass, getRoleAmount(roleClass) - 1);
-    }
-
-    public T createRoleInstance(Class<? extends T> roleClass) {
-        try {
-            return roleClass.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                 NoSuchMethodException e) {
-            throw new RuntimeException("Failed to create instance of role: " + roleClass.getName(), e);
-        }
-    }
-
     @Override
     public void onSec(Player p) {
         int timer = UHCManager.get().getTimer();
-        players_roles.forEach((player, role) -> {
-            role.onSec(p);
-        });
-        if (!isgived) {
-            if (timer == UHCManager.get().getTimerpvp()) {
-                giveRoles();
-                isgived = true;
-            }
+
+        players_roles.forEach((player, role) -> role.onSec(p));
+
+        if (!isgived && timer == UHCManager.get().getTimerpvp()) {
+            giveRoles();
         }
     }
 
     @Override
     public void setup() {
         super.setup();
-        players_roles.forEach((player, role) -> {
-            role.onSetup();
-        });
-    }
-
-    public void giveRoles(){
-
-        Bukkit.broadcastMessage(CommonString.GIVING_ROLES.getMessage());
-        default_roles.forEach((role, amount) -> {
-            for (int i = 0; i < amount; i++) {
-                roles.add(createRoleInstance(role));
-            }
-        });
-
-        Collections.shuffle(roles, new Random(System.currentTimeMillis()));
-
-        for (UHCPlayer player : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
-
-            if (roles.isEmpty()) {
-                break;
-            }
-
-            T role = roles.remove(new Random(System.currentTimeMillis()).nextInt(roles.size()));
-
-            players_roles.put(player, role);
-
-            role.onGive(player);
-
-        }
-
-    }
-
-    public T getRoleByUHCPlayer(UHCPlayer player) {
-        return players_roles.get(player);
-    }
-
-    public List<UHCPlayer> getPlayersByRoleName(String name) {
-        List<UHCPlayer> players = new ArrayList<>(players_roles.keySet());
-
-        List<UHCPlayer> validPlayers = new ArrayList<>();
-
-        for (int i = 0; i < players.size(); i++) {
-            UHCPlayer player = players.get(i);
-            T role = getRoleByUHCPlayer(player);
-            if (role != null && role.getName().equals(name)) {
-                validPlayers.add(player);
-            }
-        }
-
-        return validPlayers;
-    }
-
-    public Camps getWinningCamp() {
-        Map<Camps, Integer> campCounts = new HashMap<>();
-
-        for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
-            Role role = getRoleByUHCPlayer(uhcPlayer);
-            if (role == null) continue;
-
-            Camps camp = role.getCamp();
-            campCounts.put(camp, campCounts.getOrDefault(camp, 0) + 1);
-        }
-
-        if (campCounts.size() == 1) {
-            return campCounts.keySet().iterator().next();
-        }
-
-        return null;
-    }
-
-
-    @Override
-    public void onConsume(Player player1, ItemStack item, PlayerItemConsumeEvent event) {
-        players_roles.forEach((player, role) -> {
-            role.onConsume(player1, item, event);
-        });
+        players_roles.forEach((player, role) -> role.onSetup());
     }
 
     @Override
-    public void onPlayerInteract(Player player1, PlayerInteractEvent event) {
-        players_roles.forEach((player, role) -> {
-            role.onIteract(player1, event);
-        });
+    public void onConsume(Player player, ItemStack item, PlayerItemConsumeEvent event) {
+        players_roles.forEach((p, role) -> role.onConsume(player, item, event));
+    }
+
+    @Override
+    public void onPlayerInteract(Player player, PlayerInteractEvent event) {
+        players_roles.forEach((p, role) -> role.onIteract(player, event));
     }
 
     @Override
     public void onMove(Player player, PlayerMoveEvent event) {
-        players_roles.forEach((player1, role) -> {
-            role.onMove(player1, event);
-        });
+        players_roles.forEach((p, role) -> role.onMove(p, event));
     }
 
     @Override
     public void onHit(Entity entity, Entity dammager, EntityDamageByEntityEvent event) {
-        players_roles.forEach((uhcPlayer, role) ->
-                role.onHit(entity, dammager, event)
-        );
+        players_roles.forEach((p, role) -> role.onHit(entity, dammager, event));
     }
 
     @Override
     public void onKill(UHCPlayer killer, UHCPlayer victim) {
-        players_roles.forEach((uhcPlayer, role) ->
-                role.onKill(killer, victim));
+        players_roles.forEach((p, role) -> role.onKill(killer, victim));
+    }
+
+    public List<UHCPlayer> getPlayersByRoleName(String name) {
+        List<UHCPlayer> list = new ArrayList<>();
+        players_roles.forEach((player, role) -> {
+            if (role.getName().equals(name)) list.add(player);
+        });
+        return list;
+    }
+
+    public Camps getWinningCamp() {
+        Map<Camps, Integer> counts = new HashMap<>();
+
+        players_roles.forEach((player, role) -> {
+            Camps camp = role.getCamp();
+            counts.put(camp, counts.getOrDefault(camp, 0) + 1);
+        });
+
+        return counts.size() == 1 ? counts.keySet().iterator().next() : null;
     }
 }

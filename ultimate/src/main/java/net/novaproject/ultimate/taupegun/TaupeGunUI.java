@@ -23,9 +23,10 @@ public class TaupeGunUI extends CustomInventory {
                 .addLore(ChatColor.YELLOW + "► Clic gauche pour " + ChatColor.GREEN + "augmenter")
                 .addLore(ChatColor.YELLOW + "► Clic droit pour " + ChatColor.RED + "diminuer").addLore("").addLore(ChatColor.YELLOW + "Nombre :" + ChatColor.AQUA + taupeGun.getMole());
         addMenu(2, taupe, new ConfigVarUi(getPlayer(), 3, 2, 1, 3, 2, 1, taupeGun.getMole(), 1, 6, this) {
+
             @Override
-            public void onChange(int newValue) {
-                taupeGun.setMole(newValue);
+            public void onChange(Number newValue) {
+                taupeGun.setMole((int) newValue);
             }
         });
 
@@ -34,9 +35,10 @@ public class TaupeGunUI extends CustomInventory {
                 .addLore(ChatColor.YELLOW + "► Clic gauche pour " + ChatColor.GREEN + "augmenter")
                 .addLore(ChatColor.YELLOW + "► Clic droit pour " + ChatColor.RED + "diminuer").addLore("").addLore(ChatColor.YELLOW + "Taille :" + ChatColor.AQUA + taupeGun.getMolesize());
         addMenu(4, team, new ConfigVarUi(getPlayer(), 3, 2, 1, 3, 2, 1, taupeGun.getMolesize(), 1, 6, this) {
+
             @Override
-            public void onChange(int newValue) {
-                taupeGun.setMolesize(newValue);
+            public void onChange(Number newValue) {
+                taupeGun.setMolesize((int) newValue);
             }
         });
 

@@ -2,12 +2,14 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
-import net.novaproject.novauhc.scenario.ScenarioLang;
-import net.novaproject.novauhc.scenario.ScenarioLangManager;
-import net.novaproject.novauhc.scenario.lang.AcidRainLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
+import net.novaproject.novauhc.scenario.lang.lang.AcidRainLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.VariableType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,6 +24,15 @@ public class AcidRain extends Scenario {
     private final Random random = new Random();
     private BukkitRunnable acidRainTask;
     private boolean isRaining = false;
+
+    @ScenarioVariable(name = "Temps entre les pluies", description = "Temps de base en secondes entre deux pluies",type = VariableType.TIME)
+    private int nextRainInBase = 300;
+
+    @ScenarioVariable(name = "Durée de la pluie", description = "Durée de base de la pluie en secondes", type = VariableType.TIME)
+    private int rainDurationBase = 60;
+
+    @ScenarioVariable(name = "Dégâts", description = "Dégâts par seconde sous la pluie", type = VariableType.DOUBLE)
+    private double rainDamage = 1.0;
 
     @Override
     public String getName() {
@@ -48,22 +59,19 @@ public class AcidRain extends Scenario {
         return AcidRainLang.values();
     }
 
-    @Override
-    public void enable() {
-        super.enable();
-        if (isActive()) {
-            startAcidRainCycle();
-        }
-    }
 
     @Override
     public void toggleActive() {
         super.toggleActive();
-        if (isActive()) {
-            startAcidRainCycle();
-        } else {
+        if (!isActive()) {
             stopAcidRainCycle();
         }
+    }
+
+
+    @Override
+    public void onGameStart() {
+        startAcidRainCycle();
     }
 
     private void startAcidRainCycle() {
@@ -74,7 +82,7 @@ public class AcidRain extends Scenario {
         acidRainTask = new BukkitRunnable() {
             private int cycleTimer = 0;
             private int rainDuration = 0;
-            private int nextRainIn = 300 + random.nextInt(300); // 5-10 minutes until first rain
+            private int nextRainIn = nextRainInBase + random.nextInt(nextRainInBase);
 
             @Override
             public void run() {
@@ -86,13 +94,11 @@ public class AcidRain extends Scenario {
                 cycleTimer++;
 
                 if (!isRaining) {
-                    // Waiting for next rain
                     if (cycleTimer >= nextRainIn) {
                         startAcidRain();
                         cycleTimer = 0;
-                        rainDuration = 60 + random.nextInt(120); // Rain for 1-3 minutes
+                        rainDuration = rainDurationBase + random.nextInt(rainDurationBase * 2);
                     } else {
-                        // Warning messages
                         int timeLeft = nextRainIn - cycleTimer;
                         if (timeLeft == 60) {
                             Bukkit.broadcastMessage("§c[AcidRain] §fPluie acide dans 1 minute ! Trouvez un abri !");
@@ -101,16 +107,14 @@ public class AcidRain extends Scenario {
                         }
                     }
                 } else {
-                    // Currently raining acid
                     damageExposedPlayers();
                     rainDuration--;
 
                     if (rainDuration <= 0) {
                         stopAcidRain();
                         cycleTimer = 0;
-                        nextRainIn = 300 + random.nextInt(300); // Next rain in 5-10 minutes
+                        nextRainIn = nextRainInBase + random.nextInt(nextRainInBase);
                     } else {
-                        // Warning messages during rain
                         if (rainDuration == 10) {
                             Bukkit.broadcastMessage("§c[AcidRain] §fLa pluie acide s'arrête dans 10 secondes !");
                         }
@@ -119,7 +123,6 @@ public class AcidRain extends Scenario {
             }
         };
 
-        // Run every second
         acidRainTask.runTaskTimer(Main.get(), 0, 20);
     }
 
@@ -137,7 +140,6 @@ public class AcidRain extends Scenario {
     private void startAcidRain() {
         isRaining = true;
 
-        // Set weather to rain in all worlds
         for (World world : Bukkit.getWorlds()) {
             world.setStorm(true);
             world.setWeatherDuration(Integer.MAX_VALUE);
@@ -145,7 +147,6 @@ public class AcidRain extends Scenario {
 
         ScenarioLangManager.sendAll(AcidRainLang.ACID_RAIN_START);
 
-        // Play thunder sound for dramatic effect
         for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
             Player player = uhcPlayer.getPlayer();
             player.getWorld().playSound(player.getLocation(),
@@ -156,7 +157,6 @@ public class AcidRain extends Scenario {
     private void stopAcidRain() {
         isRaining = false;
 
-        // Stop rain in all worlds
         for (World world : Bukkit.getWorlds()) {
             world.setStorm(false);
             world.setWeatherDuration(0);
@@ -170,12 +170,10 @@ public class AcidRain extends Scenario {
             Player player = uhcPlayer.getPlayer();
 
             if (isPlayerExposedToRain(player)) {
-                // Damage the player
-                player.damage(1.0);
+                player.damage(rainDamage);
                 player.sendMessage("§c[AcidRain] §fVous êtes brûlé par la pluie acide ! Trouvez un abri !");
 
-                // Visual effect
-                player.setFireTicks(20); // Set on fire for 1 second for visual effect
+                player.setFireTicks(20);
             }
         }
     }
@@ -215,35 +213,4 @@ public class AcidRain extends Scenario {
         return true;
     }
 
-    // Check if acid rain is currently active
-    public boolean isAcidRaining() {
-        return isRaining;
-    }
-
-    // Force start acid rain (admin command)
-    public void forceStartAcidRain() {
-        if (isActive() && !isRaining) {
-            startAcidRain();
-            Bukkit.broadcastMessage("§c[AcidRain] §fPluie acide forcée par un administrateur !");
-        }
-    }
-
-    // Force stop acid rain (admin command)
-    public void forceStopAcidRain() {
-        if (isActive() && isRaining) {
-            stopAcidRain();
-            Bukkit.broadcastMessage("§c[AcidRain] §fPluie acide arrêtée par un administrateur !");
-        }
-    }
-
-    // Get shelter status for a player
-    public boolean isPlayerSheltered(Player player) {
-        return !isPlayerExposedToRain(player);
-    }
-
-    @Override
-    public void onSec(Player p) {
-        // This method is called every second for each player
-        // We use the BukkitRunnable instead for better performance
-    }
 }

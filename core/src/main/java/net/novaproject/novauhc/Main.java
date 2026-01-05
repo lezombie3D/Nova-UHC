@@ -30,7 +30,7 @@ public class Main extends JavaPlugin {
     private MongoClient mongoClient;
     private MongoDatabase database;
     @Getter
-    private CloudNet cloudNet;
+    private CloudNet cloudNet = null;
 
 
     public static Main get() {

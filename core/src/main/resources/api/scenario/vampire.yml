@@ -1,8 +1,0 @@
-sun_damage_interval: 40
-sun_damage_amount: 1.0
-heal_amount: 2.0
-night_vision_duration: 600
-messages:
-  KILL_HEAL: "§c[Vampire] §fVous avez récupéré %heal_hearts% cœur(s) en tuant %victim% !"
-  SUN_DAMAGE: "§c[Vampire] §fVous brûlez au soleil ! Équipez un casque ou trouvez de l'ombre !"
-  SUN_DAMAGE_SEVERE: "§c[Vampire] §fVous gelez ! Trouvez de la chaleur rapidement !"

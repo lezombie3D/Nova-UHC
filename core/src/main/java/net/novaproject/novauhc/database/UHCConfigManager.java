@@ -69,11 +69,6 @@ public class UHCConfigManager {
         }
     }
 
-    /**
-     * Serializes the current state of all Potions enum values to a Map
-     *
-     * @return Map containing potion names and their enabled states
-     */
     private Map<String, Boolean> serializePotionStates() {
         Map<String, Boolean> potionStates = new HashMap<>();
         try {
@@ -86,12 +81,6 @@ public class UHCConfigManager {
         return potionStates;
     }
 
-    /**
-     * Deserializes potion states from a Map and applies them to the Potions enum
-     *
-     * @param potionStates Map containing potion names and their enabled states
-     * @return Map of successfully processed potion states
-     */
     private Map<String, Boolean> deserializePotionStates(Map<String, Boolean> potionStates) {
         try {
             // Create a safe validated copy
@@ -122,11 +111,7 @@ public class UHCConfigManager {
         }
     }
 
-    /**
-     * Applies potion states from a Map to the actual Potions enum instances
-     *
-     * @param potionStates Map containing potion names and their enabled states
-     */
+
     public void applyPotionStatesToEnum(Map<String, Boolean> potionStates) {
         if (potionStates == null) {
             return;
@@ -144,18 +129,10 @@ public class UHCConfigManager {
         }
     }
 
-    /**
-     * Gets the current states of all Potions enum instances
-     *
-     * @return Map containing current potion names and their enabled states
-     */
     public Map<String, Boolean> getCurrentPotionStates() {
         return serializePotionStates();
     }
 
-    /**
-     * Resets all potion states to their default (enabled) state
-     */
     public void resetPotionStatesToDefault() {
         try {
             for (Potions potion : Potions.values()) {
@@ -168,12 +145,6 @@ public class UHCConfigManager {
         }
     }
 
-    /**
-     * Validates potion states and filters out invalid entries
-     *
-     * @param potionStates Map to validate
-     * @return Validated map with only valid potion names
-     */
     private Map<String, Boolean> validatePotionStates(Map<String, Boolean> potionStates) {
         Map<String, Boolean> validatedStates = new HashMap<>();
 
@@ -204,12 +175,7 @@ public class UHCConfigManager {
         return validatedStates;
     }
 
-    /**
-     * Creates a safe copy of potion states with validation
-     *
-     * @param potionStates Original map
-     * @return Safe validated copy
-     */
+
     private Map<String, Boolean> createSafePotionStatesCopy(Map<String, Boolean> potionStates) {
         Map<String, Boolean> safeCopy = new HashMap<>();
 
@@ -238,7 +204,6 @@ public class UHCConfigManager {
         try {
             Document existingConfig = getConfigDocument(uuid, config.getName());
 
-            // Sérialiser la Map de stuff (ItemStack[])
             Document stuffDoc = new Document();
             for (Map.Entry<String, ItemStack[]> entry : config.getStuff().entrySet()) {
                 Binary serializedItems = serializeItemStacks(entry.getValue());
@@ -247,21 +212,31 @@ public class UHCConfigManager {
                 }
             }
 
-            // Sérialiser les états des potions avec validation
-            Map<String, Boolean> potionStates = config.getPotionStates();
-            if (potionStates == null || potionStates.isEmpty()) {
-                // Si aucun état de potion n'est fourni, utiliser les états actuels des enums
-                potionStates = serializePotionStates();
-            } else {
-                // Valider et nettoyer les états fournis
-                potionStates = createSafePotionStatesCopy(potionStates);
+            Document deathDoc = new Document();
+            for (Map.Entry<String, ItemStack[]> entry : config.getDeath().entrySet()) {
+                Binary serializedItems = serializeItemStacks(entry.getValue());
+                if (serializedItems != null) {
+                    deathDoc.append(entry.getKey(), serializedItems);
+                }
+            }
+
+            Map<String, Boolean> potionStates = new HashMap<>();
+            for (Map.Entry<String, Boolean> entry : config.getPotionStates().entrySet()) {
+                if (entry.getValue() != null && !entry.getValue()) {
+                    potionStates.put(entry.getKey(), false);
+                }
             }
 
             Document configDoc = new Document()
                     .append("uuid", uuid.toString())
                     .append("name", config.getName())
-                    .append("enabledScenarios", config.getEnabledScenarios())
-                    .append("teamSize", config.getTeamSize())
+                    .append("enabledScenarios", config.getEnabledScenarios());
+
+            if (!config.getScenarioConfigs().isEmpty()) {
+                configDoc.append("scenarioConfigs", config.getScenarioConfigs());
+            }
+
+            configDoc.append("teamSize", config.getTeamSize())
                     .append("borderSize", config.getBorderSize())
                     .append("pvpTime", config.getPvpTime())
                     .append("finalsize", config.getFinalsize())
@@ -271,9 +246,17 @@ public class UHCConfigManager {
                     .append("slot", config.getSlot())
                     .append("diamant", config.getDiamant())
                     .append("limiteD", config.getLimiteD())
-                    .append("protection", config.getProtection())
-                    .append("stuff", stuffDoc)
-                    .append("potionStates", potionStates);
+                    .append("protection", config.getProtection());
+
+            if (!stuffDoc.isEmpty()) {
+                configDoc.append("stuff", stuffDoc);
+            }
+            if (!deathDoc.isEmpty()) {
+                configDoc.append("death", deathDoc);
+            }
+            if (!potionStates.isEmpty()) {
+                configDoc.append("potionStates", potionStates);
+            }
 
             if (existingConfig != null) {
                 uhcConfigs.replaceOne(
@@ -326,6 +309,18 @@ public class UHCConfigManager {
                     }
                 }
             }
+            Map<String, ItemStack[]> death = new HashMap<>();
+            Document deathDoc = (Document) configDoc.get("death");
+            if (deathDoc != null) {
+                for (String key : deathDoc.keySet()) {
+                    Binary binary = (Binary) deathDoc.get(key);
+                    ItemStack[] items = deserializeItemStacks(binary);
+                    if (items != null) {
+                        death.put(key, items);
+                    }
+                }
+            }
+
 
             // Désérialiser les états des potions
             Map<String, Boolean> potionStates = new HashMap<>();
@@ -333,9 +328,17 @@ public class UHCConfigManager {
             Map<String, Boolean> storedPotionStates = (Map<String, Boolean>) configDoc.get("potionStates");
             potionStates = deserializePotionStates(storedPotionStates);
 
+            // Désérialiser les configurations des scénarios
+            @SuppressWarnings("unchecked")
+            Map<String, Document> scenarioConfigs = (Map<String, Document>) configDoc.get("scenarioConfigs");
+            if (scenarioConfigs == null) {
+                scenarioConfigs = new HashMap<>();
+            }
+
             return new UHCGameConfiguration(
                     configDoc.getString("name"),
                     scenarios,
+                    scenarioConfigs,
                     configDoc.getInteger("teamSize"),
                     configDoc.getInteger("borderSize"),
                     configDoc.getInteger("pvpTime"),
@@ -348,6 +351,7 @@ public class UHCConfigManager {
                     configDoc.getInteger("limiteD"),
                     configDoc.getInteger("protection"),
                     stuff,
+                    death,
                     potionStates
             );
         } catch (Exception e) {

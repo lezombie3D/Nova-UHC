@@ -1,9 +1,9 @@
 package net.novaproject.ultimate;
 
 import net.novaproject.novauhc.scenario.Scenario;
-import net.novaproject.novauhc.scenario.ScenarioLang;
-import net.novaproject.novauhc.scenario.ScenarioLangManager;
-import net.novaproject.novauhc.scenario.lang.MysteryTeamLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.lang.MysteryTeamLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;

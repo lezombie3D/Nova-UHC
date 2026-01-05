@@ -93,23 +93,33 @@ public class ConfigCMD extends Command {
         int limiteD = UHCManager.get().getDiamondArmor();
         int protection = UHCManager.get().getProtectionMax();
         Map<String, ItemStack[]> stuff = UHCManager.get().start;
+        Map<String, ItemStack[]> death = UHCManager.get().death;
+        Map<String, org.bson.Document> scenarioConfigs = new HashMap<>();
+        for (Scenario scenario : ScenarioManager.get().getActiveScenarios()) {
+            org.bson.Document doc = scenario.scenarioToDoc();
+            if (doc != null && !doc.isEmpty()) {
+                scenarioConfigs.put(scenario.getName(), doc);
+            }
+        }
 
         UHCGameConfiguration config = new UHCGameConfiguration(
                 configName,
                 scenarios,
+                scenarioConfigs,
                 teamSize,
                 borderSize,
-                timereduc,
                 pvpTime,
                 finalsize,
                 bordecactivation,
+                timereduc,
                 limite,
                 slot,
                 diamant,
                 limiteD,
                 protection,
                 stuff,
-                null
+                death,
+                Main.getDatabaseManager().getConfigManager().getCurrentPotionStates()
         );
 
         Main.getDatabaseManager().saveUHCConfig(playerUUID, config);
@@ -131,7 +141,13 @@ public class ConfigCMD extends Command {
         uhc.setTimerpvp(config.getPvpTime());
         uhc.setReducSpeed(config.getTimereduc());
 
-        config.getScenarios().forEach(name -> {
+        config.getScenarioConfigs().forEach((name, doc) -> {
+            ScenarioManager.get().getScenarioByName(name).ifPresent(scenario -> {
+                scenario.docToScenario(doc);
+            });
+        });
+
+        config.getEnabledScenarios().forEach(name -> {
             ScenarioManager.get().getScenarioByName(name).ifPresent(scenario -> {
                 if (!scenario.isActive()) {
                     scenario.enable();
@@ -145,7 +161,7 @@ public class ConfigCMD extends Command {
         uhc.setDiamondArmor(config.getLimiteD());
         uhc.applyLimitsFromList(config.getLimite());
         uhc.setProtectionMax(config.getProtection());
-
+        uhc.death = config.getDeath();
         if (config.getPotionStates() != null && !config.getPotionStates().isEmpty()) {
             Main.getDatabaseManager().getConfigManager().applyPotionStatesToEnum(config.getPotionStates());
         }

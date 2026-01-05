@@ -77,7 +77,7 @@ public class GameUi extends CustomInventory {
                 .addLore(CommonString.CLICK_HERE_TO_MODIFY.getMessage())
                 .addLore("");
         ItemCreator def = UHCUtils.createCustomButon("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmRiYmM1ODM2MDliNWYwMjUzN2NjM2NjMzZkNDBhNjBlMTM2NmEyMjJkYzU0ZjFlNzYxMTAwMGE4OTViMjMzNyJ9fX0=",
-                        "§8┃ §fInventaire de "+Common.get().getMainColor()+" départ", null)
+                        "§8┃ §fInventaire de"+Common.get().getMainColor()+" départ", null)
                 .addLore("")
                 .addLore("  §8┃ §fVous permet de définir")
                 .addLore("  §8┃ §fl'inventaire par défaut")
@@ -120,21 +120,24 @@ public class GameUi extends CustomInventory {
         addMenu(29, potion, new PotionUi(getPlayer()));
         addMenu(33, drop, new DropUi(getPlayer()));
         addMenu(15, diams, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, UHCManager.get().getDimamondLimit(), 0, 0, this) {
+
             @Override
-            public void onChange(int newValue) {
-                UHCManager.get().setDimamondLimit(newValue);
+            public void onChange(Number newValue) {
+                UHCManager.get().setDimamondLimit((int) newValue);
             }
         });
         addMenu(10, pvp, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, UHCManager.get().getTimerborder() / 60, 1, 60, this) {
+
             @Override
-            public void onChange(int newValue) {
-                UHCManager.get().setTimerpvp(newValue * 60);
+            public void onChange(Number newValue) {
+                UHCManager.get().setTimerpvp((int)newValue * 60);
             }
         });
         addMenu(11, bordure, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, UHCManager.get().getTimerpvp() / 60, 60, 120, this) {
+
             @Override
-            public void onChange(int newValue) {
-                UHCManager.get().setTimerborder(newValue * 60);
+            public void onChange(Number newValue) {
+                UHCManager.get().setTimerborder((int)newValue * 60);
             }
         });
         addMenu(16, enchant, new LimiteStuffUi(getPlayer()));

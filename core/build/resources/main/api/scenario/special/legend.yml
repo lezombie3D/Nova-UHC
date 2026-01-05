@@ -1,0 +1,136 @@
+choose_time: 3
+
+messages:
+  # === MESSAGES GÉNÉRAUX ===
+  choose_class_welcome: "%server_tag% &6Vous avez %choose_time% minutes pour choisir vos classes : &e/ld choose"
+  choose_class_time_remaining: "&6[Legend] &eTemps restant pour choisir : &c%time%"
+  choose_class_time_expired: "&6[Legend] &cLe temps de sélection des classes est terminé !"
+  class_already_chosen: "&c[Legend] Vous avez déjà une classe"
+  class_taken_in_team: "&c[Legend] La classe %legend_name% a déjà été choisie dans votre équipe"
+  class_assigned_success: "&a[Legend] Vous avez choisi la classe : &6%legend_name%"
+  class_assigned_random: "&e[Legend] Classe assignée automatiquement : &6%legend_name%"
+  no_team_error: "&c[Legend] Vous devez être dans une équipe pour choisir une classe"
+
+  # === MESSAGES DE POUVOIR ===
+  power_activated: "&6[%legend_name%] &aPouvoir activé !"
+  power_cooldown_remaining: "&c[Legend] Veuillez attendre encore : &e%time%"
+  power_no_power_available: "&c[Legend] Votre classe n'a pas de pouvoir activable"
+  power_failed: "&c[Legend] Impossible d'activer le pouvoir"
+
+  # === MESSAGES SPÉCIFIQUES AUX LÉGENDES ===
+
+  # Marionnettiste
+  marionnettiste_puppet_created: "&6[Marionnettiste] &aVous avez transformé %player% en marionnette !"
+  marionnettiste_puppet_master_died: "&c[Marionnettiste] Votre maître est mort ! Vous mourez également."
+  marionnettiste_puppet_restriction_drop: "&c[Marionnette] Vous ne pouvez pas jeter d'objets !"
+  marionnettiste_puppet_restriction_command: "&c[Marionnette] Vous ne pouvez pas utiliser les commandes de légende !"
+  marionnettiste_puppet_restriction_power: "&c[Marionnette] Vous ne pouvez pas utiliser de pouvoirs !"
+
+  # Mage
+  mage_potions_received: "&6[Mage] &aVous avez reçu de nouvelles potions !"
+
+  # Archer
+  archer_bow_choice_prompt: "&6[Archer] &eChoisissez votre type d'arc :"
+  archer_bow_choice_invalid: "&c[Archer] Choix invalide : veuillez choisir 1 ou 2"
+  archer_bow_received: "&6[Archer] &aVous avez reçu l'Arc de Lumière !"
+
+  # Nain
+  nain_armor_activated: "&6[Nain] &aArmure en diamant activée pour %duration% secondes !"
+  nain_armor_expired: "&6[Nain] &cVotre armure temporaire a disparu !"
+
+  # Zeus
+  zeus_effects_received: "&6[Zeus] &aVous avez reçu des effets divins !"
+
+  # Nécromancien
+  necromancien_no_enemy_found: "&c[Nécromancien] Aucun ennemi trouvé à proximité !"
+  necromancien_mobs_summoned: "&6[Nécromancien] &aMonstres invoqués contre %target% !"
+
+  # Succube
+  succube_absorption_given: "&6[Succube] &aAbsorption III donnée à votre équipe !"
+
+  # Cavalier
+  cavalier_horse_summoned: "&6[Cavalier] &aCheval invoqué !"
+
+  # Corne
+  corne_melody_activated: "&6[Corne] &aMélodie activée !"
+  corne_melody_fire: "&6[Corne] &aMélodie de Feu activée !"
+  corne_melody_heal: "&6[Corne] &aMélodie de Soin activée !"
+  corne_melody_metal: "&6[Corne] &aMélodie de Métal activée !"
+  corne_melody_air: "&6[Corne] &aMélodie d'Air activée !"
+
+  # Paladin
+  paladin_blessing_activated: "&6[Paladin] &aBénédiction activée ! Régénération et résistance pendant %duration% secondes."
+  paladin_blessing_received: "&6[Paladin] &aVous bénéficiez de la bénédiction de %player% !"
+
+  # === MESSAGES D'INTERFACE ===
+  ui_choose_title: "&6&lChoisir une Légende &7(%count% disponibles)"
+  ui_choose_info_available: "&7Classes disponibles : &a%available%&7/&a%total%"
+  ui_choose_info_team: "&7Équipe : &b%team_name%"
+  ui_choose_class_available: "&a✓ Disponible"
+  ui_choose_class_taken: "&c✗ Déjà prise dans votre équipe"
+  ui_choose_class_has_power: "&b⚡ Possède un pouvoir activable"
+  ui_choose_class_special_choice: "&e⚠ Choix spécial requis"
+  ui_choose_click_to_select: "&eCliquez pour choisir cette classe !"
+
+  # === MESSAGES D'EFFETS ===
+  effect_received: "&aVous avez reçu l'effet : &b%effect%"
+  effect_expired: "&cL'effet %effect% a expiré"
+
+  # === MESSAGES DE MORT ===
+  death_legend_defeated: "&6Le %legend_name% %player% &6a été vaincu !"
+  death_puppet_master_died: "&c[Marionnettiste] Toutes vos marionnettes sont mortes avec vous !"
+
+  # === MESSAGES DE CLASSE SPÉCIFIQUES ===
+
+  # Messages d'activation de classe
+  class_chosen_marionnettiste: "&6[Marionnettiste] &aVous êtes maintenant un Marionnettiste !"
+  class_chosen_mage: "&6[Mage] &aVous êtes maintenant un Mage !"
+  class_chosen_archer: "&6[Archer] &aVous êtes maintenant un Archer !"
+  class_chosen_assassin: "&6[Assassin] &aVous êtes maintenant un Assassin !"
+  class_chosen_tank: "&6[Tank] &aVous êtes maintenant un Tank !"
+  class_chosen_nain: "&6[Nain] &aVous êtes maintenant un Nain !"
+  class_chosen_zeus: "&6[Zeus] &aVous êtes maintenant Zeus !"
+  class_chosen_necromancien: "&6[Nécromancien] &aVous êtes maintenant un Nécromancien !"
+  class_chosen_succube: "&6[Succube] &aVous êtes maintenant un Succube !"
+  class_chosen_soldat: "&6[Soldat] &aVous êtes maintenant un Soldat !"
+  class_chosen_princesse: "&6[Princesse] &aVous êtes maintenant une Princesse !"
+  class_chosen_cavalier: "&6[Cavalier] &aVous êtes maintenant un Cavalier !"
+  class_chosen_ogre: "&6[Ogre] &aVous êtes maintenant un Ogre !"
+  class_chosen_dragon: "&6[DragonRole] &aVous êtes maintenant un DragonRole !"
+  class_chosen_medecin: "&6[Médecin] &aVous êtes maintenant un Médecin !"
+  class_chosen_prisonnier: "&6[Prisonnier] &aVous êtes maintenant un Prisonnier !"
+  class_chosen_corne: "&6[Corne] &aVous êtes maintenant une Corne !"
+  class_chosen_paladin: "&6[Paladin] &aVous êtes maintenant un Paladin !"
+
+  # === MESSAGES DE DESCRIPTION DES CAPACITÉS ===
+
+  # Descriptions des pouvoirs
+  power_description_marionnettiste: "&7Tuez des ennemis pour les transformer en marionnettes"
+  power_description_mage: "&7Vous recevrez des potions toutes les 10 minutes"
+  power_description_archer: "&7Vous avez reçu un arc puissant"
+  power_description_assassin: "&7Force I quand vous avez moins de 2 épées"
+  power_description_tank: "&7Vous avez +2 cœurs permanents"
+  power_description_nain: "&7Pouvoir : Armure en diamant temporaire"
+  power_description_zeus: "&7Pouvoir : 2 effets aléatoires pendant 2 minutes"
+  power_description_necromancien: "&7Pouvoir : Invoque des monstres contre l'ennemi le plus proche"
+  power_description_succube: "&7Pouvoir : Absorption III pour l'équipe dans un rayon de 11 blocs"
+  power_description_soldat: "&7Vous avez reçu un équipement en diamant !"
+  power_description_princesse: "&7Immunité aux dégâts de chute et +2 cœurs"
+  power_description_cavalier: "&7Pouvoir : Invoque un cheval (Cooldown 5 minutes)"
+  power_description_ogre: "&7Mangez des pommes dorées pour des effets aléatoires"
+  power_description_dragon: "&7Résistance au feu permanente"
+  power_description_medecin: "&7Régénération I pour les alliés dans un rayon de 6 blocs"
+  power_description_prisonnier: "&7Vitesse I permanente mais -2 cœurs"
+  power_description_corne: "&7Vous avez 4 mélodies différentes"
+  power_description_paladin: "&7Pouvoir : Bénédiction (Régénération + Résistance)"
+
+  # === MESSAGES DE COOLDOWN ===
+  cooldown_format_seconds: "%seconds%s"
+  cooldown_format_minutes: "%minutes%m%seconds%s"
+  cooldown_format_ready: "Prêt"
+
+  # === MESSAGES D'ERREUR ===
+  error_class_not_found: "&c[Legend] Classe introuvable : %class%"
+  error_player_not_found: "&c[Legend] Joueur introuvable : %player%"
+  error_invalid_choice: "&c[Legend] Choix invalide"
+  error_command_usage: "&c[Legend] Utilisation : /ld <choose|pouvoir>"

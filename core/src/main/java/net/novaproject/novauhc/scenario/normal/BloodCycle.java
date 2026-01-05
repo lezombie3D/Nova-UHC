@@ -2,10 +2,12 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
-import net.novaproject.novauhc.scenario.ScenarioLang;
-import net.novaproject.novauhc.scenario.ScenarioLangManager;
-import net.novaproject.novauhc.scenario.lang.BloodCycleLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
+import net.novaproject.novauhc.scenario.lang.lang.BloodCycleLang;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.VariableType;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -15,6 +17,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class BloodCycle extends Scenario {
     private final Material[] cache = new Material[6];
     int i = 0;
+    @ScenarioVariable(name = "Temps entre les changements", description = "Temps en secondes entre chaque changement de type de minerai",type = VariableType.TIME)
+    private int between = 360;
 
     @Override
     public String getName() {
@@ -97,7 +101,7 @@ public class BloodCycle extends Scenario {
                 }
 
             }
-        }.runTaskTimerAsynchronously(Main.get(), 20L * getConfig().getInt("timer"), 20L * getConfig().getInt("timer"));
+        }.runTaskTimerAsynchronously(Main.get(), 0L, 20L *between);
     }
 
     @Override

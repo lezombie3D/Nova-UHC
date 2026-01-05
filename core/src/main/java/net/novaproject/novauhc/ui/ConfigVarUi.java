@@ -15,15 +15,18 @@ import java.util.Arrays;
 
 public abstract class ConfigVarUi extends CustomInventory {
 
-    private final int max_minus, mid_minus, min_minus;
-    private final int max_plus, mid_plus, min_plus;
-    private final int limitMin, limitMax;
+    private final Number max_minus, mid_minus, min_minus;
+    private final Number max_plus, mid_plus, min_plus;
+    private final Number limitMin, limitMax;
     private final CustomInventory parent;
-    private int change;
 
-    public ConfigVarUi(Player player, int max_minus, int mid_minus, int min_minus,
-                       int max_plus, int mid_plus, int min_plus,
-                       int change, int limitMin, int limitMax,
+    private Number change;
+    private final Class<?> numberType;
+
+    public ConfigVarUi(Player player,
+                       Number max_minus, Number mid_minus, Number min_minus,
+                       Number max_plus, Number mid_plus, Number min_plus,
+                       Number change, Number limitMin, Number limitMax,
                        CustomInventory parent) {
         super(player);
         this.max_minus = max_minus;
@@ -36,24 +39,35 @@ public abstract class ConfigVarUi extends CustomInventory {
         this.limitMin = limitMin;
         this.limitMax = limitMax;
         this.parent = parent;
+        this.numberType = change.getClass();
     }
 
-    public abstract void onChange(int newValue);
+    public abstract void onChange(Number newValue);
 
-    private void updateValue(int delta) {
-        int newValue = change + delta;
-        if (limitMax == 0) {
-            onChange(newValue);
-            refresh();
-            return;
+    private void updateValue(Number delta) {
+        double result = change.doubleValue() + delta.doubleValue();
+
+        if (limitMax.doubleValue() != 0) {
+            if (result < limitMin.doubleValue() || result > limitMax.doubleValue()) return;
         }
-        if (newValue < limitMin || newValue > limitMax) return;
-        change = newValue;
+
+        if (numberType == Integer.class) {
+            change = (int) Math.round(result);
+        } else if (numberType == Double.class) {
+            change = result;
+        } else if (numberType == Float.class) {
+            change = (float) result;
+        } else if (numberType == Long.class) {
+            change = (long) result;
+        } else {
+            change = result;
+        }
+
         onChange(change);
         refresh();
     }
 
-    private ActionItem plusButton(int slot, int value, String label) {
+    private ActionItem plusButton(int slot, Number value, String label) {
         return new ActionItem(slot, UHCUtils.greenPlus(Arrays.asList(
                 "§8┃ §fAjouter §a" + value,
                 "",
@@ -70,7 +84,7 @@ public abstract class ConfigVarUi extends CustomInventory {
         };
     }
 
-    private ActionItem minusButton(int slot, int value, String label) {
+    private ActionItem minusButton(int slot, Number value, String label) {
         return new ActionItem(slot, UHCUtils.redMinus(Arrays.asList(
                 "§8┃ §fRetirer " + Common.get().getMainColor() + value,
                 "",
@@ -81,7 +95,7 @@ public abstract class ConfigVarUi extends CustomInventory {
         ), label)) {
             @Override
             public void onClick(InventoryClickEvent e) {
-                updateValue(-value);
+                updateValue(-value.doubleValue());
                 openAll();
             }
         };
@@ -92,6 +106,7 @@ public abstract class ConfigVarUi extends CustomInventory {
         addItem(plusButton(10, min_plus, "§a+" + min_plus));
         addItem(plusButton(11, mid_plus, "§a+" + mid_plus));
         addItem(plusButton(12, max_plus, "§a+" + max_plus));
+
         addItem(new StaticItem(13, new ItemCreator(Material.PAPER)
                 .setName("§8┃ §fValeur actuelle : §e" + change)
                 .setLores(Arrays.asList(
@@ -99,19 +114,10 @@ public abstract class ConfigVarUi extends CustomInventory {
                         "  §8┃ §fAffiche la valeur actuelle",
                         "  §8┃ §fde la configuration.",
                         "",
-                        "  §7Limites : " + Common.get().getMainColor() + limitMin + " §7→ §a" + limitMax
+                        limitMax.doubleValue() == 0
+                                ? "  §7Limites : " + Common.get().getMainColor() + limitMin + " §7→ §a§l∞"
+                                : "  §7Limites : " + Common.get().getMainColor() + limitMin + " §7→ §a" + limitMax
                 ))));
-        if (limitMax == 0) {
-            addItem(new StaticItem(13, new ItemCreator(Material.PAPER)
-                    .setName("§8┃ §fValeur actuelle : §e" + change)
-                    .setLores(Arrays.asList(
-                            "",
-                            "  §8┃ §fAffiche la valeur actuelle",
-                            "  §8┃ §fde la configuration.",
-                            "",
-                            "  §7Limites : " + Common.get().getMainColor() + limitMin + " §7→ §a§l∞"
-                    ))));
-        }
 
         addItem(minusButton(14, max_minus, "§c-" + max_minus));
         addItem(minusButton(15, mid_minus, "§c-" + mid_minus));

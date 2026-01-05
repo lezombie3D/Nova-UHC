@@ -2,9 +2,9 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
-import net.novaproject.novauhc.scenario.ScenarioLang;
-import net.novaproject.novauhc.scenario.ScenarioLangManager;
-import net.novaproject.novauhc.scenario.lang.BloodLustLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.lang.BloodLustLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Bukkit;
@@ -138,7 +138,6 @@ public class BloodLust extends Scenario {
         super.toggleActive();
 
         if (!isActive()) {
-            // Cancel all active effects when scenario is disabled
             for (UUID playerUuid : activeEffects.keySet()) {
                 cancelBloodLustEffect(playerUuid);
             }
@@ -146,14 +145,5 @@ public class BloodLust extends Scenario {
         }
     }
 
-    // Clean up when players disconnect
-    public void onPlayerDisconnect(Player player) {
-        cancelBloodLustEffect(player.getUniqueId());
-    }
-
-    // Check if a player has blood lust active
-    public boolean hasBloodLust(Player player) {
-        return activeEffects.containsKey(player.getUniqueId());
-    }
 
 }

@@ -2,10 +2,12 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
-import net.novaproject.novauhc.scenario.ScenarioLang;
-import net.novaproject.novauhc.scenario.ScenarioLangManager;
-import net.novaproject.novauhc.scenario.lang.BestPvELang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
+import net.novaproject.novauhc.scenario.lang.lang.BestPvELang;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.VariableType;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -18,7 +20,8 @@ import java.util.List;
 public class BestPvE extends Scenario {
     private final List<Player> listPve = new ArrayList<>();
     private final List<Player> listOutPve = new ArrayList<>();
-
+    @ScenarioVariable(name = "Temps entre les gains de cœur", description = "Définit le temps (en secondes) entre chaque gain de cœur pour les joueurs dans le classement PvE.", type = VariableType.TIME)
+    private int timer = 600; // 20 minutes
 
     @Override
     public String getName() {
@@ -65,7 +68,7 @@ public class BestPvE extends Scenario {
                 }
 
             }
-        }.runTaskTimer(Main.get(), 0, 20L * getConfig().getInt("timer"));
+        }.runTaskTimer(Main.get(), 0, 20L * timer);
     }
 
     @Override

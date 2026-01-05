@@ -1,0 +1,11 @@
+name: NovaUHC
+main: net.novaproject.novauhc.Main
+version: 1.0
+permission:
+  novauhc.host:
+    default: OP
+  novauhc.cohost:
+  
+authors:
+  - Lezombie3D
+  - Sithey

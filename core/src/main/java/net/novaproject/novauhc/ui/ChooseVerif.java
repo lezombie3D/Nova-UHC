@@ -17,8 +17,9 @@ public class ChooseVerif extends CustomInventory {
 
     @Override
     public void setup() {
+        fillCorner(getConfig().getInt("menu.game.color"));
         ItemCreator def = UHCUtils.createCustomButon("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmRiYmM1ODM2MDliNWYwMjUzN2NjM2NjMzZkNDBhNjBlMTM2NmEyMjJkYzU0ZjFlNzYxMTAwMGE4OTViMjMzNyJ9fX0=",
-                        "§8┃ §fInventaire de "+ Common.get().getMainColor()+" départ", null)
+                        "§8┃ §fInventaire de"+ Common.get().getMainColor()+" départ", null)
                 .addLore("")
                 .addLore("  §8┃ §fVous permet de §5vérifier")
                 .addLore("  §8┃ §fl'inventaire par défaut")
@@ -38,16 +39,17 @@ public class ChooseVerif extends CustomInventory {
         addMenu(12,death, new StuffUi(getPlayer(), UHCManager.get().death));
 
         addMenu(14,def, new StuffUi(getPlayer(), UHCManager.get().start));
+        addReturn(18,new GameUi(getPlayer()));
     }
 
     @Override
     public String getTitle() {
-        return "";
+        return getConfig().getString("menu.game.title");
     }
 
     @Override
     public int getLines() {
-        return 0;
+        return 3;
     }
 
     @Override

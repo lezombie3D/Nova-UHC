@@ -23,7 +23,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public abstract class Role {
+public abstract class Role implements Cloneable {
     private Set<Ability> abilities = new HashSet<>();
 
     public abstract String getName();
@@ -43,18 +43,16 @@ public abstract class Role {
 
         player.sendMessage(getDescription());
 
-        getAbilities().forEach(ability -> player.getInventory().addItem(ability.getItemStack()));
+        if(!getAbilities().isEmpty()) getAbilities().forEach(ability -> ability.onGive(uhcPlayer));
     }
 
 
     public void onSec(Player player){
         if (!getAbilities().isEmpty()) getAbilities().forEach(ability -> ability.onSec(player));
-
     }
 
     public void onDeath(UHCPlayer uhcPlayer, UHCPlayer killer, PlayerDeathEvent event) {
         if (!getAbilities().isEmpty()) getAbilities().forEach(Ability::onDeath);
-
     }
 
     public void onConsume(Player player, ItemStack item, PlayerItemConsumeEvent event) {
@@ -89,5 +87,23 @@ public abstract class Role {
 
     public void onKill(UHCPlayer killer, UHCPlayer victim) {
         if (!getAbilities().isEmpty()) getAbilities().forEach(ability -> ability.onKill(victim));
+    }
+
+    @Override
+    public Role clone() {
+        try {
+            Role clone = (Role) super.clone();
+
+            Set<Ability> clonedAbilities = new HashSet<>();
+            for (Ability ability : this.abilities) {
+                clonedAbilities.add(ability.clone());
+            }
+
+            clone.setAbilities(clonedAbilities);
+            return clone;
+
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

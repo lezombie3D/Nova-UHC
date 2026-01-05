@@ -2,7 +2,7 @@ package net.novaproject.novauhc.scenario;
 
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.normal.*;
-import net.novaproject.novauhc.scenario.role.monsterhunter.mhdragonfall.DragonFall;
+import net.novaproject.novauhc.scenario.role.scenario.mhdragonfall.DragonFall;
 
 import java.util.ArrayList;
 import java.util.List;

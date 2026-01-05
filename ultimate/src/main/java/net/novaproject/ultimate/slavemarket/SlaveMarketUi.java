@@ -88,9 +88,10 @@ public class SlaveMarketUi extends CustomInventory {
                 .addLore("  §8┃ §fle nombre de §3Diamond §f.")
                 .addLore("  §8┃ §fdonner au §f " + Common.get().getMainColor() + "Owner.")
                 .addLore(""), new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, slave.getNbDiamond(), 20, 100, this) {
+
             @Override
-            public void onChange(int newValue) {
-                slave.setNbDiamond(newValue);
+            public void onChange(Number newValue) {
+                slave.setNbDiamond((int) newValue);
             }
         });
         addItem(new ActionItem(4, getWool(UHCManager.get().isStarted())) {

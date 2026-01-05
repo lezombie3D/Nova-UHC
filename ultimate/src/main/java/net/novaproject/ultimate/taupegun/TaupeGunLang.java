@@ -1,6 +1,6 @@
 package net.novaproject.ultimate.taupegun;
 
-import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLang;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
@@ -49,7 +49,7 @@ public enum TaupeGunLang implements ScenarioLang {
 
     @Override
     public String getBasePath() {
-        return "messages";
+        return "";
     }
 
     @Override

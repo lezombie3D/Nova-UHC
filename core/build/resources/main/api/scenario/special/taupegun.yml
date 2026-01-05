@@ -1,0 +1,30 @@
+messages:
+  # Messages de chat
+  GLOBAL_CHAT_FORMAT: "§a✦ Global ✦ §8%s §7» §f%s"
+  NOT_TAUPE_ERROR: "§c[TaupeGun] Vous n'êtes pas une taupe, vous ne pouvez pas utiliser le chat taupe !"
+  TAUPE_CHAT_FORMAT: "§7[§6Taupe %oldteam%§7] §f%s §8» §f%s"
+  TEAM_CHAT_FORMAT: "§7[§6Team§7] §f%s §8» §f%s"
+  LOBBY_CHAT_FORMAT: "§8❯ %s §7» §f%s"
+  DEAD_CANNOT_SPEAK: "§c✗ Vous n'avez pas le droit de parler car vous êtes mort !"
+  TAUPE_COORDS_FORMAT: "§7[§6Taupe %oldteam%§7] §f%player% §8» %co%"
+  TEAM_COORDS_FORMAT: "§7[§6Team§7] §f%player% §8» %co%"
+
+  # Messages de commandes
+  NOT_TAUPE_COMMAND_ERROR: "§c[TaupeGun] Vous n'êtes pas une taupe !"
+  UNKNOWN_COMMAND: "§c✗ Commande inconnue. Utilisez /t pour voir les commandes disponibles."
+  KIT_RECEIVED: "§a[TaupeGun] ✓ Vous avez bien reçu votre kit !"
+  REVEAL_SUCCESS: "§c⚠ La Taupe %player% de l'équipe %oldteam% s'est révélée !"
+  REVEAL_NOT_TAUPE: "§c✗ Vous ne pouvez pas vous révéler car vous n'êtes pas une Taupe !"
+
+  # Messages d'assignation
+  TAUPE_ASSIGNED_TITLE: "§c§lVous êtes la Taupe"
+  TAUPE_ASSIGNED_SUBTITLE: "§7Infiltrez-vous dans l'équipe ennemie"
+
+  # Messages de kits
+  KIT_DESCRIPTION_0: "§8§m⎯⎯⎯⎯⎯ §c❖ Taupe Punchonator ❖ §8§m⎯⎯⎯⎯⎯\n§f◆ Description: §5Livre Punch I, Power III, 64 flèches, 3 fils\n§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+  KIT_DESCRIPTION_1: "§8§m⎯⎯⎯⎯⎯ §c❖ Taupe Aérien ❖ §8§m⎯⎯⎯⎯⎯\n§f◆ Description: §54 Ender Pearls, livre Feather Falling IV\n§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+  KIT_DESCRIPTION_2: "§8§m⎯⎯⎯⎯⎯ §c❖ Taupe Alchimiste ❖ §8§m⎯⎯⎯⎯⎯\n§f◆ Description: §5Speed I (8min), Fire Resistance I (8min), Poison I (30s)\n§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+  KIT_DESCRIPTION_3: "§8§m⎯⎯⎯⎯⎯ §c❖ Taupe Assassin ❖ §8§m⎯⎯⎯⎯⎯\n§f◆ Description: §5Livres Protection III, Power III, Sharpness III\n§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+  KIT_DESCRIPTION_4: "§8§m⎯⎯⎯⎯⎯ §c❖ Taupe Mineur ❖ §8§m⎯⎯⎯⎯⎯\n§f◆ Description: §514 Obsidienne, 10 Diamants, 32 Lingots d'or, 64 Lingots de fer\n§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+  KIT_DESCRIPTION_5: "§8§m⎯⎯⎯⎯⎯ §c❖ Taupe Pyromane ❖ §8§m⎯⎯⎯⎯⎯\n§f◆ Description: §5Livres Fire Aspect I et Flame I\n§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+  KIT_DESCRIPTION_6: "§8§m⎯⎯⎯⎯⎯ §c❖ Taupe Ninja ❖ §8§m⎯⎯⎯⎯⎯\n§f◆ Description: §5Invisibilité II (8min), Force I (3min)\n§8§m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"

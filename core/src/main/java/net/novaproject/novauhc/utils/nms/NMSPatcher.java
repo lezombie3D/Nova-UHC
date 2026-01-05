@@ -16,6 +16,7 @@ public class NMSPatcher {
         this.logger = api.getLogger();
         try {
             patchPotions();
+            fixAnimals();
         } catch (Exception exception) {
             exception.printStackTrace();
         }

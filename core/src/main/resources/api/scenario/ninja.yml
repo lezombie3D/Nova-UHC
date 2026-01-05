@@ -1,5 +1,0 @@
-invisibility_duration: 200  # 10 seconds in ticks # 20 ticks = 1 secondes
-invisibility_level: 0  # Invisibility I
-messages:
-  KILL_INVISIBILITY: "§8[Ninja] §fVous devenez invisible pendant 10 secondes !"
-  INVISIBILITY_EXPIRED: "§8[Ninja] §fVotre invisibilité s'estompe..."

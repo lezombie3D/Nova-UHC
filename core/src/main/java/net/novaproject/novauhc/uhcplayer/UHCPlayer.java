@@ -220,7 +220,6 @@ public class UHCPlayer {
                 CommonString.WELCOME.send(player);
             }
 
-            updateScoreboard(player);
             UHCUtils.giveLobbyItems(getPlayer());
             for (Player player1 : Bukkit.getOnlinePlayers()) {
                 new Titles().sendActionText(player1, ChatColor.GREEN + player.getName() + " (" + Bukkit.getOnlinePlayers().size() + "/" + uhcManager.getSlot() + ")");
@@ -233,7 +232,7 @@ public class UHCPlayer {
                 player.setGameMode(GameMode.SPECTATOR);
                 TeamsTagsManager.setNameTag(player, "zzzzz", "§8§lSPEC §r§8", "");
                 CommonString.WELCOME_SPECTATOR.send(player);
-                updateScoreboard(player);
+
 
             } else {
 
@@ -241,7 +240,6 @@ public class UHCPlayer {
                     new Titles().sendActionText(player1, CommonString.CONNECTION_GAME.getMessage(getPlayer()));
                 }
 
-                updateScoreboard(player);
             }
 
         }

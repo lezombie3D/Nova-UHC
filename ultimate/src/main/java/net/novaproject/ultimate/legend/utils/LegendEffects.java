@@ -1,6 +1,6 @@
 package net.novaproject.ultimate.legend.utils;
 
-import net.novaproject.novauhc.scenario.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.ultimate.legend.LegendLang;

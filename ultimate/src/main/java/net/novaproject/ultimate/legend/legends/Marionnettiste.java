@@ -145,7 +145,7 @@ public class Marionnettiste extends LegendClass {
             puppetPlayer.addPotionEffect(poison);
         }
 
-        Integer puppetType = (Integer) masterData.getData("puppet_type_" + puppetPlayer.getName());
+        Integer puppetType = (int) masterData.getData("puppet_type_" + puppetPlayer.getName());
         if (puppetType != null) {
             PotionEffect effect;
             switch (puppetType) {

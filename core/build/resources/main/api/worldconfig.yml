@@ -1,0 +1,39 @@
+world_lobby:
+  lobby_template: "lobby"
+  lobby_target: "lob"
+  location:
+    spawn:
+      world: "lob"
+      x: 0
+      y: 20
+      z: 0
+      yaw: 0
+      pitch: 0
+    rules:
+      world: "lob"
+      x: 39
+      y: 61
+      z: -13
+      yaw: 0
+      pitch: 0
+arena_world:
+  name: "arena"
+
+arena:
+  active: true
+  center:
+    world: "lob"
+    x: -25
+    y: 11
+    z: 120
+    yaw: 0
+    pitch: 0
+  exit:
+    world: "lob"
+    x: -24
+    y: 21
+    z: 90
+    yaw: 0
+    pitch: 0
+  radius: 20
+  high: 20

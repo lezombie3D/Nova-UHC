@@ -73,9 +73,10 @@ public class LimiteStuffbyPlayerUi extends CustomInventory {
 
         });
         addMenu(49, diamondlimite, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, getUHCPlayer().getDimamondLimit(), 0, 0, this) {
+
             @Override
-            public void onChange(int newValue) {
-                targetPlayer.setDimamondLimit(newValue);
+            public void onChange(Number newValue) {
+                targetPlayer.setDimamondLimit((int) newValue);
             }
         });
         int i = 10;

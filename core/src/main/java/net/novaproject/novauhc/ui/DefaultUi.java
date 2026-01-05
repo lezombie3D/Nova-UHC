@@ -199,9 +199,10 @@ public class DefaultUi extends CustomInventory {
         });
         addMenu(2, team, new TeamConfigUi(getPlayer()));
         addMenu(10, slot, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, UHCManager.get().getSlot(), 1, 100, this) {
+
             @Override
-            public void onChange(int newValue) {
-                UHCManager.get().setSlot(newValue);
+            public void onChange(Number newValue) {
+                UHCManager.get().setSlot((int) newValue);
             }
         });
         addMenu(11, stop, new ConfirmMenu(getPlayer(),

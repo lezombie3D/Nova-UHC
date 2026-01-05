@@ -1,9 +1,0 @@
-timer: 300
-message:
-  TAKE_DAMAGE: "Ahhh ! Force a toi mauvais minerais"
-  DIAMOND: "Vous ne devez pas miner §b§lDiamant. Changement du cycle dans §6§l%blood_timer%§f secondes"
-  GOLD: "Vous ne devez pas miner §6§lOr "
-  IRON: "Vous ne devez pas miner §7§lFer "
-  LAPIS: "Vous ne devez pas miner §9§lLapis "
-  COAL: "Vous ne devez pas miner §8§lCharbon "
-  REDSTONE: "Vous ne devez pas miner §c§lRedstone "

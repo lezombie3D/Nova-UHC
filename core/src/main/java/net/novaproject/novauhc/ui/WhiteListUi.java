@@ -2,6 +2,7 @@ package net.novaproject.novauhc.ui;
 
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
+import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.cloudnet.CloudNet;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ui.AnvilUi;
@@ -128,7 +129,7 @@ public class WhiteListUi extends CustomInventory {
                 }
             });
         }
-        if (CloudNet.get() != null) {
+        if (Main.get().getCloudNet() != null) {
             ItemCreator cloud = new ItemCreator(Material.SLIME_BALL)
                     .setName("§8┃ §fModifier l'affichage "+Common.get().getMainColor()+"Lobby")
                     .addLore("")

@@ -1,6 +1,6 @@
 package net.novaproject.ultimate.beatthesanta;
 
-import net.novaproject.novauhc.scenario.ScenarioLang;
+import net.novaproject.novauhc.scenario.lang.ScenarioLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 

@@ -41,25 +41,22 @@ public class Blizzard extends Scenario {
         return new ItemCreator(Material.SNOW_BALL);
     }
 
-    @Override
-    public void enable() {
-        super.enable();
-        if (isActive()) {
-            startBlizzardCycle();
-            initializePlayerWarmth();
-        }
-    }
 
     @Override
     public void toggleActive() {
         super.toggleActive();
-        if (isActive()) {
-            startBlizzardCycle();
-            initializePlayerWarmth();
-        } else {
+        if (!isActive()) {
             stopBlizzardCycle();
             clearPlayerEffects();
+        } else {
+
         }
+    }
+
+    @Override
+    public void onGameStart() {
+        startBlizzardCycle();
+        initializePlayerWarmth();
     }
 
     private void startBlizzardCycle() {
@@ -70,7 +67,7 @@ public class Blizzard extends Scenario {
         blizzardTask = new BukkitRunnable() {
             private int cycleTimer = 0;
             private int blizzardDuration = 0;
-            private int nextBlizzardIn = 240 + random.nextInt(240); // 4-8 minutes until first blizzard
+            private int nextBlizzardIn = 240 + random.nextInt(240);
 
             @Override
             public void run() {
@@ -82,13 +79,11 @@ public class Blizzard extends Scenario {
                 cycleTimer++;
 
                 if (!isBlizzardActive) {
-                    // Waiting for next blizzard
                     if (cycleTimer >= nextBlizzardIn) {
                         startBlizzard();
                         cycleTimer = 0;
-                        blizzardDuration = 90 + random.nextInt(90); // Blizzard for 1.5-3 minutes
+                        blizzardDuration = 90 + random.nextInt(90);
                     } else {
-                        // Warning messages
                         int timeLeft = nextBlizzardIn - cycleTimer;
                         if (timeLeft == 60) {
                             Bukkit.broadcastMessage("§b[Blizzard] §fTempête de neige dans 1 minute ! Préparez-vous !");
@@ -104,21 +99,18 @@ public class Blizzard extends Scenario {
                     if (blizzardDuration <= 0) {
                         stopBlizzard();
                         cycleTimer = 0;
-                        nextBlizzardIn = 240 + random.nextInt(240); // Next blizzard in 4-8 minutes
+                        nextBlizzardIn = 240 + random.nextInt(240);
                     } else {
-                        // Warning messages during blizzard
                         if (blizzardDuration == 10) {
                             Bukkit.broadcastMessage("§b[Blizzard] §fLa tempête se calme dans 10 secondes !");
                         }
                     }
                 }
 
-                // Update player warmth regardless of blizzard state
                 updatePlayerWarmth();
             }
         };
 
-        // Run every second
         blizzardTask.runTaskTimer(Main.get(), 0, 20);
     }
 
@@ -136,7 +128,6 @@ public class Blizzard extends Scenario {
     private void startBlizzard() {
         isBlizzardActive = true;
 
-        // Set weather to snow in all worlds
         for (World world : Bukkit.getWorlds()) {
             world.setStorm(true);
             world.setWeatherDuration(Integer.MAX_VALUE);
@@ -144,7 +135,6 @@ public class Blizzard extends Scenario {
 
         Bukkit.broadcastMessage("§b§l[Blizzard] §fUne tempête de neige commence ! Trouvez de la chaleur !");
 
-        // Play wind sound for atmosphere
         for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
             Player player = uhcPlayer.getPlayer();
             player.getWorld().playSound(player.getLocation(),
@@ -155,13 +145,11 @@ public class Blizzard extends Scenario {
     private void stopBlizzard() {
         isBlizzardActive = false;
 
-        // Stop snow in all worlds
         for (World world : Bukkit.getWorlds()) {
             world.setStorm(false);
             world.setWeatherDuration(0);
         }
 
-        // Remove blizzard effects from all players
         for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
             Player player = uhcPlayer.getPlayer();
             player.removePotionEffect(PotionEffectType.SLOW);
@@ -177,15 +165,12 @@ public class Blizzard extends Scenario {
             UUID playerUuid = player.getUniqueId();
 
             if (isPlayerExposedToBlizzard(player)) {
-                // Reduce warmth
                 int currentWarmth = playerWarmth.getOrDefault(playerUuid, 100);
                 playerWarmth.put(playerUuid, Math.max(0, currentWarmth - 2));
 
-                // Apply effects based on warmth level
                 int warmth = playerWarmth.get(playerUuid);
 
                 if (warmth < 20) {
-                    // Very cold - severe effects
                     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 2));
                     player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 40, 0));
                     player.damage(0.5);
@@ -203,7 +188,6 @@ public class Blizzard extends Scenario {
                     }
                 }
             } else {
-                // Player is sheltered, slowly regain warmth
                 int currentWarmth = playerWarmth.getOrDefault(playerUuid, 100);
                 if (isPlayerNearHeatSource(player)) {
                     playerWarmth.put(playerUuid, Math.min(100, currentWarmth + 5));
@@ -220,7 +204,6 @@ public class Blizzard extends Scenario {
             UUID playerUuid = player.getUniqueId();
 
             if (!isBlizzardActive) {
-                // Slowly regain warmth when no blizzard
                 int currentWarmth = playerWarmth.getOrDefault(playerUuid, 100);
                 if (isPlayerNearHeatSource(player)) {
                     playerWarmth.put(playerUuid, Math.min(100, currentWarmth + 3));
@@ -235,25 +218,20 @@ public class Blizzard extends Scenario {
         Location playerLoc = player.getLocation();
         World world = playerLoc.getWorld();
 
-        // Check if it's snowing in this world
         if (!world.hasStorm()) {
             return false;
         }
 
-        // Check if player is underground (below Y=50)
         if (playerLoc.getY() < 50) {
             return false;
         }
 
-        // Check if player has blocks above them (shelter)
         Location checkLoc = playerLoc.clone();
 
-        // Check up to 5 blocks above the player
         for (int y = 1; y <= 5; y++) {
             checkLoc.add(0, 1, 0);
             Material blockType = checkLoc.getBlock().getType();
 
-            // If there's a solid block above, player is protected
             if (blockType != Material.AIR &&
                     blockType != Material.WATER &&
                     blockType != Material.LAVA &&
@@ -262,21 +240,18 @@ public class Blizzard extends Scenario {
             }
         }
 
-        // Player is exposed to blizzard
         return true;
     }
 
     private boolean isPlayerNearHeatSource(Player player) {
         Location playerLoc = player.getLocation();
 
-        // Check for heat sources in a 3x3x3 area around the player
         for (int x = -3; x <= 3; x++) {
             for (int y = -2; y <= 2; y++) {
                 for (int z = -3; z <= 3; z++) {
                     Location checkLoc = playerLoc.clone().add(x, y, z);
                     Material blockType = checkLoc.getBlock().getType();
 
-                    // Heat sources
                     if (blockType == Material.FIRE ||
                             blockType == Material.LAVA ||
                             blockType == Material.BURNING_FURNACE ||
@@ -307,29 +282,4 @@ public class Blizzard extends Scenario {
         playerWarmth.clear();
     }
 
-    // Get player warmth level
-    public int getPlayerWarmth(Player player) {
-        return playerWarmth.getOrDefault(player.getUniqueId(), 100);
-    }
-
-    // Check if blizzard is currently active
-    public boolean isBlizzardActive() {
-        return isBlizzardActive;
-    }
-
-    // Force start blizzard (admin command)
-    public void forceStartBlizzard() {
-        if (isActive() && !isBlizzardActive) {
-            startBlizzard();
-            Bukkit.broadcastMessage("§b[Blizzard] §fTempête forcée par un administrateur !");
-        }
-    }
-
-    // Force stop blizzard (admin command)
-    public void forceStopBlizzard() {
-        if (isActive() && isBlizzardActive) {
-            stopBlizzard();
-            Bukkit.broadcastMessage("§b[Blizzard] §fTempête arrêtée par un administrateur !");
-        }
-    }
 }

@@ -39,18 +39,15 @@ public class BlockRush extends Scenario {
         Material blockType = block.getType();
         UUID playerUuid = player.getUniqueId();
 
-        // Initialize player's mined blocks set if not exists
         if (!playerMinedBlocks.containsKey(playerUuid)) {
             playerMinedBlocks.put(playerUuid, new HashSet<>());
         }
 
         Set<Material> playerMined = playerMinedBlocks.get(playerUuid);
 
-        // Check if player has never mined this block type before
         if (!playerMined.contains(blockType) && isRewardableBlock(blockType)) {
             playerMined.add(blockType);
 
-            // Give gold reward
             ItemStack goldReward = new ItemStack(Material.GOLD_INGOT, 1);
 
             if (player.getInventory().firstEmpty() != -1) {
@@ -60,15 +57,12 @@ public class BlockRush extends Scenario {
                 player.sendMessage("§6[BlockRush] §fInventaire plein ! Or jeté au sol.");
             }
 
-            // Update player rewards count
             playerRewards.put(playerUuid, playerRewards.getOrDefault(playerUuid, 0) + 1);
 
-            // Check if this is the first time ANYONE has mined this block
             boolean isFirstEver = !firstMiners.containsKey(blockType);
             if (isFirstEver) {
                 firstMiners.put(blockType, playerUuid);
 
-                // Extra reward for being first ever
                 ItemStack bonusReward = getBonusReward(blockType);
                 if (bonusReward != null) {
                     if (player.getInventory().firstEmpty() != -1) {
@@ -78,7 +72,6 @@ public class BlockRush extends Scenario {
                     }
                 }
 
-                // Announce first discovery
                 String blockName = getBlockDisplayName(blockType);
                 Bukkit.broadcastMessage("§6§l[BlockRush] §f" + player.getName() +
                         " §fest le premier à miner §6" + blockName + " §f!");
@@ -86,13 +79,11 @@ public class BlockRush extends Scenario {
                 player.sendMessage("§6[BlockRush] §fPremière découverte ! Bonus : §6" +
                         getBonusDescription(blockType));
             } else {
-                // Regular reward message
                 String blockName = getBlockDisplayName(blockType);
                 player.sendMessage("§6[BlockRush] §fNouveau bloc miné : §6" + blockName +
                         " §f! +1 Lingot d'Or");
             }
 
-            // Milestone rewards
             int totalRewards = playerRewards.get(playerUuid);
             if (totalRewards == 10) {
                 giveMilestoneReward(player, 10);
@@ -111,9 +102,7 @@ public class BlockRush extends Scenario {
     }
 
     private boolean isRewardableBlock(Material blockType) {
-        // Define which blocks give rewards
         switch (blockType) {
-            // Ores
             case COAL_ORE:
             case IRON_ORE:
             case GOLD_ORE:
@@ -123,7 +112,6 @@ public class BlockRush extends Scenario {
             case REDSTONE_ORE:
             case QUARTZ_ORE:
 
-                // Natural blocks
             case STONE:
             case DIRT:
             case GRASS:
@@ -132,31 +120,26 @@ public class BlockRush extends Scenario {
             case CLAY:
             case MYCEL:
 
-                // Wood types
             case LOG:
             case LOG_2:
             case LEAVES:
             case LEAVES_2:
 
-                // Nether blocks
             case NETHERRACK:
             case SOUL_SAND:
             case NETHER_BRICK:
             case NETHER_WARTS:
             case GLOWSTONE:
 
-                // End blocks
             case ENDER_STONE:
             case OBSIDIAN:
 
-                // Ocean blocks
             case PRISMARINE:
             case SEA_LANTERN:
             case SPONGE:
 
-                // Rare blocks
             case MOSSY_COBBLESTONE:
-            case MONSTER_EGG: // Silverfish blocks
+            case MONSTER_EGG:
             case ICE:
             case PACKED_ICE:
             case SNOW_BLOCK:
@@ -175,7 +158,7 @@ public class BlockRush extends Scenario {
 
     private ItemStack getBonusReward(Material blockType) {
         switch (blockType) {
-            // Rare ores get better bonuses
+
             case DIAMOND_ORE:
                 return new ItemStack(Material.DIAMOND, 2);
             case EMERALD_ORE:
@@ -317,33 +300,4 @@ public class BlockRush extends Scenario {
         }
     }
 
-    // Get player's unique blocks mined count
-    public int getPlayerBlockCount(Player player) {
-        Set<Material> blocks = playerMinedBlocks.get(player.getUniqueId());
-        return blocks != null ? blocks.size() : 0;
-    }
-
-    // Get who first mined a block type
-    public Player getFirstMiner(Material blockType) {
-        UUID minerUuid = firstMiners.get(blockType);
-        return minerUuid != null ? Bukkit.getPlayer(minerUuid) : null;
-    }
-
-    // Get all first discoveries
-    public Map<Material, UUID> getAllFirstDiscoveries() {
-        return new HashMap<>(firstMiners);
-    }
-
-    // Get leaderboard
-    public Map<UUID, Integer> getBlockRushLeaderboard() {
-        return new HashMap<>(playerRewards);
-    }
-
-    // Reset progress (admin command)
-    public void resetProgress() {
-        firstMiners.clear();
-        playerMinedBlocks.clear();
-        playerRewards.clear();
-        Bukkit.broadcastMessage("§6[BlockRush] §fTous les progrès ont été réinitialisés !");
-    }
 }
