@@ -5,6 +5,7 @@ import lombok.Setter;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.lang.ScenarioLang;
 import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
+import net.novaproject.novauhc.scenario.role.ScenarioRole;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.ui.config.ScenariosUi;
@@ -86,7 +87,7 @@ public abstract class Scenario {
     public CustomInventory getMenu(Player player) {
         for (Field field : this.getClass().getDeclaredFields()) {
             if (field.isAnnotationPresent(ScenarioVariable.class)) {
-                return new ScenarioVariableMenu(player,this,new ScenariosUi(player,isSpecial()));
+                return new ScenarioVariableUi(player,this,new ScenariosUi(player,isSpecial()));
             }
         }
         return null;
@@ -109,6 +110,10 @@ public abstract class Scenario {
                 }
             }
         }
+        if(this instanceof ScenarioRole role){
+            doc.append("isRole", true);
+            doc.append("rolesConfig",role.getRolesDocument());
+        }
         return doc;
     }
 
@@ -120,7 +125,6 @@ public abstract class Scenario {
                     field.setAccessible(true);
                     try {
                         Object value = doc.get(field.getName());
-                        // Handle potential type mismatches from BSON (e.g. Integer to Double or vice-versa)
                         if (value instanceof Number) {
                             if (field.getType() == int.class || field.getType() == Integer.class) {
                                 field.set(this, ((Number) value).intValue());
@@ -140,6 +144,10 @@ public abstract class Scenario {
                         Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "Could not set field " + field.getName(), e);
                     }
                 }
+            }
+            if (this instanceof ScenarioRole role && doc.containsKey("isRole") && doc.getBoolean("isRole")) {
+                Document rolesDoc = (Document) doc.get("rolesConfig");
+                role.loadRolesDocument(rolesDoc);
             }
         }
     }

@@ -1,7 +1,6 @@
 package net.novaproject.novauhc.scenario;
 
 import net.novaproject.novauhc.ui.ConfigVarUi;
-import net.novaproject.novauhc.ui.config.ScenariosUi;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.UHCUtils;
 import net.novaproject.novauhc.utils.ui.AnvilUi;
@@ -13,14 +12,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.lang.reflect.Field;
 
-import static net.novaproject.novauhc.utils.VariableType.*;
-
-public class ScenarioVariableMenu extends CustomInventory {
+public class ScenarioVariableUi extends CustomInventory {
 
     private final Scenario scenario;
     private final CustomInventory parent;
 
-    public ScenarioVariableMenu(Player player, Scenario scenario, CustomInventory parent) {
+    public ScenarioVariableUi(Player player, Scenario scenario, CustomInventory parent) {
         super(player);
         this.scenario = scenario;
         this.parent = parent;
@@ -101,7 +98,7 @@ public class ScenarioVariableMenu extends CustomInventory {
                                     number,
                                     0,
                                     0,
-                                    ScenarioVariableMenu.this
+                                    ScenarioVariableUi.this
                             ) {
                                 @Override
                                 public void onChange(Number newValue) {

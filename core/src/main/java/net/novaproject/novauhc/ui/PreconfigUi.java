@@ -114,7 +114,7 @@ public class PreconfigUi extends CustomInventory {
 
     @Override
     public boolean isRefreshAuto() {
-        return false;
+        return true;
     }
 
     private int calculateSlot(int position) {

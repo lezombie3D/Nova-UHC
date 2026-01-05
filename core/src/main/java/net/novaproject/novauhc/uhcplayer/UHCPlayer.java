@@ -352,54 +352,5 @@ public class UHCPlayer {
         uhcManager.checkVictory();
     }
 
-    private void updateScoreboard(Player player) {
-        FastBoard scoreboard = new FastBoard(player);
-        BlinkEffect ip = new BlinkEffect(Common.get().getServerIp());
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!uhcManager.isLobby() && !uhcManager.isGame()) cancel();
-                if (getPlayer() == null) cancel();
-                ip.next();
-                String ips = ip.getText();
-
-                UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
-                if (uhcPlayer == null) return;
-
-                FileConfiguration config = ConfigUtils.getGeneralConfig();
-
-                String phase = uhcManager.isLobby() ? "lobby" : (uhcManager.isGame() ? "game" : "end");
-                boolean tabIsActive = config.getBoolean("message.tab.show", true);
-
-                String header = CommonString.getMessage(config.getString("message.tab." + phase + ".header", ""), uhcPlayer);
-                String footer = CommonString.getMessage(config.getString("message.tab." + phase + ".footer", ""), uhcPlayer);
-
-                String title = config.getString("message.scoreboard." + phase + ".title", "§6NovaUHC");
-                title = CommonString.getMessage(title, uhcPlayer);
-
-                List<String> lines = config.getStringList("message.scoreboard." + phase + ".lines");
-                if (ScenarioManager.get().getActiveSpecialScenarios().stream()
-                        .anyMatch(scenario -> scenario instanceof ScenarioRole)) {
-                    lines = config.getStringList("message.scoreboard." + phase + ".lines_role");
-                    title = config.getString("message.scoreboard." + phase + ".title_role", "§6NovaUHC");
-                    title = CommonString.getMessage(title, uhcPlayer);
-                }
-                List<String> processedLines = lines.stream()
-                        .map(line -> {
-                            line = line.replace("<ip>", Common.get().getServerIp());
-                            return CommonString.getMessage(line, uhcPlayer);
-                        })
-                        .collect(Collectors.toList());
-
-                scoreboard.updateTitle(title);
-                scoreboard.updateLines(processedLines);
-
-                if (tabIsActive) {
-                    TabListManager.sendTab(player, header, footer);
-                }
-            }
-        }.runTaskTimerAsynchronously(Main.get(), 0L, 2L);
-    }
 }
 

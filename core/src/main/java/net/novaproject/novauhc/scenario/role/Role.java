@@ -7,6 +7,7 @@ import net.novaproject.novauhc.scenario.role.camps.Camps;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
+import org.bson.Document;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -16,6 +17,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -104,6 +106,46 @@ public abstract class Role implements Cloneable {
 
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public Document roleToDoc() {
+        Document doc = new Document();
+        for (Field field : this.getClass().getDeclaredFields()) {
+            if (!field.isAnnotationPresent(RoleVariable.class)) continue;
+            field.setAccessible(true);
+            try {
+                Object value = field.get(this);
+                if(value instanceof Ability ability){
+                    value = ability.abilityToDoc();
+                }
+                doc.append(field.getName(), value);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return doc;
+    }
+
+    public void docToRole(Document doc) {
+        if (doc == null) return;
+        for (Field field : this.getClass().getDeclaredFields()) {
+            if (!field.isAnnotationPresent(RoleVariable.class)) continue;
+            if (doc.containsKey(field.getName())) {
+                field.setAccessible(true);
+                try {
+                    Object value = doc.get(field.getName());
+                    if(field.getType().equals(Ability.class) && value instanceof Document abilityDoc){
+                        Ability ability = ((Ability) field.get(this)).clone();
+                        ability.docToAbility(abilityDoc);
+                        field.set(this, ability);
+                    } else {
+                        field.set(this, value);
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ import net.novaproject.novauhc.scenario.role.camps.Camps;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
+import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -64,6 +65,64 @@ public abstract class ScenarioRole<T extends Role> extends Scenario {
         return result;
     }
 
+    public Document getRolesDocument() {
+        Document doc = new Document();
+        Map<String, Integer> rolesList = new HashMap<>();
+        default_roles.forEach((clazz, amount) -> {
+            T role = roleConfigs.get(clazz);
+            if(amount > 0) rolesList.put(role.getName(),amount);
+
+        });
+        if(!rolesList.isEmpty()) doc.append("roles", rolesList);
+
+        Map<String,Document> roleConfigsDoc = new HashMap<>();
+        roleConfigs.forEach((clazz, role) -> {
+            Document roleDoc = role.roleToDoc();
+            if(!roleDoc.isEmpty()){
+                roleConfigsDoc.put(role.getName(),roleDoc);
+            }
+        });
+        if(!roleConfigsDoc.isEmpty()) doc.append("roleConfigs",roleConfigsDoc);
+
+
+
+        return doc;
+    }
+
+    public void loadRolesDocument(Document doc) {
+        if (doc == null) return;
+
+        if(doc.containsKey("roles")){
+            Document rolesDoc = (Document) doc.get("roles");
+            rolesDoc.forEach((roleName, amountObj) -> {
+                int amount;
+                if(amountObj instanceof Integer i) amount = i;
+                else if(amountObj instanceof Double d) amount = d.intValue();
+                else {
+                    amount = 0;
+                }
+
+                roleConfigs.forEach((clazz, role) -> {
+                    if(role.getName().equals(roleName)){
+                        default_roles.put(clazz, amount);
+                    }
+                });
+            });
+        }
+
+        if(doc.containsKey("roleConfigs")){
+            Document roleConfigsDoc = (Document) doc.get("roleConfigs");
+            roleConfigsDoc.forEach((roleName, roleDocObj) -> {
+                if(roleDocObj instanceof Document roleDoc){
+                    roleConfigs.forEach((clazz, role) -> {
+                        if(role.getName().equals(roleName)){
+                            role.docToRole(roleDoc);
+                        }
+                    });
+                }
+            });
+        }
+    }
 
     public void giveRoles() {
 

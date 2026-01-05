@@ -29,5 +29,5 @@ jar {
     }
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory.set(file("F:/plugin/serv/plugins") )
+    destinationDirectory.set(file("F:/plugin/serv/plugins"))
 }
