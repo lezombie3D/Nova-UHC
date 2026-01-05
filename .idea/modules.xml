@@ -4,8 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/UHC.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/UHC.core.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/UHC.core.test.iml" filepath="$PROJECT_DIR$/.idea/modules/core/UHC.core.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/UHC.main.iml" filepath="$PROJECT_DIR$/.idea/modules/UHC.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/UHC.test.iml" filepath="$PROJECT_DIR$/.idea/modules/UHC.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ultimate/UHC.ultimate.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ultimate/UHC.ultimate.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ultimate/UHC.ultimate.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ultimate/UHC.ultimate.test.iml" />
     </modules>

@@ -10,6 +10,7 @@ import lombok.Getter;
 import net.novaproject.novauhc.cloudnet.CloudNet;
 import net.novaproject.novauhc.command.CommandManager;
 import net.novaproject.novauhc.database.DatabaseManager;
+import net.novaproject.novauhc.utils.ApolloUtils;
 import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.nms.NMSPatcher;
 import net.novaproject.novauhc.world.generation.BiomeReplacer;
@@ -62,6 +63,7 @@ public class Main extends JavaPlugin {
         common.setup();
         uhcManager.setup();
         if (Bukkit.getPluginManager().getPlugin("CloudNet-Bridge") != null) cloudNet = new CloudNet();
+        ApolloUtils.initialize();
         databaseManager = new DatabaseManager();
         new NMSPatcher(this);
 
