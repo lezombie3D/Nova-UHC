@@ -1,8 +1,10 @@
 package net.novaproject.novauhc.uhcteam;
 
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
+import net.novaproject.novauhc.utils.ApolloUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -10,6 +12,7 @@ import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.awt.Color;
 import java.util.*;
 
 public class UHCTeamManager {
@@ -31,6 +34,7 @@ public class UHCTeamManager {
     );
 
     private final List<UHCTeam> teams = new ArrayList<>();
+    private final Map<UHCTeam, ApolloUtils.ApolloTeam> apolloTeamMap = new HashMap<>();
     private final String[] symbols = {
             "", "❤ ", "♣ ", "☼ ", "☠ ", "☆ ", "⚡ ", "★ ", "✪ ", "☯ ", "☢ ",
             "✧ ", "☘ ", "☀ ", "☁ ", "⚔ ", "❄ ", "♛ ", "♞ ", "✝ ", "☣ ", "♠ ", "♤ ", "⚙ ", "⚛ "
@@ -69,6 +73,7 @@ public class UHCTeamManager {
     }
 
     public void removeTeam(UHCTeam team) {
+        removeApolloTeam(team);
         teams.remove(team);
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         if (scoreboard.getTeam(team.name()) != null) {
@@ -85,6 +90,12 @@ public class UHCTeamManager {
         }
         colort = 0;
         symbolt = 0;
+
+        // Nettoyage Apollo
+        if (ApolloUtils.isAvailable()) {
+            ApolloUtils.deleteAllTeams();
+            apolloTeamMap.clear();
+        }
     }
 
     public void createTeam(int teamSize) {
@@ -104,6 +115,7 @@ public class UHCTeamManager {
                 false
         );
         teams.add(team);
+        createApolloTeam(team);
 
         colort++;
         if (colort == templates.size()) {
@@ -156,6 +168,81 @@ public class UHCTeamManager {
                 player.getPlayer().teleport(teamloc.get(team));
             }
         });
+    }
+
+    // ==================== APOLLO INTEGRATION ====================
+
+    /**
+     * Convertit une DyeColor Minecraft en Color Apollo
+     */
+    public Color dyeColorToApolloColor(DyeColor dyeColor) {
+        return switch (dyeColor) {
+            case RED -> ApolloUtils.Colors.UHC_RED;
+            case BLUE -> ApolloUtils.Colors.UHC_BLUE;
+            case GREEN -> ApolloUtils.Colors.UHC_GREEN;
+            case YELLOW -> ApolloUtils.Colors.UHC_YELLOW;
+            case PURPLE -> ApolloUtils.Colors.UHC_PURPLE;
+            case PINK -> ApolloUtils.Colors.UHC_PINK;
+            case WHITE -> ApolloUtils.Colors.UHC_WHITE;
+            case GRAY -> new Color(128, 128, 128);
+            case LIGHT_BLUE -> ApolloUtils.Colors.UHC_CYAN; // AQUA team uses LIGHT_BLUE dye
+            case ORANGE -> ApolloUtils.Colors.UHC_ORANGE;
+            case CYAN -> ApolloUtils.Colors.UHC_CYAN;
+            case LIME -> new Color(0, 255, 0);
+            case MAGENTA -> new Color(255, 0, 255);
+            case BLACK -> ApolloUtils.Colors.UHC_BLACK;
+            default -> ApolloUtils.Colors.UHC_WHITE;
+        };
+    }
+
+    /**
+     * Convertit un prefix d'équipe (§c, §9, etc.) en NamedTextColor Adventure
+     */
+    public NamedTextColor prefixToNamedTextColor(String prefix) {
+        if (prefix.contains("§c")) return NamedTextColor.RED;
+        if (prefix.contains("§9")) return NamedTextColor.BLUE;
+        if (prefix.contains("§2")) return NamedTextColor.DARK_GREEN;
+        if (prefix.contains("§e")) return NamedTextColor.YELLOW;
+        if (prefix.contains("§5")) return NamedTextColor.DARK_PURPLE;
+        if (prefix.contains("§d")) return NamedTextColor.LIGHT_PURPLE;
+        if (prefix.contains("§f")) return NamedTextColor.WHITE;
+        if (prefix.contains("§7")) return NamedTextColor.GRAY;
+        if (prefix.contains("§b")) return NamedTextColor.AQUA;
+        if (prefix.contains("§6")) return NamedTextColor.GOLD;
+        if (prefix.contains("§3")) return NamedTextColor.DARK_AQUA;
+        if (prefix.contains("§a")) return NamedTextColor.GREEN;
+        return NamedTextColor.WHITE;
+    }
+
+    /**
+     * Crée une équipe Apollo correspondant à l'équipe UHC
+     */
+    private void createApolloTeam(UHCTeam uhcTeam) {
+        if (!ApolloUtils.isAvailable()) return;
+
+        ApolloUtils.ApolloTeam apolloTeam = ApolloUtils.createTeam();
+        if (apolloTeam != null) {
+            apolloTeamMap.put(uhcTeam, apolloTeam);
+        }
+    }
+
+    /**
+     * Supprime l'équipe Apollo correspondant à l'équipe UHC
+     */
+    private void removeApolloTeam(UHCTeam uhcTeam) {
+        if (!ApolloUtils.isAvailable()) return;
+
+        ApolloUtils.ApolloTeam apolloTeam = apolloTeamMap.remove(uhcTeam);
+        if (apolloTeam != null) {
+            ApolloUtils.deleteTeam(apolloTeam.getTeamId());
+        }
+    }
+
+    /**
+     * Récupère l'équipe Apollo correspondant à une équipe UHC
+     */
+    public Optional<ApolloUtils.ApolloTeam> getApolloTeam(UHCTeam uhcTeam) {
+        return Optional.ofNullable(apolloTeamMap.get(uhcTeam));
     }
 
     private record TeamTemplate(String name, String prefix, DyeColor dyeColor) {

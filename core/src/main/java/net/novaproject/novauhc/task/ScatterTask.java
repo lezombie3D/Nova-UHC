@@ -1,5 +1,7 @@
 package net.novaproject.novauhc.task;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
@@ -10,13 +12,16 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
+import net.novaproject.novauhc.utils.ApolloUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.awt.Color;
 import java.util.*;
+import java.util.Optional;
 
 public class ScatterTask extends BukkitRunnable {
 
@@ -77,6 +82,32 @@ public class ScatterTask extends BukkitRunnable {
         });
 
         ScenarioManager.get().getActiveScenarios().forEach(Scenario::onGameStart);
+
+        // Initialiser les équipes Apollo avec tous les joueurs
+        // CRITIQUE: c'est ici qu'on passe de SCATTERING à INGAME
+        if (ApolloUtils.isAvailable()) {
+            UHCTeamManager teamManager = UHCTeamManager.get();
+
+            for (UHCTeam uhcTeam : teamManager.getTeams()) {
+                Optional<ApolloUtils.ApolloTeam> apolloTeamOpt =
+                    teamManager.getApolloTeam(uhcTeam);
+
+                if (apolloTeamOpt.isPresent()) {
+                    ApolloUtils.ApolloTeam apolloTeam = apolloTeamOpt.get();
+                    Color markerColor = teamManager.dyeColorToApolloColor(uhcTeam.dyeColor());
+                    NamedTextColor textColor = teamManager.prefixToNamedTextColor(uhcTeam.prefix());
+
+                    // Ajouter tous les joueurs de l'équipe
+                    for (UHCPlayer uhcPlayer : uhcTeam.getPlayers()) {
+                        if (uhcPlayer.isPlaying() && uhcPlayer.getPlayer() != null) {
+                            Player player = uhcPlayer.getPlayer();
+                            Component displayName = Component.text(player.getName(), textColor);
+                            apolloTeam.addMember(player, displayName, markerColor);
+                        }
+                    }
+                }
+            }
+        }
 
         new GameTask().runTaskTimer(Main.get(), 0, 20L);
     }

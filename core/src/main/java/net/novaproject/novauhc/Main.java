@@ -63,7 +63,9 @@ public class Main extends JavaPlugin {
         common.setup();
         uhcManager.setup();
         if (Bukkit.getPluginManager().getPlugin("CloudNet-Bridge") != null) cloudNet = new CloudNet();
-        ApolloUtils.initialize();
+        if (Bukkit.getPluginManager().getPlugin("Apollo-Bukkit") != null) {
+            ApolloUtils.initialize();
+        }
         databaseManager = new DatabaseManager();
         new NMSPatcher(this);
 

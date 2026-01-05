@@ -1,11 +1,12 @@
 name: NovaUHC
 main: net.novaproject.novauhc.Main
 version: 1.0
+softdepend: [Apollo-Bukkit]
 permission:
   novauhc.host:
     default: OP
   novauhc.cohost:
-  
+
 authors:
   - Lezombie3D
   - Sithey

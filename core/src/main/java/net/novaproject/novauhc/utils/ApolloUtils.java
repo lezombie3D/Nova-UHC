@@ -65,9 +65,6 @@ public class ApolloUtils {
      * @return true si Apollo est disponible et initialisé
      */
     public static boolean initialize() {
-        try {
-            Class.forName("com.lunarclient.apollo.Apollo");
-
             // Récupération des modules
             teamModule = Apollo.getModuleManager().getModule(TeamModule.class);
             notificationModule = Apollo.getModuleManager().getModule(NotificationModule.class);
@@ -79,15 +76,6 @@ public class ApolloUtils {
             LOGGER.log(Level.INFO, "Apollo integration successfully initialized!");
 
             return true;
-        } catch (ClassNotFoundException e) {
-            LOGGER.log(Level.WARNING, "Apollo API not found - Enhanced features disabled");
-            apolloAvailable = false;
-            return false;
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error initializing Apollo integration", e);
-            apolloAvailable = false;
-            return false;
-        }
     }
 
     /**

@@ -2,6 +2,8 @@ package net.novaproject.novauhc.uhcplayer;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.Main;
@@ -12,6 +14,7 @@ import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.scenario.role.ScenarioRole;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
+import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.ui.config.Enchants;
 import net.novaproject.novauhc.utils.*;
 import net.novaproject.novauhc.utils.fastboard.FastBoard;
@@ -24,6 +27,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.awt.Color;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -79,6 +83,7 @@ public class UHCPlayer {
         if (!team.isPresent()) {
 
             this.team.ifPresent(uhcTeam -> {
+                removeFromApolloTeam();
                 CommonString.SUCCESSFUL_MODIFICATION.send(getPlayer());
                 uhcTeam.getTeam().removePlayer(getOfflinePlayer());
             });
@@ -102,6 +107,7 @@ public class UHCPlayer {
                 this.team = team;
                 CommonString.SUCCESSFUL_MODIFICATION.send(getPlayer());
                 next.getTeam().addPlayer(getOfflinePlayer());
+                addToApolloTeam();
 
             }
 
@@ -147,6 +153,7 @@ public class UHCPlayer {
         if (!team.isPresent()) {
 
             this.team.ifPresent(uhcTeam -> {
+                removeFromApolloTeam();
                 CommonString.SUCCESSFUL_MODIFICATION.send(getPlayer());
                 uhcTeam.getTeam().removePlayer(getOfflinePlayer());
             });
@@ -164,9 +171,61 @@ public class UHCPlayer {
             this.team = team;
 
             next.getTeam().addPlayer(getOfflinePlayer());
+            addToApolloTeam();
 
 
         }
+    }
+
+    // ==================== APOLLO INTEGRATION ====================
+
+    /**
+     * Ajoute le joueur à son équipe Apollo
+     * Appelé quand un joueur rejoint une équipe UHC pendant la phase INGAME
+     */
+    private void addToApolloTeam() {
+        if (!ApolloUtils.isAvailable()) return;
+        if (team.isEmpty()) return;
+        if (!uhcManager.isGame()) return; // Seulement pendant INGAME
+        if (!playing) return; // Pas les spectateurs
+
+        Player player = getPlayer();
+        if (player == null) return;
+
+        UHCTeam uhcTeam = team.get();
+        Optional<ApolloUtils.ApolloTeam> apolloTeamOpt =
+            UHCTeamManager.get().getApolloTeam(uhcTeam);
+
+        if (apolloTeamOpt.isPresent()) {
+            ApolloUtils.ApolloTeam apolloTeam = apolloTeamOpt.get();
+
+            // Nom d'affichage avec couleur d'équipe
+            NamedTextColor color = UHCTeamManager.get()
+                .prefixToNamedTextColor(uhcTeam.prefix());
+            Component displayName = Component.text(player.getName(), color);
+
+            // Couleur du marqueur
+            Color markerColor = UHCTeamManager.get()
+                .dyeColorToApolloColor(uhcTeam.dyeColor());
+
+            apolloTeam.addMember(player, displayName, markerColor);
+        }
+    }
+
+    /**
+     * Retire le joueur de son équipe Apollo
+     * Appelé quand un joueur quitte une équipe ou meurt
+     */
+    private void removeFromApolloTeam() {
+        if (!ApolloUtils.isAvailable()) return;
+        if (team.isEmpty()) return;
+
+        UHCTeam uhcTeam = team.get();
+        Optional<ApolloUtils.ApolloTeam> apolloTeamOpt =
+            UHCTeamManager.get().getApolloTeam(uhcTeam);
+
+        apolloTeamOpt.ifPresent(apolloTeam ->
+            apolloTeam.removeMember(uuid));
     }
 
     public void setEnchantLimit(Enchants ench, int value) {
@@ -302,6 +361,7 @@ public class UHCPlayer {
         deathItem.clear();
         deathItem.addAll(event.getDrops());
         playing = false;
+        removeFromApolloTeam();
 
         Player player = getPlayer();
         Location location = player.getLocation();

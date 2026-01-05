@@ -13,6 +13,7 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.ui.config.Enchants;
+import net.novaproject.novauhc.utils.ApolloUtils;
 import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.Titles;
 import net.novaproject.novauhc.utils.UHCUtils;
@@ -88,6 +89,10 @@ public class UHCManager {
     }
 
     public void reset() {
+        // Nettoyage final Apollo
+        if (ApolloUtils.isAvailable()) {
+            ApolloUtils.deleteAllTeams();
+        }
         Bukkit.getServer().shutdown();
     }
 
@@ -210,6 +215,11 @@ public class UHCManager {
             new SimpleBorder(border).startReduce(targetSize, reducSpeed);
         }
 
+        // Mise à jour des positions Apollo toutes les secondes
+        if (ApolloUtils.isAvailable() && gameState == GameState.INGAME) {
+            ApolloUtils.updateAllTeamLocations();
+        }
+
     }
 
 
@@ -226,6 +236,11 @@ public class UHCManager {
     }
 
     private void endGame() {
+
+        // Nettoyage des équipes Apollo
+        if (ApolloUtils.isAvailable()) {
+            ApolloUtils.deleteAllTeams();
+        }
 
         StringBuilder killmessage = new StringBuilder();
         UHCManager.get().setGameState(GameState.ENDING);
