@@ -188,7 +188,12 @@ public class UHCPlayer {
             player.setHealth(20);
             player.setFoodLevel(20);
             player.setSaturation(20);
-            player.teleport(Common.get().getLobbySpawn());
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    player.teleport(Common.get().getLobbySpawn());
+                }
+            }.runTaskLater(Main.get(), 1L);
             player.getWorld().setDifficulty(Difficulty.PEACEFUL);
             player.setAllowFlight(false);
             player.setFlying(false);
