@@ -36,14 +36,14 @@ public class GameUi extends CustomInventory {
                 .addLore(CommonString.CLICK_HERE_TO_ACCESS.getMessage())
                 .addLore("");
         ItemCreator pvp = new ItemCreator(Material.DIAMOND_SWORD)
-                .setName("§8┃ §fBordure (" + Common.get().getMainColor() + UHCUtils.getFormattedTime(pvp_time) + "§f)")
+                .setName("§8┃ §fPvP (" + Common.get().getMainColor() + UHCUtils.getFormattedTime(pvp_time) + "§f)")
                 .addLore("")
                 .addLore("  §8┃ §fVous permet de §cmodifier")
                 .addLore("  §8┃ §fle temps avant l'§aactivation.")
                 .addLore("  §8┃ §fdu §ePvP §fdurant la " + Common.get().getMainColor() + "partie§f.")
                 .addLore("");
         ItemCreator bordure = new ItemCreator(Material.STAINED_GLASS).setDurability((short) 4)
-                .setName("§8┃ §fPvP (" + Common.get().getMainColor() + UHCUtils.getFormattedTime(border_time) + "§f)")
+                .setName("§8┃ §fBordure (" + Common.get().getMainColor() + UHCUtils.getFormattedTime(border_time) + "§f)")
                 .addLore("")
                 .addLore("  §8┃ §fVous permet de " + Common.get().getMainColor() + "modifier")
                 .addLore("  §8┃ §fle temps avant l'§aactivation")
@@ -126,14 +126,14 @@ public class GameUi extends CustomInventory {
                 UHCManager.get().setDimamondLimit((int) newValue);
             }
         });
-        addMenu(10, pvp, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, UHCManager.get().getTimerborder() / 60, 1, 60, this) {
+        addMenu(10, pvp, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, UHCManager.get().getTimerpvp() / 60, 1, 60, this) {
 
             @Override
             public void onChange(Number newValue) {
                 UHCManager.get().setTimerpvp((int)newValue * 60);
             }
         });
-        addMenu(11, bordure, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, UHCManager.get().getTimerpvp() / 60, 60, 120, this) {
+        addMenu(11, bordure, new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, UHCManager.get().getTimerborder() / 60, 60, 120, this) {
 
             @Override
             public void onChange(Number newValue) {

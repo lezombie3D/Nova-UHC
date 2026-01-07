@@ -126,7 +126,7 @@ public class LimiteStuffbyPlayerUi extends CustomInventory {
 
     @Override
     public String getTitle() {
-        return getConfig().getString("menu.enchant.title") + target.getName();
+        return getConfig().getString("menu.enchant.title") +" "+ target.getName();
     }
 
     @Override
@@ -147,13 +147,4 @@ public class LimiteStuffbyPlayerUi extends CustomInventory {
         return ChatColor.GREEN + String.valueOf(value);
     }
 
-    @FunctionalInterface
-    private interface ValueGetter {
-        int get();
-    }
-
-    @FunctionalInterface
-    private interface ValueSetter {
-        void set(int value);
-    }
 }

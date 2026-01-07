@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.listener.entity;
 
+import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -24,5 +25,12 @@ public class EntityBowEvent implements Listener {
             scenario.onBow(entity, player, event);
         });
 
+    }
+
+    @EventHandler
+    public void onMobSpawn(org.bukkit.event.entity.EntitySpawnEvent event) {
+        if(UHCManager.get().isLobby()){
+            event.setCancelled(true);
+        }
     }
 }

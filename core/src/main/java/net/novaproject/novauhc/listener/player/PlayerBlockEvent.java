@@ -31,7 +31,10 @@ public class PlayerBlockEvent implements Listener {
         Block block = event.getBlock();
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
 
-        if (UHCManager.get().isLobby()) return;
+        if (UHCManager.get().isLobby()){
+            event.setCancelled(true);
+            return;
+        }
 
         ScenarioManager.get().getActiveScenarios()
                 .forEach(scenario -> scenario.onBreak(player, block, event));
