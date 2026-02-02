@@ -2,15 +2,14 @@ package net.novaproject.novauhc.ability;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.novaproject.novauhc.ability.utils.AbilityVariable;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
-import net.novaproject.novauhc.utils.ConfigUtils;
 import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.ShortCooldownManager;
 import net.novaproject.novauhc.utils.VariableType;
 import org.bson.Document;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -26,7 +25,10 @@ public abstract class Ability implements Cloneable {
 
     @AbilityVariable(name = "Nombre d'utilisation", description = "Nombre d'utilisation de la capacité", type = VariableType.INTEGER)
     private int maxUse = -1;
-
+    @AbilityVariable(name = "Cooldown", description = "Definir le temps en seconde entre chaque utilisation.", type = VariableType.TIME)
+    private int cooldown = 0;
+    @AbilityVariable(name = "Active", description = "Active la capacité",type = VariableType.BOOLEAN)
+    private boolean active = true;
 
     public abstract String getName();
 
@@ -36,9 +38,9 @@ public abstract class Ability implements Cloneable {
         }
     }
 
-    public abstract boolean active();
-
-    public abstract int getCooldown();
+    public boolean active(){
+        return active;
+    }
 
     public Material getMaterial() {
         return Material.NETHER_STAR;
@@ -48,7 +50,7 @@ public abstract class Ability implements Cloneable {
         if (getMaterial() == null) return new ItemStack(Material.AIR);
         return new ItemCreator(getMaterial()).setName("§8» §f§l" + getName() + " §8«").getItemstack();
     }
-    
+
 
 
     /*public boolean hasAbility(Player player) {
@@ -81,8 +83,9 @@ public abstract class Ability implements Cloneable {
         }
 
         int cd = getCooldown();
+        if(cd <= 0) cd = 0;
 
-        if (getMaxUse() == -1) {
+        if (getMaxUse() <= -1) {
             if (cd == 0) {
                 return true;
             }
@@ -104,7 +107,9 @@ public abstract class Ability implements Cloneable {
     }
 
     public void onGive(UHCPlayer uhcPlayer) {
-        uhcPlayer.getPlayer().getInventory().addItem(getItemStack());
+        if(getItemStack().getType() != Material.AIR){
+            uhcPlayer.getPlayer().getInventory().addItem(getItemStack());
+        }
     }
 
     public UHCPlayer getUHCPlayer(Player player) {
@@ -112,7 +117,7 @@ public abstract class Ability implements Cloneable {
     }
 
     public void onSec(Player player) {
-        AbilityManager.get().updateAbilityBar(player);
+        AbilityManager.get().updateCooldown(player);
     }
 
     public void onMove(PlayerMoveEvent event) {

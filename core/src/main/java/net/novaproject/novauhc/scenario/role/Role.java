@@ -3,6 +3,7 @@ package net.novaproject.novauhc.scenario.role;
 import lombok.Getter;
 import lombok.Setter;
 import net.novaproject.novauhc.ability.Ability;
+import net.novaproject.novauhc.scenario.RoleVariableProcessor;
 import net.novaproject.novauhc.scenario.role.camps.Camps;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;

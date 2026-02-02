@@ -15,6 +15,10 @@ public class ResistanceProfile {
     }
 
     public void setResistance(ElementType type, double value) {
+        if (resistances.containsKey(type)) {
+            resistances.replace(type,value);
+            return;
+        }
         resistances.put(type, value);
     }
 

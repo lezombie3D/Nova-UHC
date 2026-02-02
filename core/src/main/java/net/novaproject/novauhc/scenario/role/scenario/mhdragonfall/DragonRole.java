@@ -2,6 +2,7 @@ package net.novaproject.novauhc.scenario.role.scenario.mhdragonfall;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.novaproject.novauhc.ability.Ability;
 import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.scenario.normal.GoldenHead;
 import net.novaproject.novauhc.scenario.role.Role;
@@ -11,6 +12,7 @@ import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.UHCUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -39,8 +41,6 @@ public abstract class DragonRole extends Role {
 
     public DragonRole() {
         this.resistanceProfile = new ResistanceProfile();
-        initResistances();
-        initElements();
     }
 
     public abstract int getMaxHP();
@@ -66,10 +66,18 @@ public abstract class DragonRole extends Role {
     }
 
     public void setBlightChance(ElementType type, double chance) {
+        if(blightChances.containsKey(type)){
+            blightChances.replace(type,Math.min(100.0D, chance));
+            return;
+        }
         blightChances.put(type, Math.max(0.0D, Math.min(100.0D, chance)));
     }
 
     public void setBlightDuration(ElementType type, int duration) {
+        if(blightDuration.containsKey(type)){
+            blightDuration.replace(type, Math.max(1, duration));
+            return;
+        }
         blightDuration.put(type, Math.max(1, duration));
     }
 
@@ -89,6 +97,9 @@ public abstract class DragonRole extends Role {
 
     @Override
     public void onGive(UHCPlayer uhcPlayer) {
+        initElements();
+        initResistances();
+
         super.onGive(uhcPlayer);
         currentHP = getMaxHP();
         currentCritChance = getCritChance();
@@ -148,6 +159,7 @@ public abstract class DragonRole extends Role {
 
     @Override
     public void onSec(Player p) {
+        super.onSec(p);
         if (p == null || !p.isOnline()) return;
 
         double armorBonus = 0.0;
@@ -204,10 +216,11 @@ public abstract class DragonRole extends Role {
                 int sharpness = weapon.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DAMAGE_ALL);
                 int smite = weapon.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DAMAGE_UNDEAD);
                 int bane = weapon.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.DAMAGE_ARTHROPODS);
-
+                int power = weapon.getEnchantmentLevel(Enchantment.ARROW_DAMAGE);
                 enchantWeaponBonus += sharpness * 5.0;
                 enchantWeaponBonus += smite * 3.0;
                 enchantWeaponBonus += bane * 3.0;
+                enchantWeaponBonus += power*5.0;
             }
         }
 
@@ -220,10 +233,9 @@ public abstract class DragonRole extends Role {
         setCurrentResistance((int) totalResistance);
         setCurrentStrength((int) totalStrength);
 
-        if (p.getActivePotionEffects().stream().noneMatch(e -> e.getType() == PotionEffectType.ABSORPTION)) {
+        if (!p.hasPotionEffect(PotionEffectType.ABSORPTION)) {
             setAbsortion(0);
         }
-
 
     }
 }

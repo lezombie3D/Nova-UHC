@@ -1,8 +1,8 @@
 package net.novaproject.novauhc.scenario.role;
 
-import net.novaproject.novauhc.ability.AbbilityConfigUi;
+import net.novaproject.novauhc.ability.utils.AbbilityConfigUi;
 import net.novaproject.novauhc.ability.Ability;
-import net.novaproject.novauhc.ability.AbilityVariable;
+import net.novaproject.novauhc.ability.utils.AbilityVariable;
 
 import net.novaproject.novauhc.ui.ConfigVarUi;
 import net.novaproject.novauhc.utils.ItemCreator;

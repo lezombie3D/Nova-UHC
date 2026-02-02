@@ -1,4 +1,4 @@
-package net.novaproject.novauhc.ability;
+package net.novaproject.novauhc.ability.utils;
 
 import net.novaproject.novauhc.utils.VariableType;
 

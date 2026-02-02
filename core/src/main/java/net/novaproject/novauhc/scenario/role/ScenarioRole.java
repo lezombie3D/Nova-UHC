@@ -2,6 +2,7 @@ package net.novaproject.novauhc.scenario.role;
 
 import net.novaproject.novauhc.CommonString;
 import net.novaproject.novauhc.UHCManager;
+import net.novaproject.novauhc.scenario.RoleVariableProcessor;
 import net.novaproject.novauhc.scenario.Scenario;
 import net.novaproject.novauhc.scenario.role.camps.Camps;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
@@ -144,6 +145,7 @@ public abstract class ScenarioRole<T extends Role> extends Scenario {
 
             T role = pool.remove(0);
             players_roles.put(player, role);
+            RoleVariableProcessor.process(role,player,this);
             role.onGive(player);
         }
 

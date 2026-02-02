@@ -1,4 +1,4 @@
-package net.novaproject.novauhc.scenario.role.scenario.mhdragonfall.dragon;
+package net.novaproject.novauhc.scenario.role.scenario.mhdragonfall.dragon.whitefatalis;
 
 import net.novaproject.novauhc.scenario.role.scenario.mhdragonfall.DragonRole;
 import net.novaproject.novauhc.scenario.role.scenario.mhdragonfall.ElementType;

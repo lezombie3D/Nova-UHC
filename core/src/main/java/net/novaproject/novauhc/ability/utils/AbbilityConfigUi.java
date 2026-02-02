@@ -1,7 +1,7 @@
-package net.novaproject.novauhc.ability;
+package net.novaproject.novauhc.ability.utils;
 
+import net.novaproject.novauhc.ability.Ability;
 import net.novaproject.novauhc.ui.ConfigVarUi;
-import net.novaproject.novauhc.utils.ui.AnvilUi;
 import net.novaproject.novauhc.utils.ui.CustomInventory;
 import net.novaproject.novauhc.utils.ui.item.ActionItem;
 import org.bukkit.Material;
