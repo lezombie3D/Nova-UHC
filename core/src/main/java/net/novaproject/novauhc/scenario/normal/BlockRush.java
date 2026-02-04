@@ -1,6 +1,8 @@
 package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
+import net.novaproject.novauhc.utils.VariableType;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,6 +19,55 @@ public class BlockRush extends Scenario {
     private final Map<UUID, Set<Material>> playerMinedBlocks = new HashMap<>();
     private final Map<UUID, Integer> playerRewards = new HashMap<>();
 
+    @ScenarioVariable(
+            name = "base_reward_amount",
+            description = "Quantité de lingot d'or donnée pour chaque nouveau bloc miné",
+            type = VariableType.INTEGER
+    )
+    private int baseRewardAmount = 1;
+
+    @ScenarioVariable(
+            name = "diamond_bonus",
+            description = "Quantité de diamants pour le premier miner un diamant",
+            type = VariableType.INTEGER
+    )
+    private int diamondBonus = 2;
+
+    @ScenarioVariable(
+            name = "emerald_bonus",
+            description = "Quantité d'émeraudes pour le premier miner une émeraude",
+            type = VariableType.INTEGER
+    )
+    private int emeraldBonus = 2;
+
+    @ScenarioVariable(
+            name = "gold_bonus",
+            description = "Quantité de lingots d'or pour le premier miner un bloc d'or",
+            type = VariableType.INTEGER
+    )
+    private int goldBonus = 3;
+
+    @ScenarioVariable(
+            name = "milestone_10_reward",
+            description = "Quantité de pommes d'or pour le palier 10 blocs différents",
+            type = VariableType.INTEGER
+    )
+    private int milestone10Reward = 3;
+
+    @ScenarioVariable(
+            name = "milestone_25_reward",
+            description = "Quantité de livres enchantés pour le palier 25 blocs différents",
+            type = VariableType.INTEGER
+    )
+    private int milestone25Reward = 2;
+
+    @ScenarioVariable(
+            name = "milestone_50_reward",
+            description = "Quantité d'étoiles du Nether pour le palier 50 blocs différents",
+            type = VariableType.INTEGER
+    )
+    private int milestone50Reward = 1;
+
     @Override
     public String getName() {
         return "BlockRush";
@@ -24,7 +75,7 @@ public class BlockRush extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Miner un type de bloc pour la première fois donne 1 lingot d'or !";
+        return "Miner un type de bloc pour la première fois donne " + baseRewardAmount + " lingot(s) d'or et des bonus pour certains blocs.";
     }
 
     @Override
@@ -39,265 +90,133 @@ public class BlockRush extends Scenario {
         Material blockType = block.getType();
         UUID playerUuid = player.getUniqueId();
 
-        if (!playerMinedBlocks.containsKey(playerUuid)) {
-            playerMinedBlocks.put(playerUuid, new HashSet<>());
-        }
-
+        playerMinedBlocks.putIfAbsent(playerUuid, new HashSet<>());
         Set<Material> playerMined = playerMinedBlocks.get(playerUuid);
 
         if (!playerMined.contains(blockType) && isRewardableBlock(blockType)) {
             playerMined.add(blockType);
 
-            ItemStack goldReward = new ItemStack(Material.GOLD_INGOT, 1);
-
-            if (player.getInventory().firstEmpty() != -1) {
-                player.getInventory().addItem(goldReward);
-            } else {
-                player.getWorld().dropItemNaturally(player.getLocation(), goldReward);
-                player.sendMessage("§6[BlockRush] §fInventaire plein ! Or jeté au sol.");
-            }
+            ItemStack goldReward = new ItemStack(Material.GOLD_INGOT, baseRewardAmount);
+            giveOrDrop(player, goldReward, "Inventaire plein ! Or jeté au sol.");
 
             playerRewards.put(playerUuid, playerRewards.getOrDefault(playerUuid, 0) + 1);
 
             boolean isFirstEver = !firstMiners.containsKey(blockType);
             if (isFirstEver) {
                 firstMiners.put(blockType, playerUuid);
-
                 ItemStack bonusReward = getBonusReward(blockType);
-                if (bonusReward != null) {
-                    if (player.getInventory().firstEmpty() != -1) {
-                        player.getInventory().addItem(bonusReward);
-                    } else {
-                        player.getWorld().dropItemNaturally(player.getLocation(), bonusReward);
-                    }
-                }
+                giveOrDrop(player, bonusReward, null);
 
                 String blockName = getBlockDisplayName(blockType);
                 Bukkit.broadcastMessage("§6§l[BlockRush] §f" + player.getName() +
                         " §fest le premier à miner §6" + blockName + " §f!");
-
                 player.sendMessage("§6[BlockRush] §fPremière découverte ! Bonus : §6" +
                         getBonusDescription(blockType));
             } else {
                 String blockName = getBlockDisplayName(blockType);
                 player.sendMessage("§6[BlockRush] §fNouveau bloc miné : §6" + blockName +
-                        " §f! +1 Lingot d'Or");
+                        " §f! +" + baseRewardAmount + " Lingot(s) d'Or");
             }
 
             int totalRewards = playerRewards.get(playerUuid);
-            if (totalRewards == 10) {
-                giveMilestoneReward(player, 10);
-                Bukkit.broadcastMessage("§6[BlockRush] §f" + player.getName() +
-                        " §fa miné 10 types de blocs différents !");
-            } else if (totalRewards == 25) {
-                giveMilestoneReward(player, 25);
-                Bukkit.broadcastMessage("§6[BlockRush] §f" + player.getName() +
-                        " §fa miné 25 types de blocs différents ! Explorateur expert !");
-            } else if (totalRewards == 50) {
-                giveMilestoneReward(player, 50);
-                Bukkit.broadcastMessage("§6[BlockRush] §f" + player.getName() +
-                        " §fa miné 50 types de blocs différents ! Maître mineur !");
-            }
+            if (totalRewards == 10) giveMilestone(player, 10, milestone10Reward, Material.GOLDEN_APPLE);
+            else if (totalRewards == 25) giveMilestone(player, 25, milestone25Reward, Material.ENCHANTED_BOOK);
+            else if (totalRewards == 50) giveMilestone(player, 50, milestone50Reward, Material.NETHER_STAR);
         }
+    }
+
+    private void giveOrDrop(Player player, ItemStack item, String fullInventoryMessage) {
+        if (item == null) return;
+        if (player.getInventory().firstEmpty() != -1) {
+            player.getInventory().addItem(item);
+        } else if (fullInventoryMessage != null) {
+            player.getWorld().dropItemNaturally(player.getLocation(), item);
+            player.sendMessage("§6[BlockRush] §f" + fullInventoryMessage);
+        }
+    }
+
+    private void giveMilestone(Player player, int milestone, int amount, Material material) {
+        ItemStack reward = new ItemStack(material, amount);
+        giveOrDrop(player, reward, null);
+        player.sendMessage("§6[BlockRush] §fRécompense étape : §6" + amount + "x " + getItemDisplayName(material));
+        Bukkit.broadcastMessage("§6[BlockRush] §f" + player.getName() + " §fa miné " + milestone + " types de blocs différents !");
     }
 
     private boolean isRewardableBlock(Material blockType) {
-        switch (blockType) {
-            case COAL_ORE:
-            case IRON_ORE:
-            case GOLD_ORE:
-            case DIAMOND_ORE:
-            case EMERALD_ORE:
-            case LAPIS_ORE:
-            case REDSTONE_ORE:
-            case QUARTZ_ORE:
-
-            case STONE:
-            case DIRT:
-            case GRASS:
-            case SAND:
-            case GRAVEL:
-            case CLAY:
-            case MYCEL:
-
-            case LOG:
-            case LOG_2:
-            case LEAVES:
-            case LEAVES_2:
-
-            case NETHERRACK:
-            case SOUL_SAND:
-            case NETHER_BRICK:
-            case NETHER_WARTS:
-            case GLOWSTONE:
-
-            case ENDER_STONE:
-            case OBSIDIAN:
-
-            case PRISMARINE:
-            case SEA_LANTERN:
-            case SPONGE:
-
-            case MOSSY_COBBLESTONE:
-            case MONSTER_EGG:
-            case ICE:
-            case PACKED_ICE:
-            case SNOW_BLOCK:
-            case CACTUS:
-            case SUGAR_CANE_BLOCK:
-            case PUMPKIN:
-            case MELON_BLOCK:
-            case VINE:
-            case WATER_LILY:
-                return true;
-
-            default:
-                return false;
-        }
+        return switch (blockType) {
+            case COAL_ORE, IRON_ORE, GOLD_ORE, DIAMOND_ORE, EMERALD_ORE, LAPIS_ORE, REDSTONE_ORE, QUARTZ_ORE,
+                 STONE, DIRT, GRASS, SAND, GRAVEL, CLAY, MYCEL,
+                 LOG, LOG_2, LEAVES, LEAVES_2,
+                 NETHERRACK, SOUL_SAND, NETHER_BRICK, NETHER_WARTS, GLOWSTONE,
+                 ENDER_STONE, OBSIDIAN,
+                 PRISMARINE, SEA_LANTERN, SPONGE,
+                 MOSSY_COBBLESTONE, MONSTER_EGG,
+                 ICE, PACKED_ICE, SNOW_BLOCK, CACTUS, SUGAR_CANE_BLOCK, PUMPKIN, MELON_BLOCK,
+                 VINE, WATER_LILY -> true;
+            default -> false;
+        };
     }
 
     private ItemStack getBonusReward(Material blockType) {
-        switch (blockType) {
-
-            case DIAMOND_ORE:
-                return new ItemStack(Material.DIAMOND, 2);
-            case EMERALD_ORE:
-                return new ItemStack(Material.EMERALD, 2);
-            case GOLD_ORE:
-                return new ItemStack(Material.GOLD_INGOT, 3);
-
-            // Nether blocks
-            case GLOWSTONE:
-                return new ItemStack(Material.GLOWSTONE_DUST, 8);
-            case NETHER_WARTS:
-                return new ItemStack(Material.NETHER_WARTS, 4);
-            case QUARTZ_ORE:
-                return new ItemStack(Material.QUARTZ, 4);
-
-            // End blocks
-            case ENDER_STONE:
-                return new ItemStack(Material.ENDER_PEARL, 2);
-            case OBSIDIAN:
-                return new ItemStack(Material.OBSIDIAN, 2);
-
-            // Ocean blocks
-            case PRISMARINE:
-                return new ItemStack(Material.PRISMARINE_SHARD, 4);
-            case SEA_LANTERN:
-                return new ItemStack(Material.PRISMARINE_CRYSTALS, 3);
-            case SPONGE:
-                return new ItemStack(Material.SPONGE, 1);
-
-            // Common blocks get smaller bonuses
-            case IRON_ORE:
-                return new ItemStack(Material.IRON_INGOT, 2);
-            case COAL_ORE:
-                return new ItemStack(Material.COAL, 3);
-            case LAPIS_ORE:
-                return new ItemStack(Material.INK_SACK, 6, (short) 4);
-            case REDSTONE_ORE:
-                return new ItemStack(Material.REDSTONE, 6);
-
-            default:
-                return new ItemStack(Material.GOLD_NUGGET, 5);
-        }
+        return switch (blockType) {
+            case DIAMOND_ORE -> new ItemStack(Material.DIAMOND, diamondBonus);
+            case EMERALD_ORE -> new ItemStack(Material.EMERALD, emeraldBonus);
+            case GOLD_ORE -> new ItemStack(Material.GOLD_INGOT, goldBonus);
+            case GLOWSTONE -> new ItemStack(Material.GLOWSTONE_DUST, 8);
+            case NETHER_WARTS -> new ItemStack(Material.NETHER_WARTS, 4);
+            case QUARTZ_ORE -> new ItemStack(Material.QUARTZ, 4);
+            case ENDER_STONE -> new ItemStack(Material.ENDER_PEARL, 2);
+            case OBSIDIAN -> new ItemStack(Material.OBSIDIAN, 2);
+            case PRISMARINE -> new ItemStack(Material.PRISMARINE_SHARD, 4);
+            case SEA_LANTERN -> new ItemStack(Material.PRISMARINE_CRYSTALS, 3);
+            case SPONGE -> new ItemStack(Material.SPONGE, 1);
+            case IRON_ORE -> new ItemStack(Material.IRON_INGOT, 2);
+            case COAL_ORE -> new ItemStack(Material.COAL, 3);
+            case LAPIS_ORE -> new ItemStack(Material.INK_SACK, 6, (short) 4);
+            case REDSTONE_ORE -> new ItemStack(Material.REDSTONE, 6);
+            default -> new ItemStack(Material.GOLD_NUGGET, 5);
+        };
     }
 
     private String getBonusDescription(Material blockType) {
         ItemStack bonus = getBonusReward(blockType);
-        if (bonus != null) {
-            return bonus.getAmount() + "x " + getItemDisplayName(bonus.getType());
-        }
+        if (bonus != null) return bonus.getAmount() + "x " + getItemDisplayName(bonus.getType());
         return "Bonus mystère";
     }
 
-    private void giveMilestoneReward(Player player, int milestone) {
-        ItemStack reward = null;
-
-        switch (milestone) {
-            case 10:
-                reward = new ItemStack(Material.GOLDEN_APPLE, 3);
-                break;
-            case 25:
-                reward = new ItemStack(Material.ENCHANTED_BOOK, 2);
-                break;
-            case 50:
-                reward = new ItemStack(Material.NETHER_STAR, 1);
-                break;
-        }
-
-        if (reward != null) {
-            if (player.getInventory().firstEmpty() != -1) {
-                player.getInventory().addItem(reward);
-            } else {
-                player.getWorld().dropItemNaturally(player.getLocation(), reward);
-            }
-
-            player.sendMessage("§6[BlockRush] §fRécompense étape : §6" +
-                    reward.getAmount() + "x " + getItemDisplayName(reward.getType()));
-        }
-    }
-
     private String getBlockDisplayName(Material material) {
-        switch (material) {
-            case COAL_ORE:
-                return "Minerai de Charbon";
-            case IRON_ORE:
-                return "Minerai de Fer";
-            case GOLD_ORE:
-                return "Minerai d'Or";
-            case DIAMOND_ORE:
-                return "Minerai de Diamant";
-            case EMERALD_ORE:
-                return "Minerai d'Émeraude";
-            case LAPIS_ORE:
-                return "Minerai de Lapis";
-            case REDSTONE_ORE:
-                return "Minerai de Redstone";
-            case QUARTZ_ORE:
-                return "Minerai de Quartz";
-            case OBSIDIAN:
-                return "Obsidienne";
-            case ENDER_STONE:
-                return "Pierre de l'End";
-            case NETHERRACK:
-                return "Netherrack";
-            case GLOWSTONE:
-                return "Pierre Lumineuse";
-            case PRISMARINE:
-                return "Prismarine";
-            case SEA_LANTERN:
-                return "Lanterne de Mer";
-            case SPONGE:
-                return "Éponge";
-            default:
-                return material.name().replace("_", " ");
-        }
+        return switch (material) {
+            case COAL_ORE -> "Minerai de Charbon";
+            case IRON_ORE -> "Minerai de Fer";
+            case GOLD_ORE -> "Minerai d'Or";
+            case DIAMOND_ORE -> "Minerai de Diamant";
+            case EMERALD_ORE -> "Minerai d'Émeraude";
+            case LAPIS_ORE -> "Minerai de Lapis";
+            case REDSTONE_ORE -> "Minerai de Redstone";
+            case QUARTZ_ORE -> "Minerai de Quartz";
+            case OBSIDIAN -> "Obsidienne";
+            case ENDER_STONE -> "Pierre de l'End";
+            case NETHERRACK -> "Netherrack";
+            case GLOWSTONE -> "Pierre Lumineuse";
+            case PRISMARINE -> "Prismarine";
+            case SEA_LANTERN -> "Lanterne de Mer";
+            case SPONGE -> "Éponge";
+            default -> material.name().replace("_", " ");
+        };
     }
 
     private String getItemDisplayName(Material material) {
-        switch (material) {
-            case DIAMOND:
-                return "Diamant";
-            case EMERALD:
-                return "Émeraude";
-            case GOLD_INGOT:
-                return "Lingot d'Or";
-            case IRON_INGOT:
-                return "Lingot de Fer";
-            case COAL:
-                return "Charbon";
-            case GOLDEN_APPLE:
-                return "Pomme d'Or";
-            case ENCHANTED_BOOK:
-                return "Livre Enchanté";
-            case NETHER_STAR:
-                return "Étoile du Nether";
-            case ENDER_PEARL:
-                return "Perle d'Ender";
-            default:
-                return material.name().replace("_", " ");
-        }
+        return switch (material) {
+            case DIAMOND -> "Diamant";
+            case EMERALD -> "Émeraude";
+            case GOLD_INGOT -> "Lingot d'Or";
+            case IRON_INGOT -> "Lingot de Fer";
+            case COAL -> "Charbon";
+            case GOLDEN_APPLE -> "Pomme d'Or";
+            case ENCHANTED_BOOK -> "Livre Enchanté";
+            case NETHER_STAR -> "Étoile du Nether";
+            case ENDER_PEARL -> "Perle d'Ender";
+            default -> material.name().replace("_", " ");
+        };
     }
-
 }

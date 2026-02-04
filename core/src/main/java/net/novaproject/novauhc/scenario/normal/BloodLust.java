@@ -2,6 +2,8 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
+import net.novaproject.novauhc.utils.VariableType;
 import net.novaproject.novauhc.scenario.lang.ScenarioLang;
 import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
 import net.novaproject.novauhc.scenario.lang.lang.BloodLustLang;
@@ -23,6 +25,55 @@ public class BloodLust extends Scenario {
 
     private final Map<UUID, BukkitRunnable> activeEffects = new HashMap<>();
 
+    @ScenarioVariable(
+            name = "speed_duration",
+            description = "Durée de l'effet Speed en secondes",
+            type = VariableType.TIME
+    )
+    private int speedDuration = 30;
+
+    @ScenarioVariable(
+            name = "strength_duration",
+            description = "Durée de l'effet Strength en secondes",
+            type = VariableType.TIME
+    )
+    private int strengthDuration = 30;
+
+    @ScenarioVariable(
+            name = "speed_level",
+            description = "Niveau de l'effet Speed",
+            type = VariableType.INTEGER
+    )
+    private int speedLevel = 1;
+
+    @ScenarioVariable(
+            name = "strength_level",
+            description = "Niveau de l'effet Strength",
+            type = VariableType.INTEGER
+    )
+    private int strengthLevel = 0;
+
+    @ScenarioVariable(
+            name = "countdown_10sec",
+            description = "Activer le message de countdown à 10 secondes",
+            type = VariableType.BOOLEAN
+    )
+    private boolean countdown10Sec = true;
+
+    @ScenarioVariable(
+            name = "countdown_5sec",
+            description = "Activer le message de countdown à 5 secondes",
+            type = VariableType.BOOLEAN
+    )
+    private boolean countdown5Sec = true;
+
+    @ScenarioVariable(
+            name = "countdown_end",
+            description = "Activer le message à la fin de l'effet",
+            type = VariableType.BOOLEAN
+    )
+    private boolean countdownEnd = true;
+
     @Override
     public String getName() {
         return "BloodLust";
@@ -30,7 +81,7 @@ public class BloodLust extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Chaque kill donne Speed II et Strength I pendant 30 secondes.";
+        return "Chaque kill donne Speed " + (speedLevel + 1) + " et Strength " + (strengthLevel + 1) + " pendant " + speedDuration + " secondes.";
     }
 
     @Override
@@ -50,40 +101,24 @@ public class BloodLust extends Scenario {
 
     @Override
     public void onDeath(UHCPlayer uhcPlayer, UHCPlayer killer, PlayerDeathEvent event) {
-        if (!isActive()) return;
+        if (!isActive() || killer == null) return;
 
-        if (killer != null) {
-            Player killerPlayer = killer.getPlayer();
+        Player killerPlayer = killer.getPlayer();
+        cancelBloodLustEffect(killerPlayer.getUniqueId());
+        applyBloodLustEffect(killerPlayer);
 
-            // Cancel any existing blood lust effect
-            cancelBloodLustEffect(killerPlayer.getUniqueId());
-
-            // Apply blood lust effects
-            applyBloodLustEffect(killerPlayer);
-
-            // Send message to killer
-            ScenarioLangManager.send(killer, BloodLustLang.KILL_BOOST);
-
-            // Broadcast to all players
-            Bukkit.broadcastMessage("§c[BloodLust] §f" + killerPlayer.getName() + " §fest en état de soif de sang !");
-        }
+        ScenarioLangManager.send(killer, BloodLustLang.KILL_BOOST);
+        Bukkit.broadcastMessage("§c[BloodLust] §f" + killerPlayer.getName() + " §fest en état de soif de sang !");
     }
 
     private void applyBloodLustEffect(Player player) {
         UUID playerUuid = player.getUniqueId();
 
-        // Apply potion effects based on config
-        int speedDuration = getConfig().getInt("speed_duration", 600);
-        int strengthDuration = getConfig().getInt("strength_duration", 600);
-        int speedLevel = getConfig().getInt("speed_level", 1);
-        int strengthLevel = getConfig().getInt("strength_level", 0);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, speedDuration * 20, speedLevel));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, strengthDuration * 20, strengthLevel));
 
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, speedDuration, speedLevel));
-        player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, strengthDuration, strengthLevel));
-
-        // Create countdown task
         BukkitRunnable countdownTask = new BukkitRunnable() {
-            private int timeLeft = 30;
+            private int timeLeft = speedDuration;
 
             @Override
             public void run() {
@@ -95,27 +130,22 @@ public class BloodLust extends Scenario {
 
                 timeLeft--;
 
-                // Send countdown messages at specific intervals
-                if (timeLeft == 10) {
+                if (countdown10Sec && timeLeft == 10) {
                     player.sendMessage("§c[BloodLust] §fSoif de sang se termine dans 10 secondes !");
-                } else if (timeLeft == 5) {
+                } else if (countdown5Sec && timeLeft == 5) {
                     player.sendMessage("§c[BloodLust] §fSoif de sang se termine dans 5 secondes !");
-                } else if (timeLeft == 0) {
+                } else if (countdownEnd && timeLeft <= 0) {
                     player.sendMessage("§c[BloodLust] §fVotre soif de sang s'est calmée.");
-
-                    // Remove effects manually to ensure they're gone
                     player.removePotionEffect(PotionEffectType.SPEED);
                     player.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
-
                     activeEffects.remove(playerUuid);
                     cancel();
                 }
             }
         };
 
-        // Store the task and start it
         activeEffects.put(playerUuid, countdownTask);
-        countdownTask.runTaskTimer(Main.get(), 0, 20); // Run every second
+        countdownTask.runTaskTimer(Main.get(), 0, 20);
     }
 
     private void cancelBloodLustEffect(UUID playerUuid) {
@@ -124,7 +154,6 @@ public class BloodLust extends Scenario {
             existingTask.cancel();
             activeEffects.remove(playerUuid);
 
-            // Remove effects from player
             Player player = Bukkit.getPlayer(playerUuid);
             if (player != null && player.isOnline()) {
                 player.removePotionEffect(PotionEffectType.SPEED);
@@ -136,7 +165,6 @@ public class BloodLust extends Scenario {
     @Override
     public void toggleActive() {
         super.toggleActive();
-
         if (!isActive()) {
             for (UUID playerUuid : activeEffects.keySet()) {
                 cancelBloodLustEffect(playerUuid);
@@ -144,6 +172,4 @@ public class BloodLust extends Scenario {
             activeEffects.clear();
         }
     }
-
-
 }

@@ -37,15 +37,9 @@ public class NineSlot extends Scenario {
         return new ItemCreator(Material.CHEST);
     }
 
-
     @Override
-    public void toggleActive() {
-        super.toggleActive();
-        if (isActive()) {
-            restrictAllPlayersInventory();
-        } else {
-            unrestrictAllPlayersInventory();
-        }
+    public void onGameStart() {
+        restrictAllPlayersInventory();
     }
 
     @Override

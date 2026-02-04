@@ -33,7 +33,6 @@ public class OreSwap extends Scenario {
     private BukkitRunnable swapTask;
 
     public OreSwap() {
-        // Initialize ore to item mapping
         oreToItem.put(Material.COAL_ORE, Material.COAL);
         oreToItem.put(Material.IRON_ORE, Material.IRON_INGOT);
         oreToItem.put(Material.GOLD_ORE, Material.GOLD_INGOT);
@@ -212,23 +211,5 @@ public class OreSwap extends Scenario {
             default:
                 return ore.name();
         }
-    }
-
-    // Get current ore mapping (for admin commands or debugging)
-    public Map<Material, Material> getCurrentOreMapping() {
-        return new HashMap<>(currentOreMapping);
-    }
-
-    // Force a new ore swap (admin command)
-    public void forceOreSwap() {
-        if (isActive()) {
-            initializeOreMapping();
-            Bukkit.broadcastMessage("§6[OreSwap] §fMélange forcé des minerais par un administrateur !");
-        }
-    }
-
-    // Get what ore type will drop when mining a specific ore
-    public Material getSwappedOre(Material originalOre) {
-        return currentOreMapping.getOrDefault(originalOre, originalOre);
     }
 }

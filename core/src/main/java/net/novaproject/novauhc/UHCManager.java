@@ -299,7 +299,10 @@ public class UHCManager {
         List<UHCPlayer> soloPlayers = alivePlayers.stream()
                 .filter(p -> !p.getTeam().isPresent())
                 .collect(Collectors.toList());
-
+        if(team_size == 1){
+            soloPlayers.clear();
+            soloPlayers = alivePlayers;
+        }
         if (aliveTeams.size() == 1 && soloPlayers.isEmpty()) {
 
             UHCTeam team = aliveTeams.get(0);

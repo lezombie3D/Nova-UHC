@@ -2,7 +2,9 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.VariableType;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -12,14 +14,35 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class RewardLongShot extends Scenario {
 
+    @ScenarioVariable(
+            name = "Minimum Distance",
+            description = "Distance minimale (en blocs) pour qu'un tir soit considéré comme un long shot.",
+            type = VariableType.INTEGER
+    )
+    private int min_distance = 75;
+
+    @ScenarioVariable(
+            name = "Damage Multiplier",
+            description = "Multiplicateur de dégâts appliqué lors d'un long shot.",
+            type = VariableType.DOUBLE
+    )
+    private double damage_multiplier = 1.5;
+
+    @ScenarioVariable(
+            name = "Heal Amount",
+            description = "Nombre de points de vie rendus au tireur lors d'un long shot (2 = 1 cœur).",
+            type = VariableType.DOUBLE
+    )
+    private double heal_amount = 2.0;
+
     @Override
     public String getName() {
-        return "Rewarding LongSHot";
+        return "Rewarding LongShot";
     }
 
     @Override
     public String getDescription() {
-        return "";
+        return "Les tirs à l'arc longue distance infligent plus de dégâts et soignent le tireur.";
     }
 
     @Override
@@ -28,16 +51,21 @@ public class RewardLongShot extends Scenario {
     }
 
     @Override
-    public void onHit(Entity entity, Entity dammager, EntityDamageByEntityEvent event) {
-        if (dammager instanceof Projectile && dammager.getType().equals(EntityType.ARROW)) {
-            Projectile projectile = (Projectile) event.getDamager();
-            if (projectile.getShooter() instanceof Player shooter) {
-                if (shooter.getLocation().distance(event.getEntity().getLocation()) >= 75) {
-                    event.setDamage(event.getDamage() * 1.5);
-                    shooter.setHealth(shooter.getHealth() + 2);
-                    shooter.sendMessage(Common.get().getServertag() + "Long shot");
-                }
-            }
-        }
+    public void onHit(Entity entity, Entity damager, EntityDamageByEntityEvent event) {
+        if (!(damager instanceof Projectile projectile)) return;
+        if (projectile.getType() != EntityType.ARROW) return;
+        if (!(projectile.getShooter() instanceof Player shooter)) return;
+
+        if (shooter.getLocation().distance(entity.getLocation()) < min_distance) return;
+
+        event.setDamage(event.getDamage() * damage_multiplier);
+
+        double newHealth = Math.min(
+                shooter.getMaxHealth(),
+                shooter.getHealth() + heal_amount
+        );
+        shooter.setHealth(newHealth);
+
+        shooter.sendMessage(Common.get().getServertag() + " §aLong shot !");
     }
 }

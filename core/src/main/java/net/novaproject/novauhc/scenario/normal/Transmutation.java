@@ -1,14 +1,19 @@
 package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.VariableType;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import xyz.xenondevs.particle.ParticleBuilder;
+import xyz.xenondevs.particle.ParticleEffect;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,9 +22,47 @@ public class Transmutation extends Scenario {
 
     private final Map<Material, TransmutationRecipe> transmutationRecipes = new HashMap<>();
 
-    public Transmutation() {
-        initializeTransmutationRecipes();
-    }
+    @ScenarioVariable(
+            name = "Iron Input",
+            description = "Nombre de minerais de fer nécessaires pour obtenir un lingot d'or.",
+            type = VariableType.INTEGER
+    )
+    private int iron_input = 8;
+
+    @ScenarioVariable(
+            name = "Gold Input",
+            description = "Nombre de lingots d'or nécessaires pour obtenir un diamant.",
+            type = VariableType.INTEGER
+    )
+    private int gold_input = 16;
+
+    @ScenarioVariable(
+            name = "Coal Input",
+            description = "Nombre de charbons nécessaires pour obtenir un lingot de fer.",
+            type = VariableType.INTEGER
+    )
+    private int coal_input = 16;
+
+    @ScenarioVariable(
+            name = "Diamond Output",
+            description = "Nombre de diamants obtenus lors d'une transmutation or → diamant.",
+            type = VariableType.INTEGER
+    )
+    private int diamond_output = 1;
+
+    @ScenarioVariable(
+            name = "Gold Output",
+            description = "Nombre de lingots d'or obtenus lors d'une transmutation fer → or.",
+            type = VariableType.INTEGER
+    )
+    private int gold_output = 1;
+
+    @ScenarioVariable(
+            name = "Iron Output",
+            description = "Nombre de lingots de fer obtenus lors d'une transmutation charbon → fer.",
+            type = VariableType.INTEGER
+    )
+    private int iron_output = 1;
 
     @Override
     public String getName() {
@@ -28,7 +71,7 @@ public class Transmutation extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Transformez 8 fer en 1 or, 8 or en 1 diamant grâce à l'alchimie.";
+        return "Transformez des ressources via l'alchimie (craft uniquement).";
     }
 
     @Override
@@ -37,164 +80,82 @@ public class Transmutation extends Scenario {
     }
 
     @Override
-    public void onPlayerInteract(Player player, PlayerInteractEvent event) {
-        if (!isActive()) return;
-
-        ItemStack item = event.getItem();
-        if (item == null) return;
-
-        // Check if player is holding a transmutation ingredient
-        if (item.getType() == Material.IRON_INGOT && item.getAmount() >= 8) {
-            if (event.getAction().name().contains("RIGHT_CLICK")) {
-                performTransmutation(player, Material.IRON_INGOT, Material.GOLD_INGOT, 8, 1);
-                event.setCancelled(true);
-            }
-        } else if (item.getType() == Material.GOLD_INGOT && item.getAmount() >= 8) {
-            if (event.getAction().name().contains("RIGHT_CLICK")) {
-                performTransmutation(player, Material.GOLD_INGOT, Material.DIAMOND, 8, 1);
-                event.setCancelled(true);
-            }
-        } else if (item.getType() == Material.COAL && item.getAmount() >= 16) {
-            if (event.getAction().name().contains("RIGHT_CLICK")) {
-                performTransmutation(player, Material.COAL, Material.IRON_INGOT, 16, 1);
-                event.setCancelled(true);
-            }
-        }
+    public void onGameStart() {
+        initializeTransmutationRecipes();
+        registerRecipes();
     }
 
     @Override
     public void onCraft(ItemStack result, CraftItemEvent event) {
         if (!isActive()) return;
+        if (!(event.getWhoClicked() instanceof Player player)) return;
 
-        // Check for transmutation crafting recipes
         Recipe recipe = event.getRecipe();
-        if (recipe instanceof ShapelessRecipe shapelessRecipe) {
+        if (!(recipe instanceof ShapelessRecipe shapeless)) return;
 
-            // Check if this is a transmutation recipe
-            if (isTransmutationRecipe(shapelessRecipe)) {
-                Player player = (Player) event.getWhoClicked();
-                player.sendMessage("§5[Transmutation] §fTransmutation réussie !");
+        TransmutationRecipe tr = getMatchingRecipe(shapeless);
+        if (tr == null) return;
+
+        event.setCancelled(true);
+
+        ItemStack[] matrix = event.getInventory().getMatrix();
+        for (int i = 0; i < matrix.length; i++) {
+            ItemStack item = matrix[i];
+            if (item != null && item.getType() == tr.inputMaterial()) {
+                item.setAmount(item.getAmount() - tr.inputAmount());
+                matrix[i] = item.getAmount() > 0 ? item : null;
+                break;
             }
         }
-    }
+        event.getInventory().setMatrix(matrix);
 
-    private void performTransmutation(Player player, Material inputMaterial, Material outputMaterial,
-                                      int inputAmount, int outputAmount) {
-        ItemStack inputItem = new ItemStack(inputMaterial, inputAmount);
+        player.getInventory().addItem(
+                new ItemStack(tr.outputMaterial(), tr.outputAmount())
+        );
 
-        // Check if player has enough materials
-        if (!player.getInventory().containsAtLeast(inputItem, inputAmount)) {
-            player.sendMessage("§5[Transmutation] §cVous n'avez pas assez de " +
-                    getMaterialName(inputMaterial) + " ! (Besoin de " + inputAmount + ")");
-            return;
-        }
-
-        // Remove input materials
-        player.getInventory().removeItem(inputItem);
-
-        // Add output materials
-        ItemStack outputItem = new ItemStack(outputMaterial, outputAmount);
-        if (player.getInventory().firstEmpty() != -1) {
-            player.getInventory().addItem(outputItem);
-        } else {
-            player.getWorld().dropItemNaturally(player.getLocation(), outputItem);
-            player.sendMessage("§5[Transmutation] §fVotre inventaire est plein ! L'objet a été jeté au sol.");
-        }
-
-        // Send success message
-        player.sendMessage("§5[Transmutation] §fTransmutation réussie ! " +
-                inputAmount + "x " + getMaterialName(inputMaterial) +
-                " → " + outputAmount + "x " + getMaterialName(outputMaterial));
-
-        // Visual and sound effects
-        player.getWorld().playSound(player.getLocation(),
-                org.bukkit.Sound.LEVEL_UP, 1.0f, 1.5f);
-
-        // Create particle effect (if available)
-        /*try {
-            player.getWorld().spawnParticle(
-                    org.bukkit.Particle.SPELL_WITCH,
-                    player.getLocation().add(0, 1, 0),
-                    20, 0.5, 0.5, 0.5, 0.1
-            );
-        } catch (Exception e) {
-            // Particle effects not available in this version
-        }*/
+        player.playSound(player.getLocation(), Sound.LEVEL_UP, 1f, 1.5f);
+        new ParticleBuilder(ParticleEffect.CLOUD)
+                .setLocation(player.getLocation())
+                .display();
     }
 
     private void initializeTransmutationRecipes() {
-        // Coal to Iron (16:1)
-        transmutationRecipes.put(Material.COAL,
-                new TransmutationRecipe(Material.COAL, 16, Material.IRON_INGOT, 1));
-
-        // Iron to Gold (8:1)
-        transmutationRecipes.put(Material.IRON_INGOT,
-                new TransmutationRecipe(Material.IRON_INGOT, 8, Material.GOLD_INGOT, 1));
-
-        // Gold to Diamond (8:1)
-        transmutationRecipes.put(Material.GOLD_INGOT,
-                new TransmutationRecipe(Material.GOLD_INGOT, 8, Material.DIAMOND, 1));
+        addRecipe(Material.COAL, coal_input, Material.IRON_INGOT, iron_output);
+        addRecipe(Material.IRON_INGOT, iron_input, Material.GOLD_INGOT, gold_output);
+        addRecipe(Material.GOLD_INGOT, gold_input, Material.DIAMOND, diamond_output);
     }
 
-    private boolean isTransmutationRecipe(ShapelessRecipe recipe) {
-        // This would need to be implemented based on how you register custom recipes
-        // For now, we'll use the interact method instead
-        return false;
+    private void addRecipe(Material input, int inputAmount, Material output, int outputAmount) {
+        transmutationRecipes.put(input,
+                new TransmutationRecipe(input, inputAmount, output, outputAmount));
     }
 
-    private String getMaterialName(Material material) {
-        switch (material) {
-            case COAL:
-                return "Charbon";
-            case IRON_INGOT:
-                return "Lingot de Fer";
-            case GOLD_INGOT:
-                return "Lingot d'Or";
-            case DIAMOND:
-                return "Diamant";
-            case EMERALD:
-                return "Émeraude";
-            default:
-                return material.name();
+    private void registerRecipes() {
+        for (TransmutationRecipe tr : transmutationRecipes.values()) {
+            ShapelessRecipe recipe = new ShapelessRecipe(
+                    new ItemStack(tr.outputMaterial(), tr.outputAmount())
+            );
+            recipe.addIngredient(tr.inputAmount(), tr.inputMaterial());
+            Bukkit.addRecipe(recipe);
         }
     }
 
-    // Get available transmutations for a player
-    public String getAvailableTransmutations(Player player) {
-        String sb = "§5[Transmutation] §fTransmutations disponibles :\n" +
-                "§7- §f16x Charbon → 1x Lingot de Fer (Clic droit)\n" +
-                "§7- §f8x Lingot de Fer → 1x Lingot d'Or (Clic droit)\n" +
-                "§7- §f8x Lingot d'Or → 1x Diamant (Clic droit)\n" +
-                "§7Tenez l'objet en main et faites clic droit pour transmuter !";
+    private TransmutationRecipe getMatchingRecipe(ShapelessRecipe recipe) {
+        if (recipe.getIngredientList().size() != 1) return null;
 
-        return sb;
+        ItemStack ingredient = recipe.getIngredientList().get(0);
+        if (ingredient == null) return null;
+
+        TransmutationRecipe tr = transmutationRecipes.get(ingredient.getType());
+        if (tr == null) return null;
+
+        return ingredient.getAmount() == tr.inputAmount() ? tr : null;
     }
 
-    // Check if player can perform a specific transmutation
-    public boolean canTransmute(Player player, Material inputMaterial) {
-        TransmutationRecipe recipe = transmutationRecipes.get(inputMaterial);
-        if (recipe == null) return false;
-
-        ItemStack requiredItem = new ItemStack(inputMaterial, recipe.inputAmount);
-        return player.getInventory().containsAtLeast(requiredItem, recipe.inputAmount);
-    }
-
-    // Get transmutation recipe for a material
-    public TransmutationRecipe getTransmutationRecipe(Material material) {
-        return transmutationRecipes.get(material);
-    }
-
-    // Admin command to perform transmutation for a player
-    public void forceTransmutation(Player player, Material inputMaterial) {
-        TransmutationRecipe recipe = transmutationRecipes.get(inputMaterial);
-        if (recipe != null) {
-            performTransmutation(player, recipe.inputMaterial, recipe.outputMaterial,
-                    recipe.inputAmount, recipe.outputAmount);
-        }
-    }
-
-    // Inner class for transmutation recipes
-    public record TransmutationRecipe(Material inputMaterial, int inputAmount, Material outputMaterial,
-                                      int outputAmount) {
-    }
+    public record TransmutationRecipe(
+            Material inputMaterial,
+            int inputAmount,
+            Material outputMaterial,
+            int outputAmount
+    ) {}
 }

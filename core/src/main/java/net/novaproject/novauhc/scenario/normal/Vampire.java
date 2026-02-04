@@ -1,13 +1,16 @@
 package net.novaproject.novauhc.scenario.normal;
 
+import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
 import net.novaproject.novauhc.scenario.lang.ScenarioLang;
 import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
 import net.novaproject.novauhc.scenario.lang.lang.VampireLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.VariableType;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -16,13 +19,19 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Vampire extends Scenario {
 
     private BukkitRunnable sunDamageTask;
-
+    @ScenarioVariable(name = "Vie",description = "Permet de definir la vie gagnez par kill", type = VariableType.DOUBLE)
+    private double healAmount = 2.0; // Default heal amount (1 heart)
+    @ScenarioVariable(name = "Degat du Soleil",description = "Permet de definir les dégats infligés par le soleil", type = VariableType.DOUBLE)
+    double sunDamage = 1.0;
+    @ScenarioVariable(name = "Inverval",description = "Definis l'interval entre les degat du soleil",type = VariableType.INTEGER)
+    private int interval = 40;
     @Override
     public String getName() {
         return "Vampire";
@@ -49,13 +58,9 @@ public class Vampire extends Scenario {
     }
 
     @Override
-    public void toggleActive() {
-        super.toggleActive();
-        if (isActive()) {
-            startSunDamageTask();
-        } else {
-            stopSunDamageTask();
-        }
+    public void onGameStart() {
+        Common.get().getArena().setTime(12000);
+        startSunDamageTask();
     }
 
     @Override
@@ -65,7 +70,6 @@ public class Vampire extends Scenario {
         if (killer != null) {
             Player killerPlayer = killer.getPlayer();
 
-            double healAmount = getConfig().getDouble("heal_amount", 2.0);
             double currentHealth = killerPlayer.getHealth();
             double maxHealth = killerPlayer.getMaxHealth();
             double newHealth = Math.min(maxHealth, currentHealth + healAmount);
@@ -77,8 +81,6 @@ public class Vampire extends Scenario {
             placeholders.put("%heal_hearts%", String.valueOf(healAmount / 2));
             ScenarioLangManager.send(killerPlayer, VampireLang.KILL_HEAL, placeholders);
 
-            int nightVisionDuration = getConfig().getInt("night_vision_duration", 600);
-            killerPlayer.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, nightVisionDuration, 0));
         }
     }
 
@@ -99,25 +101,19 @@ public class Vampire extends Scenario {
                     Player player = uhcPlayer.getPlayer();
                     World world = player.getWorld();
 
-                    // Check if it's day time (time between 0 and 12000)
                     long time = world.getTime();
                     boolean isDay = time >= 0 && time < 12000;
 
                     if (isDay) {
-                        // Check if player is under sunlight
                         if (world.getHighestBlockYAt(player.getLocation()) <= player.getLocation().getBlockY()) {
-                            // Check if player has no helmet
                             if (player.getInventory().getHelmet() == null ||
                                     player.getInventory().getHelmet().getType() == Material.AIR) {
 
-                                // Damage player
-                                double sunDamage = getConfig().getDouble("sun_damage_amount", 1.0);
                                 player.damage(sunDamage);
                                 Map<String, Object> sunPlaceholders = new HashMap<>();
                                 sunPlaceholders.put("%sun_damage%", String.valueOf(sunDamage));
                                 ScenarioLangManager.send(uhcPlayer.getPlayer(), VampireLang.SUN_DAMAGE, sunPlaceholders);
 
-                                // Add fire effect for visual
                                 player.setFireTicks(40);
                             }
                         }
@@ -126,16 +122,8 @@ public class Vampire extends Scenario {
             }
         };
 
-        // Run based on config interval
-        int interval = getConfig().getInt("sun_damage_interval", 40);
         sunDamageTask.runTaskTimer(Main.get(), 0, interval);
     }
 
-    private void stopSunDamageTask() {
-        if (sunDamageTask != null) {
-            sunDamageTask.cancel();
-            sunDamageTask = null;
-        }
-    }
 
 }

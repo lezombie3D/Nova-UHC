@@ -8,7 +8,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-public class noHorse extends Scenario {
+public class NoHorse extends Scenario {
     @Override
     public String getName() {
         return "HorseLess";

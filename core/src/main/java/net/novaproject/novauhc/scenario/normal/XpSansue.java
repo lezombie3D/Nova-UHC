@@ -2,16 +2,19 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.VariableType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class XpSansue extends Scenario {
     private boolean active = false;
-
+    @ScenarioVariable(name = "damage", description = "Dégâts infligés lorsque le joueur n'a plus de niveau d'expérience.",type = VariableType.INTEGER)
+    private int damage = 1;
     @Override
     public String getName() {
         return "XpSansue";
@@ -36,7 +39,7 @@ public class XpSansue extends Scenario {
                 public void run() {
                     for (UHCPlayer p : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
                         if (p.getPlayer().getLevel() > 0) {
-                            p.getPlayer().setLevel(p.getPlayer().getLevel() - 1);
+                            p.getPlayer().setLevel(p.getPlayer().getLevel() - damage );
                         } else {
                             p.getPlayer().damage(2);
                         }

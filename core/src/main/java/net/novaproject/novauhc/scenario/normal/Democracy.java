@@ -2,11 +2,14 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
+
 import net.novaproject.novauhc.scenario.lang.ScenarioLang;
 import net.novaproject.novauhc.scenario.lang.lang.DemocracyLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.VariableType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,13 +19,62 @@ import java.util.*;
 
 public class Democracy extends Scenario {
 
-    private final Map<UUID, UUID> playerVotes = new HashMap<>(); // voter -> target
-    private final Map<UUID, Integer> voteCount = new HashMap<>(); // target -> vote count
+    private final Map<UUID, UUID> playerVotes = new HashMap<>();
+    private final Map<UUID, Integer> voteCount = new HashMap<>();
     private final Set<UUID> hasVoted = new HashSet<>();
-    private final int VOTE_INTERVAL = 1800; // 30 minutes in seconds
 
     private BukkitRunnable voteTask;
     private boolean voteActive = false;
+
+    // --- Scenario Variables ---
+    @ScenarioVariable(
+            name = "vote_interval",
+            description = "Intervalle entre chaque vote en secondes",
+            type = VariableType.TIME
+    )
+    private int voteInterval = 1800; // 30 minutes
+
+    @ScenarioVariable(
+            name = "vote_duration",
+            description = "Durée d'un vote actif en secondes",
+            type = VariableType.TIME
+    )
+    private int voteDuration = 120; // 2 minutes
+
+    @ScenarioVariable(
+            name = "warning_5min",
+            description = "Activer avertissement 5 minutes avant vote",
+            type = VariableType.BOOLEAN
+    )
+    private boolean warning5Min = true;
+
+    @ScenarioVariable(
+            name = "warning_1min",
+            description = "Activer avertissement 1 minute avant vote",
+            type = VariableType.BOOLEAN
+    )
+    private boolean warning1Min = true;
+
+    @ScenarioVariable(
+            name = "warning_1min_vote",
+            description = "Activer avertissement 1 minute pendant le vote",
+            type = VariableType.BOOLEAN
+    )
+    private boolean warning1MinVote = true;
+
+    @ScenarioVariable(
+            name = "warning_10sec_vote",
+            description = "Activer avertissement 10 secondes pendant le vote",
+            type = VariableType.BOOLEAN
+    )
+    private boolean warning10SecVote = true;
+
+    @ScenarioVariable(
+            name = "min_players",
+            description = "Nombre minimum de joueurs pour que le vote commence",
+            type = VariableType.INTEGER
+    )
+    private int minPlayers = 3;
 
     @Override
     public String getName() {
@@ -31,7 +83,7 @@ public class Democracy extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Votez pour éliminer un joueur toutes les 30 minutes !";
+        return "Votez pour éliminer un joueur toutes les " + (voteInterval / 60) + " minutes !";
     }
 
     @Override
@@ -50,13 +102,8 @@ public class Democracy extends Scenario {
     }
 
     @Override
-    public void toggleActive() {
-        super.toggleActive();
-        if (isActive()) {
-            startVoteTask();
-        } else {
-            stopVoteTask();
-        }
+    public void onGameStart() {
+        startVoteTask();
     }
 
     private void startVoteTask() {
@@ -78,32 +125,27 @@ public class Democracy extends Scenario {
                 timer++;
 
                 if (!voteActive) {
-                    // Waiting for next vote
-                    int voteInterval = getConfig().getInt("vote_interval", 1800);
                     if (timer >= voteInterval) {
                         startVoting();
                         timer = 0;
-                        voteTimer = getConfig().getInt("vote_duration", 120);
+                        voteTimer = voteDuration;
                     } else {
-                        // Send warnings
-                        int timeUntilVote = VOTE_INTERVAL - timer;
-                        if (timeUntilVote == 300) { // 5 minutes before
+                        int timeUntilVote = voteInterval - timer;
+                        if (warning5Min && timeUntilVote == 300) {
                             Bukkit.broadcastMessage("§9[Democracy] §fVote démocratique dans 5 minutes !");
-                        } else if (timeUntilVote == 60) { // 1 minute before
+                        } else if (warning1Min && timeUntilVote == 60) {
                             Bukkit.broadcastMessage("§9[Democracy] §fVote démocratique dans 1 minute !");
                         }
                     }
                 } else {
-                    // Vote is active
                     voteTimer--;
 
                     if (voteTimer <= 0) {
                         endVoting();
                     } else {
-                        // Send countdown
-                        if (voteTimer == 60) {
+                        if (warning1MinVote && voteTimer == 60) {
                             Bukkit.broadcastMessage("§9[Democracy] §fPlus qu'1 minute pour voter !");
-                        } else if (voteTimer == 10) {
+                        } else if (warning10SecVote && voteTimer == 10) {
                             Bukkit.broadcastMessage("§9[Democracy] §fPlus que 10 secondes pour voter !");
                         }
                     }
@@ -111,7 +153,6 @@ public class Democracy extends Scenario {
             }
         };
 
-        // Run every second
         voteTask.runTaskTimer(Main.get(), 0, 20);
     }
 
@@ -130,7 +171,7 @@ public class Democracy extends Scenario {
 
         List<UHCPlayer> playingPlayers = UHCPlayerManager.get().getPlayingOnlineUHCPlayers();
 
-        if (playingPlayers.size() <= 2) {
+        if (playingPlayers.size() < minPlayers) {
             Bukkit.broadcastMessage("§9[Democracy] §fPas assez de joueurs pour un vote !");
             voteActive = false;
             return;
@@ -138,14 +179,12 @@ public class Democracy extends Scenario {
 
         Bukkit.broadcastMessage("§9§l[Democracy] §fLE VOTE DÉMOCRATIQUE COMMENCE !");
         Bukkit.broadcastMessage("§9[Democracy] §fUtilisez /vote <joueur> pour voter !");
-        Bukkit.broadcastMessage("§9[Democracy] §fVous avez 2 minutes pour voter !");
+        Bukkit.broadcastMessage("§9[Democracy] §fVous avez " + (voteDuration / 60) + " minutes pour voter !");
 
-        // Initialize vote counts
         for (UHCPlayer uhcPlayer : playingPlayers) {
             voteCount.put(uhcPlayer.getPlayer().getUniqueId(), 0);
         }
 
-        // Send individual messages
         for (UHCPlayer uhcPlayer : playingPlayers) {
             Player player = uhcPlayer.getPlayer();
             player.sendMessage("§9[Democracy] §fJoueurs disponibles :");
@@ -159,19 +198,15 @@ public class Democracy extends Scenario {
 
     private void endVoting() {
         voteActive = false;
-
         List<UHCPlayer> playingPlayers = UHCPlayerManager.get().getPlayingOnlineUHCPlayers();
 
-        // Count total votes
         int totalVotes = hasVoted.size();
-
         if (totalVotes == 0) {
             Bukkit.broadcastMessage("§9[Democracy] §fAucun vote ! Personne n'est éliminé.");
             clearVoteData();
             return;
         }
 
-        // Find player with most votes
         UUID targetToEliminate = null;
         int maxVotes = 0;
         List<UUID> tiedPlayers = new ArrayList<>();
@@ -188,14 +223,11 @@ public class Democracy extends Scenario {
             }
         }
 
-        // Handle ties
         if (tiedPlayers.size() > 1) {
-            // Random selection in case of tie
             targetToEliminate = tiedPlayers.get(new Random().nextInt(tiedPlayers.size()));
             Bukkit.broadcastMessage("§9[Democracy] §fÉgalité ! Sélection aléatoire...");
         }
 
-        // Announce results
         Bukkit.broadcastMessage("§9§l[Democracy] §fRÉSULTATS DU VOTE :");
         for (Map.Entry<UUID, Integer> entry : voteCount.entrySet()) {
             Player player = Bukkit.getPlayer(entry.getKey());
@@ -205,14 +237,11 @@ public class Democracy extends Scenario {
             }
         }
 
-        // Eliminate the target
         if (targetToEliminate != null && maxVotes > 0) {
             Player eliminatedPlayer = Bukkit.getPlayer(targetToEliminate);
             if (eliminatedPlayer != null) {
                 Bukkit.broadcastMessage("§9§l[Democracy] §f" + eliminatedPlayer.getName() +
                         " §fa été éliminé par vote démocratique !");
-
-                // Kill the player
                 eliminatedPlayer.setHealth(0);
                 eliminatedPlayer.sendMessage("§9[Democracy] §cVous avez été éliminé par le vote du peuple !");
             }
@@ -229,7 +258,6 @@ public class Democracy extends Scenario {
         hasVoted.clear();
     }
 
-    // Method to handle vote commands (would be called from a command)
     public boolean vote(Player voter, String targetName) {
         if (!isActive() || !voteActive) {
             voter.sendMessage("§9[Democracy] §cAucun vote en cours !");
@@ -243,7 +271,6 @@ public class Democracy extends Scenario {
             return false;
         }
 
-        // Find target player
         Player target = Bukkit.getPlayer(targetName);
         if (target == null || !target.isOnline()) {
             voter.sendMessage("§9[Democracy] §cJoueur introuvable !");
@@ -251,38 +278,30 @@ public class Democracy extends Scenario {
         }
 
         UUID targetUuid = target.getUniqueId();
-
-        // Check if target is playing
         UHCPlayer uhcTarget = UHCPlayerManager.get().getPlayer(target);
         if (uhcTarget == null || !uhcTarget.isPlaying()) {
             voter.sendMessage("§9[Democracy] §cCe joueur ne participe pas !");
             return false;
         }
 
-        // Can't vote for yourself
         if (voterUuid.equals(targetUuid)) {
             voter.sendMessage("§9[Democracy] §cVous ne pouvez pas voter pour vous-même !");
             return false;
         }
 
-        // Record vote
         playerVotes.put(voterUuid, targetUuid);
         hasVoted.add(voterUuid);
         voteCount.put(targetUuid, voteCount.getOrDefault(targetUuid, 0) + 1);
 
         voter.sendMessage("§9[Democracy] §fVous avez voté pour " + target.getName() + " !");
-
-        // Announce vote count
         int totalVoters = UHCPlayerManager.get().getPlayingOnlineUHCPlayers().size();
         int votesReceived = hasVoted.size();
-
         Bukkit.broadcastMessage("§9[Democracy] §f" + voter.getName() + " a voté ! (" +
                 votesReceived + "/" + totalVoters + " votes reçus)");
 
         return true;
     }
 
-    // Get current vote status
     public String getVoteStatus() {
         if (!voteActive) {
             return "§9[Democracy] §fAucun vote en cours.";
@@ -302,22 +321,4 @@ public class Democracy extends Scenario {
         return status.toString();
     }
 
-    // Check if voting is active
-    public boolean isVotingActive() {
-        return voteActive;
-    }
-
-    // Force start vote (admin command)
-    public void forceStartVote() {
-        if (isActive() && !voteActive) {
-            startVoting();
-            Bukkit.broadcastMessage("§9[Democracy] §fVote forcé par un administrateur !");
-        }
-    }
-
-    // Get who a player voted for
-    public Player getPlayerVote(Player voter) {
-        UUID targetUuid = playerVotes.get(voter.getUniqueId());
-        return targetUuid != null ? Bukkit.getPlayer(targetUuid) : null;
-    }
 }

@@ -190,13 +190,6 @@ public class OreRoulette extends Scenario {
         return new HashMap<>(oreRewards);
     }
 
-    // Update roulette weights (admin command)
-    public void updateWeight(Material material, int newWeight) {
-        RouletteItem item = oreRewards.get(material);
-        if (item != null) {
-            oreRewards.put(material, new RouletteItem(item.material, item.amount, newWeight));
-        }
-    }
 
     // Inner class to represent roulette items
     private record RouletteItem(Material material, int amount, int weight) {

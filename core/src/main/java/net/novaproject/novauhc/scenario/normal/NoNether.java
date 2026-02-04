@@ -30,6 +30,7 @@ public class NoNether extends Scenario {
         Optional<Scenario> netheriBus = ScenarioManager.get().getScenarioByName("NetheriBus");
 
         if (netheriBus.isPresent() && ScenarioManager.get().getActiveScenarios().contains(netheriBus.get())) {
+
         } else {
             if (event.getCause() == PlayerPortalEvent.TeleportCause.NETHER_PORTAL) {
                 event.setCancelled(true);

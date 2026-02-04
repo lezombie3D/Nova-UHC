@@ -1,6 +1,8 @@
 package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
+import net.novaproject.novauhc.utils.VariableType;
 import net.novaproject.novauhc.scenario.lang.ScenarioLang;
 import net.novaproject.novauhc.scenario.lang.lang.MagnetLang;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -26,7 +28,12 @@ public class Magnet extends Scenario {
             Material.REDSTONE_ORE
     );
 
-    private final int MAGNET_RADIUS = 5;
+    @ScenarioVariable(
+            name = "Magnet Radius",
+            description = "Rayon en blocs dans lequel les minerais sont attirés.",
+            type = VariableType.INTEGER
+    )
+    private int magnetRadius = 5;
 
     @Override
     public String getName() {
@@ -35,7 +42,7 @@ public class Magnet extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Les minerais dans un rayon de 5 blocs viennent automatiquement à vous.";
+        return "Les minerais dans un rayon de " + magnetRadius + " blocs viennent automatiquement à vous.";
     }
 
     @Override
@@ -58,12 +65,7 @@ public class Magnet extends Scenario {
         if (!isActive()) return;
 
         Material blockType = block.getType();
-
         if (oreTypes.contains(blockType)) {
-            // Let the original break happen first
-            // Then find and attract nearby ores
-
-            // Use a delayed task to ensure the block is broken first
             org.bukkit.Bukkit.getScheduler().runTaskLater(
                     net.novaproject.novauhc.Main.get(),
                     () -> attractNearbyOres(player, block.getLocation()),
@@ -74,9 +76,6 @@ public class Magnet extends Scenario {
 
     private void attractNearbyOres(Player player, Location centerLocation) {
         int oresAttracted = 0;
-
-        // Search in a cube around the broken block
-        int magnetRadius = (int) getConfig().getDouble("magnet_radius", 5.0);
         for (int x = -magnetRadius; x <= magnetRadius; x++) {
             for (int y = -magnetRadius; y <= magnetRadius; y++) {
                 for (int z = -magnetRadius; z <= magnetRadius; z++) {
@@ -84,16 +83,10 @@ public class Magnet extends Scenario {
                     Block checkBlock = checkLocation.getBlock();
 
                     if (oreTypes.contains(checkBlock.getType())) {
-                        // Break this ore and give items to player
                         Material oreType = checkBlock.getType();
-
-                        // Get the drops that would normally occur
                         ItemStack[] drops = getOreDrops(oreType);
-
-                        // Break the block
                         checkBlock.setType(Material.AIR);
 
-                        // Add items directly to player inventory or drop at their feet
                         for (ItemStack drop : drops) {
                             if (player.getInventory().firstEmpty() != -1) {
                                 player.getInventory().addItem(drop);
@@ -103,8 +96,6 @@ public class Magnet extends Scenario {
                         }
 
                         oresAttracted++;
-
-                        // Create visual effect (optional)
                         createMagnetEffect(checkLocation, player.getLocation());
                     }
                 }
@@ -118,74 +109,45 @@ public class Magnet extends Scenario {
 
     private ItemStack[] getOreDrops(Material oreType) {
         switch (oreType) {
-            case COAL_ORE:
-                return new ItemStack[]{new ItemStack(Material.COAL, 1)};
-            case IRON_ORE:
-                return new ItemStack[]{new ItemStack(Material.IRON_INGOT, 1)};
-            case GOLD_ORE:
-                return new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 1)};
-            case DIAMOND_ORE:
-                return new ItemStack[]{new ItemStack(Material.DIAMOND, 1)};
-            case EMERALD_ORE:
-                return new ItemStack[]{new ItemStack(Material.EMERALD, 1)};
-            case LAPIS_ORE:
-                ItemStack lapis = new ItemStack(Material.INK_SACK, 4 + (int) (Math.random() * 5));
-                lapis.setDurability((short) 4); // Lapis Lazuli data value
+            case COAL_ORE -> { return new ItemStack[]{new ItemStack(Material.COAL, 1)}; }
+            case IRON_ORE -> { return new ItemStack[]{new ItemStack(Material.IRON_INGOT, 1)}; }
+            case GOLD_ORE -> { return new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 1)}; }
+            case DIAMOND_ORE -> { return new ItemStack[]{new ItemStack(Material.DIAMOND, 1)}; }
+            case EMERALD_ORE -> { return new ItemStack[]{new ItemStack(Material.EMERALD, 1)}; }
+            case LAPIS_ORE -> {
+                ItemStack lapis = new ItemStack(Material.INK_SACK, 4 + (int)(Math.random() * 5));
+                lapis.setDurability((short) 4);
                 return new ItemStack[]{lapis};
-            case REDSTONE_ORE:
-                return new ItemStack[]{new ItemStack(Material.REDSTONE, 4 + (int) (Math.random() * 2))};
-            default:
-                return new ItemStack[]{new ItemStack(Material.COBBLESTONE, 1)};
+            }
+            case REDSTONE_ORE -> { return new ItemStack[]{new ItemStack(Material.REDSTONE, 4 + (int)(Math.random() * 2))}; }
+            default -> { return new ItemStack[]{new ItemStack(Material.COBBLESTONE, 1)}; }
         }
     }
 
     private void createMagnetEffect(Location from, Location to) {
-        // Create a visual effect showing the ore being attracted
-        // This could be particles, but for simplicity we'll just use a message
-
-        // Calculate distance for effect intensity
-        double distance = from.distance(to);
-
-        // You could add particle effects here if desired
-        // For now, we'll just create a subtle sound effect
         if (to.getWorld() != null) {
             to.getWorld().playSound(to, org.bukkit.Sound.ITEM_PICKUP, 0.3f, 1.5f);
         }
     }
 
-    // Check if a location is within magnet range of another location
     public boolean isWithinMagnetRange(Location center, Location target) {
-        return center.distance(target) <= MAGNET_RADIUS;
+        return center.distance(target) <= magnetRadius;
     }
 
-    // Get all ore blocks within magnet range of a location
     public List<Block> getOresInRange(Location center) {
         List<Block> oresInRange = new java.util.ArrayList<>();
-
-        for (int x = -MAGNET_RADIUS; x <= MAGNET_RADIUS; x++) {
-            for (int y = -MAGNET_RADIUS; y <= MAGNET_RADIUS; y++) {
-                for (int z = -MAGNET_RADIUS; z <= MAGNET_RADIUS; z++) {
+        for (int x = -magnetRadius; x <= magnetRadius; x++) {
+            for (int y = -magnetRadius; y <= magnetRadius; y++) {
+                for (int z = -magnetRadius; z <= magnetRadius; z++) {
                     Location checkLocation = center.clone().add(x, y, z);
                     Block checkBlock = checkLocation.getBlock();
-
                     if (oreTypes.contains(checkBlock.getType())) {
                         oresInRange.add(checkBlock);
                     }
                 }
             }
         }
-
         return oresInRange;
     }
 
-    // Get current magnet radius
-    public int getMagnetRadius() {
-        return MAGNET_RADIUS;
-    }
-
-    // Admin command to change magnet radius
-    public void setMagnetRadius(int newRadius) {
-        // This would require making MAGNET_RADIUS non-final and adding proper validation
-        // For now, it's fixed at 5 blocks
-    }
 }

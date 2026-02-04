@@ -58,9 +58,6 @@ public class HCMD extends Command {
         String subCommand = arguments[0].toLowerCase();
 
         switch (subCommand) {
-            case "scenario":
-                new ScenariosUi(player).open();
-                break;
             case "give":
                 if (!UHCManager.get().isGame()) {
                     CommonString.DISABLE_ACTION.send(player);
@@ -146,10 +143,10 @@ public class HCMD extends Command {
     public List<String> tabComplete(CommandArguments args) {
         String[] arguments = args.getArguments();
         if (arguments.length == 0) {
-            return getStrings(args, "scenario", "give", "config", "bypass", "say", "title", "cohost", "revive", "forceteam", "heal", "limite", "forcepvp", "forcemtp", "whitelist", "stuff");
+            return getStrings(args , "give", "config", "bypass", "say", "title", "cohost", "revive", "forceteam", "heal", "limite", "forcepvp", "forcemtp", "whitelist", "stuff");
         }
         if (arguments.length == 1) {
-            return getStrings(args, "scenario", "give", "config", "bypass", "say", "title", "cohost", "revive", "forceteam", "heal", "limite", "forcepvp", "forcemtp", "whitelist", "stuff");
+            return getStrings(args, "give", "config", "bypass", "say", "title", "cohost", "revive", "forceteam", "heal", "limite", "forcepvp", "forcemtp", "whitelist", "stuff");
         }
         String sub = arguments[0].toLowerCase();
         switch (sub) {

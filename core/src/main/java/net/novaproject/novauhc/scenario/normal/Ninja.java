@@ -1,6 +1,8 @@
 package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
+import net.novaproject.novauhc.utils.VariableType;
 import net.novaproject.novauhc.scenario.lang.ScenarioLang;
 import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
 import net.novaproject.novauhc.scenario.lang.lang.NinjaLang;
@@ -14,6 +16,20 @@ import org.bukkit.potion.PotionEffectType;
 
 public class Ninja extends Scenario {
 
+    @ScenarioVariable(
+            name = "Invisibility Duration",
+            description = "Durée de l'invisibilité après un kill en ticks (20 ticks = 1 seconde).",
+            type = VariableType.TIME
+    )
+    private int invisibilityDuration = 200;
+
+    @ScenarioVariable(
+            name = "Invisibility Level",
+            description = "Niveau de l'effet d'invisibilité après un kill.",
+            type = VariableType.INTEGER
+    )
+    private int invisibilityLevel = 0;
+
     @Override
     public String getName() {
         return "Ninja";
@@ -21,7 +37,7 @@ public class Ninja extends Scenario {
 
     @Override
     public String getDescription() {
-        return "Devenez invisible pendant 10 secondes après chaque kill !";
+        return "Devenez invisible pendant " + (invisibilityDuration / 20) + " secondes après chaque kill !";
     }
 
     @Override
@@ -45,14 +61,7 @@ public class Ninja extends Scenario {
 
         if (killer != null) {
             Player killerPlayer = killer.getPlayer();
-
-            // Give invisibility effect based on config
-            int invisibilityDuration = getConfig().getInt("invisibility_duration", 200);
-            int invisibilityLevel = getConfig().getInt("invisibility_level", 0);
-
             killerPlayer.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, invisibilityDuration, invisibilityLevel));
-
-            // Send message to killer
             ScenarioLangManager.send(killer, NinjaLang.KILL_INVISIBILITY);
         }
     }

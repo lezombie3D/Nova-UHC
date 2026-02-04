@@ -57,7 +57,7 @@ public class ScenarioManager {
         addScenario(new ChatPvP());
         addScenario(new SafeMiner());
         addScenario(new TeamInv());
-        addScenario(new noHorse());
+        addScenario(new NoHorse());
         //addScenario(new CromagnonUHC());
         addScenario(new NoNameTag());
         addScenario(new BestPvE());

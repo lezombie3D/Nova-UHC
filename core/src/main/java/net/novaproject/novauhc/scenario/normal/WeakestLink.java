@@ -2,12 +2,14 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+import net.novaproject.novauhc.scenario.ScenarioVariable;
 import net.novaproject.novauhc.scenario.lang.ScenarioLang;
 import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
 import net.novaproject.novauhc.scenario.lang.lang.WeakestLinkLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.VariableType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -25,6 +27,8 @@ public class WeakestLink extends Scenario {
 
     private final Map<UUID, Integer> playerKills = new HashMap<>();
     private BukkitRunnable updateTask;
+    @ScenarioVariable(name = "multiplier", description = "Le multiplicateur de dégâts pour le maillon faible", type = VariableType.PERCENTAGE)
+    private double multiplier = 2.0;
 
     @Override
     public String getName() {
@@ -51,15 +55,9 @@ public class WeakestLink extends Scenario {
         return WeakestLinkLang.values();
     }
 
-
     @Override
-    public void toggleActive() {
-        super.toggleActive();
-        if (isActive()) {
-            startUpdateTask();
-        } else {
-            stopUpdateTask();
-        }
+    public void onGameStart() {
+        startUpdateTask();
     }
 
     @Override
@@ -69,9 +67,6 @@ public class WeakestLink extends Scenario {
         if (killer != null) {
             UUID killerUuid = killer.getPlayer().getUniqueId();
             playerKills.put(killerUuid, playerKills.getOrDefault(killerUuid, 0) + 1);
-
-            killer.getPlayer().sendMessage("§c[WeakestLink] §fVous avez maintenant " +
-                    playerKills.get(killerUuid) + " kill(s) !");
         }
 
         playerKills.remove(uhcPlayer.getPlayer().getUniqueId());
@@ -85,11 +80,9 @@ public class WeakestLink extends Scenario {
 
         if (!(entity instanceof Player victim) || !(damager instanceof Player)) return;
 
-        // Check if victim is the weakest link
         if (isWeakestLink(victim)) {
-            // Apply damage multiplier from config
             double originalDamage = event.getDamage();
-            double multiplier = getConfig().getDouble("damage_multiplier", 2.0);
+
             event.setDamage(originalDamage * multiplier);
 
             UHCPlayer uhcVictim = UHCPlayerManager.get().getPlayer(victim);
@@ -115,25 +108,17 @@ public class WeakestLink extends Scenario {
             }
         };
 
-        // Update every 30 seconds
         updateTask.runTaskTimerAsynchronously(Main.get(), 0, 600);
     }
 
-    private void stopUpdateTask() {
-        if (updateTask != null) {
-            updateTask.cancel();
-            updateTask = null;
-        }
-    }
 
     private void updateWeakestLink() {
         List<UHCPlayer> playingPlayers = UHCPlayerManager.get().getPlayingOnlineUHCPlayers();
 
         if (playingPlayers.size() <= 1) {
-            return; // No point in having a weakest link with 1 or 0 players
+            return;
         }
 
-        // Initialize kills for new players
         for (UHCPlayer uhcPlayer : playingPlayers) {
             UUID playerUuid = uhcPlayer.getPlayer().getUniqueId();
             if (!playerKills.containsKey(playerUuid)) {
@@ -141,7 +126,6 @@ public class WeakestLink extends Scenario {
             }
         }
 
-        // Find minimum kills
         int minKills = Integer.MAX_VALUE;
         for (UHCPlayer uhcPlayer : playingPlayers) {
             UUID playerUuid = uhcPlayer.getPlayer().getUniqueId();
@@ -151,7 +135,6 @@ public class WeakestLink extends Scenario {
             }
         }
 
-        // Find all players with minimum kills (weakest links)
         StringBuilder weakestLinks = new StringBuilder();
         int weakestCount = 0;
 
@@ -166,19 +149,12 @@ public class WeakestLink extends Scenario {
                 weakestLinks.append(uhcPlayer.getPlayer().getName());
                 weakestCount++;
 
-                // Notify the weakest link
-                uhcPlayer.getPlayer().sendMessage("§c[WeakestLink] §fVous êtes un maillon faible avec " +
-                        kills + " kill(s) ! Vous prenez 2x plus de dégâts !");
+                ScenarioLangManager.send(uhcPlayer, WeakestLinkLang.WEAKEST_PLAYER, Map.of("%multiplier%", multiplier));
             }
         }
 
-        // Broadcast weakest link(s)
         if (weakestCount > 0) {
-            String message = weakestCount == 1 ?
-                    "§c[WeakestLink] §fLe maillon faible est : §c" + weakestLinks :
-                    "§c[WeakestLink] §fLes maillons faibles sont : §c" + weakestLinks;
-
-            Bukkit.broadcastMessage(message);
+            ScenarioLangManager.sendAll(WeakestLinkLang.WEAKEST_PLAYER, Map.of("%players%", weakestLinks.toString()));
         }
     }
 
@@ -192,7 +168,6 @@ public class WeakestLink extends Scenario {
         UUID playerUuid = player.getUniqueId();
         int playerKillCount = playerKills.getOrDefault(playerUuid, 0);
 
-        // Find minimum kills among all players
         int minKills = Integer.MAX_VALUE;
         for (UHCPlayer uhcPlayer : playingPlayers) {
             UUID uuid = uhcPlayer.getPlayer().getUniqueId();
@@ -203,27 +178,5 @@ public class WeakestLink extends Scenario {
         }
 
         return playerKillCount == minKills;
-    }
-
-    // Get kills for a player
-    public int getKills(Player player) {
-        return playerKills.getOrDefault(player.getUniqueId(), 0);
-    }
-
-    // Get all player kills (for debugging/admin commands)
-    public Map<UUID, Integer> getAllKills() {
-        return new HashMap<>(playerKills);
-    }
-
-    // Reset kills for a player (admin command)
-    public void resetKills(Player player) {
-        playerKills.put(player.getUniqueId(), 0);
-        updateWeakestLink();
-    }
-
-    // Reset all kills (admin command)
-    public void resetAllKills() {
-        playerKills.clear();
-        updateWeakestLink();
     }
 }

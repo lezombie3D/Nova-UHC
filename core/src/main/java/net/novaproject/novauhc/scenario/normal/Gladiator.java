@@ -2,12 +2,15 @@ package net.novaproject.novauhc.scenario.normal;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.scenario.Scenario;
+
+import net.novaproject.novauhc.scenario.ScenarioVariable;
 import net.novaproject.novauhc.scenario.lang.ScenarioLang;
 import net.novaproject.novauhc.scenario.lang.ScenarioLangManager;
 import net.novaproject.novauhc.scenario.lang.lang.GladiatorLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.ItemCreator;
+import net.novaproject.novauhc.utils.VariableType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,6 +30,34 @@ public class Gladiator extends Scenario {
     private final Map<UUID, Location> originalLocations = new HashMap<>();
     private final Map<UUID, UUID> fightPairs = new HashMap<>();
     private final Map<UUID, Location> arenaLocations = new HashMap<>();
+
+    @ScenarioVariable(
+            name = "Rayon de l'arène",
+            description = "Rayon de l'arène circulaire",
+            type = VariableType.INTEGER
+    )
+    private int arenaRadius = 10;
+
+    @ScenarioVariable(
+            name = "Hauteur de l'arène",
+            description = "Hauteur des murs de l'arène",
+            type = VariableType.INTEGER
+    )
+    private int arenaHeight = 5;
+
+    @ScenarioVariable(
+            name = "Hauteur de spawn de l'arène",
+            description = "Altitude à laquelle l'arène apparaît",
+            type = VariableType.INTEGER
+    )
+    private int arenaSpawnY = 200;
+
+    @ScenarioVariable(
+            name = "Durée max du combat (ticks)",
+            description = "Durée maximale d'un combat d'arène avant fin automatique",
+            type = VariableType.INTEGER
+    )
+    private int maxFightDuration = 20 * 60 * 5;
 
     @Override
     public String getName() {
@@ -56,23 +87,14 @@ public class Gladiator extends Scenario {
     @Override
     public void onHit(Entity entity, Entity damager, EntityDamageByEntityEvent event) {
         if (!isActive()) return;
-
         if (!(entity instanceof Player victim) || !(damager instanceof Player attacker)) return;
 
-        // Check if both players are playing
         UHCPlayer uhcVictim = UHCPlayerManager.get().getPlayer(victim);
         UHCPlayer uhcAttacker = UHCPlayerManager.get().getPlayer(attacker);
 
-        if (uhcVictim == null || uhcAttacker == null || !uhcVictim.isPlaying() || !uhcAttacker.isPlaying()) {
-            return;
-        }
+        if (uhcVictim == null || uhcAttacker == null || !uhcVictim.isPlaying() || !uhcAttacker.isPlaying()) return;
+        if (fightPairs.containsKey(attacker.getUniqueId()) || fightPairs.containsKey(victim.getUniqueId())) return;
 
-        // Check if players are already in a fight
-        if (fightPairs.containsKey(attacker.getUniqueId()) || fightPairs.containsKey(victim.getUniqueId())) {
-            return;
-        }
-
-        // Start gladiator fight
         startGladiatorFight(attacker, victim);
     }
 
@@ -80,22 +102,17 @@ public class Gladiator extends Scenario {
         UUID uuid1 = player1.getUniqueId();
         UUID uuid2 = player2.getUniqueId();
 
-        // Store original locations
         originalLocations.put(uuid1, player1.getLocation().clone());
         originalLocations.put(uuid2, player2.getLocation().clone());
 
-        // Mark players as fighting each other
         fightPairs.put(uuid1, uuid2);
         fightPairs.put(uuid2, uuid1);
 
-        // Find arena location (high in the sky)
         Location arenaCenter = player1.getLocation().clone();
-        arenaCenter.setY(200);
+        arenaCenter.setY(arenaSpawnY);
 
-        // Create arena
         createArena(arenaCenter);
 
-        // Teleport players to arena
         Location pos1 = arenaCenter.clone().add(5, 1, 0);
         Location pos2 = arenaCenter.clone().add(-5, 1, 0);
 
@@ -105,7 +122,6 @@ public class Gladiator extends Scenario {
         player1.teleport(pos1);
         player2.teleport(pos2);
 
-        // Send messages
         UHCPlayer uhcPlayer1 = UHCPlayerManager.get().getPlayer(player1);
         UHCPlayer uhcPlayer2 = UHCPlayerManager.get().getPlayer(player2);
 
@@ -117,49 +133,42 @@ public class Gladiator extends Scenario {
         placeholders.put("%player2%", player2.getName());
         ScenarioLangManager.sendAll(GladiatorLang.ARENA_CREATED, placeholders);
 
-        // Start arena cleanup timer (5 minutes max)
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (fightPairs.containsKey(uuid1) && fightPairs.containsKey(uuid2)) {
-                    // Force end fight if still ongoing
                     endGladiatorFight(player1, player2, null);
                 }
             }
-        }.runTaskLater(Main.get(), 20 * 60 * 5); // 5 minutes
+        }.runTaskLater(Main.get(), maxFightDuration);
     }
 
     private void createArena(Location center) {
         World world = center.getWorld();
-        int radius = 10;
-        int height = 5;
 
-        // Create floor
-        for (int x = -radius; x <= radius; x++) {
-            for (int z = -radius; z <= radius; z++) {
-                if (x * x + z * z <= radius * radius) {
+        for (int x = -arenaRadius; x <= arenaRadius; x++) {
+            for (int z = -arenaRadius; z <= arenaRadius; z++) {
+                if (x * x + z * z <= arenaRadius * arenaRadius) {
                     world.getBlockAt(center.clone().add(x, 0, z)).setType(Material.STONE);
                 }
             }
         }
 
-        // Create walls
-        for (int y = 1; y <= height; y++) {
-            for (int x = -radius; x <= radius; x++) {
-                for (int z = -radius; z <= radius; z++) {
-                    if (x * x + z * z == radius * radius ||
-                            Math.abs(x) == radius || Math.abs(z) == radius) {
+        for (int y = 1; y <= arenaHeight; y++) {
+            for (int x = -arenaRadius; x <= arenaRadius; x++) {
+                for (int z = -arenaRadius; z <= arenaRadius; z++) {
+                    if (x * x + z * z == arenaRadius * arenaRadius ||
+                            Math.abs(x) == arenaRadius || Math.abs(z) == arenaRadius) {
                         world.getBlockAt(center.clone().add(x, y, z)).setType(Material.BEDROCK);
                     }
                 }
             }
         }
 
-        // Create ceiling
-        for (int x = -radius; x <= radius; x++) {
-            for (int z = -radius; z <= radius; z++) {
-                if (x * x + z * z <= radius * radius) {
-                    world.getBlockAt(center.clone().add(x, height + 1, z)).setType(Material.BEDROCK);
+        for (int x = -arenaRadius; x <= arenaRadius; x++) {
+            for (int z = -arenaRadius; z <= arenaRadius; z++) {
+                if (x * x + z * z <= arenaRadius * arenaRadius) {
+                    world.getBlockAt(center.clone().add(x, arenaHeight + 1, z)).setType(Material.BEDROCK);
                 }
             }
         }
@@ -169,11 +178,9 @@ public class Gladiator extends Scenario {
         UUID uuid1 = player1.getUniqueId();
         UUID uuid2 = player2.getUniqueId();
 
-        // Remove from fight pairs
         fightPairs.remove(uuid1);
         fightPairs.remove(uuid2);
 
-        // Teleport survivors back to original locations
         if (player1.isOnline() && originalLocations.containsKey(uuid1)) {
             player1.teleport(originalLocations.get(uuid1));
         }
@@ -181,20 +188,17 @@ public class Gladiator extends Scenario {
             player2.teleport(originalLocations.get(uuid2));
         }
 
-        // Clean up stored data
         originalLocations.remove(uuid1);
         originalLocations.remove(uuid2);
         arenaLocations.remove(uuid1);
         arenaLocations.remove(uuid2);
 
-        // Announce winner
         if (winner != null) {
             Bukkit.broadcastMessage("§c[Gladiator] §f" + winner.getName() + " §fa remporté le combat d'arène !");
         } else {
             Bukkit.broadcastMessage("§c[Gladiator] §fLe combat d'arène s'est terminé.");
         }
 
-        // Clean up arena (delayed to avoid issues)
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -206,28 +210,22 @@ public class Gladiator extends Scenario {
                     cleanupArena(center);
                 }
             }
-        }.runTaskLater(Main.get(), 60); // 3 seconds delay
+        }.runTaskLater(Main.get(), 60);
     }
 
     private void cleanupArena(Location center) {
         World world = center.getWorld();
-        int radius = 10;
-        int height = 5;
 
-        // Remove arena blocks
-        for (int x = -radius; x <= radius; x++) {
-            for (int z = -radius; z <= radius; z++) {
-                for (int y = 0; y <= height + 1; y++) {
-                    if (x * x + z * z <= radius * radius + 1) {
+        for (int x = -arenaRadius; x <= arenaRadius; x++) {
+            for (int z = -arenaRadius; z <= arenaRadius; z++) {
+                for (int y = 0; y <= arenaHeight + 1; y++) {
+                    if (x * x + z * z <= arenaRadius * arenaRadius + 1) {
                         world.getBlockAt(center.clone().add(x, y, z)).setType(Material.AIR);
                     }
                 }
             }
         }
     }
-
-    // This method should be called when a player dies
-
 
     @Override
     public void onDeath(UHCPlayer uhcPlayer, UHCPlayer killer, PlayerDeathEvent event) {

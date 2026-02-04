@@ -25,8 +25,8 @@ public class WooltoString extends Scenario {
     }
 
     @Override
-    public void setup() {
-        for (byte i = 0; i < 16; i++) { // Les variantes de laine vont de 0 à 15
+    public void onGameStart() {
+        for (byte i = 0; i < 16; i++) {
             MaterialData woolData = new MaterialData(Material.WOOL, i);
 
             ShapedRecipe r1 = new ShapedRecipe(new ItemStack(Material.STRING, 1));
