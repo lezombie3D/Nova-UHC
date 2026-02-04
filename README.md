@@ -147,7 +147,6 @@ API/
 - TODO: Implement unit and integration tests (none currently detected).
 
 ## 📄 License
-- TODO: Add license information.
 
 ---
 *Maintained by Lezombie3D and Sithey.*
