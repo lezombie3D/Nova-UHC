@@ -288,37 +288,41 @@ public class UHCManager {
 
     public void checkVictory() {
         if (gameState != GameState.INGAME) {
-            return;
+        return;
         }
 
         boolean win = false;
 
-        List<UHCTeam> aliveTeams = uhcTeamManager.getAliveTeams();
-        List<UHCPlayer> alivePlayers = uhcPlayerManager.getPlayingOnlineUHCPlayers();
+        if (team_size == 1) {
+        // Mode solo : pas d'équipes, on vérifie s'il reste 1 joueur ou moins
+            List<UHCPlayer> alivePlayers = uhcPlayerManager.getPlayingOnlineUHCPlayers();
 
-        List<UHCPlayer> soloPlayers = alivePlayers.stream()
-                .filter(p -> !p.getTeam().isPresent())
-                .collect(Collectors.toList());
-        if(team_size == 1){
-            soloPlayers.clear();
-            soloPlayers = alivePlayers;
-        }
-        if (aliveTeams.size() == 1 && soloPlayers.isEmpty()) {
+            if (alivePlayers.size() <= 1) {
+                if (alivePlayers.size() == 1) {
+                    UHCPlayer player = alivePlayers.get(0);
+                    Bukkit.broadcastMessage(ChatColor.GOLD + " Félicitations au joueur : " 
+                        + player.getPlayer().getDisplayName());
+                }
+                win = true;
+            }
 
-            UHCTeam team = aliveTeams.get(0);
-            String winner = team.name();
-            String teamMembers = team.getPlayers().stream()
-                    .map(p -> p.getPlayer().getName())
-                    .collect(Collectors.joining(", "));
+        } else {
+        // Mode équipe : on vérifie s'il reste 1 seule équipe et aucun joueur sans équipe
+            List<UHCTeam> aliveTeams = uhcTeamManager.getAliveTeams();
+            List<UHCPlayer> soloPlayers = uhcPlayerManager.getPlayingOnlineUHCPlayers().stream()
+                    .filter(p -> p.getTeam().isEmpty())
+                    .collect(Collectors.toList());
 
-            Bukkit.broadcastMessage(ChatColor.GOLD + " Félicitations à l'équipe " + winner + " : " + teamMembers);
-            win = true;
+            if (aliveTeams.size() == 1 && soloPlayers.isEmpty()) {
+                UHCTeam team = aliveTeams.get(0);
+                String teamMembers = team.getPlayers().stream()
+                        .map(p -> p.getPlayer().getName())
+                        .collect(Collectors.joining(", "));
 
-        } else if (aliveTeams.isEmpty() && soloPlayers.size() == 1) {
-
-            UHCPlayer player = soloPlayers.get(0);
-            Bukkit.broadcastMessage(ChatColor.GOLD + " Félicitations au joueur : " + player.getPlayer().getDisplayName());
-            win = true;
+                Bukkit.broadcastMessage(ChatColor.GOLD + " Félicitations à l'équipe " 
+                    + team.name() + " : " + teamMembers);
+                win = true;
+            }
         }
 
         for (Scenario scenario : ScenarioManager.get().getActiveScenarios()) {
@@ -331,6 +335,8 @@ public class UHCManager {
             endGame();
         }
     }
+
+
 
 
     private void fireWork(Player p) {
