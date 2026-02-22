@@ -12,6 +12,7 @@ import net.novaproject.novauhc.ui.config.Enchants;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -122,17 +123,54 @@ public class ConfigCMD extends Command {
                 Main.getDatabaseManager().getConfigManager().getCurrentPotionStates()
         );
 
+        // ✅ Async - pas besoin d'attendre la réponse
         Main.getDatabaseManager().saveUHCConfig(playerUUID, config);
-        player.sendMessage(ChatColor.GREEN + "Configuration " + ChatColor.GOLD + configName + ChatColor.GREEN + " sauvegardée avec succès!");
+        player.sendMessage(ChatColor.GREEN + "⏳ Sauvegarde de la configuration " + ChatColor.GOLD + configName + ChatColor.GREEN + " en cours...");
+
+        // Message de confirmation après 1 seconde (laisse le temps à l'API)
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.sendMessage(ChatColor.GREEN + "✓ Configuration " + ChatColor.GOLD + configName + ChatColor.GREEN + " sauvegardée!");
+            }
+        }.runTaskLater(Main.get(), 20L); // 1 seconde
     }
 
     private void loadConfig(Player player, UUID playerUUID, String configName) {
-        UHCGameConfiguration config = Main.getDatabaseManager().getUHCConfig(playerUUID, configName);
+        player.sendMessage(ChatColor.YELLOW + "⏳ Chargement de la configuration " + ChatColor.GOLD + configName + ChatColor.YELLOW + "...");
 
-        if (config == null) {
-            player.sendMessage(ChatColor.RED + "Aucune configuration trouvée avec le nom " + ChatColor.GOLD + configName);
-            return;
-        }
+        // ✅ Async avec thenAccept
+        Main.getDatabaseManager().getUHCConfig(playerUUID, configName)
+                .thenAccept(config -> {
+                    // Retour au thread principal
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (config == null) {
+                                player.sendMessage(ChatColor.RED + "✗ Aucune configuration trouvée avec le nom " + ChatColor.GOLD + configName);
+                                return;
+                            }
+
+                            applyConfig(player, config);
+                        }
+                    }.runTask(Main.get());
+                })
+                .exceptionally(ex -> {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            player.sendMessage(ChatColor.RED + "✗ Erreur lors du chargement: " + ex.getMessage());
+                            ex.printStackTrace();
+                        }
+                    }.runTask(Main.get());
+                    return null;
+                });
+    }
+
+    /**
+     * Applique la configuration chargée (doit être appelé sur le thread principal)
+     */
+    private void applyConfig(Player player, UHCGameConfiguration config) {
         UHCManager uhc = UHCManager.get();
 
         uhc.setTeam_size(config.getTeamSize());
@@ -162,11 +200,12 @@ public class ConfigCMD extends Command {
         uhc.applyLimitsFromList(config.getLimite());
         uhc.setProtectionMax(config.getProtection());
         uhc.death = config.getDeath();
+
         if (config.getPotionStates() != null && !config.getPotionStates().isEmpty()) {
             Main.getDatabaseManager().getConfigManager().applyPotionStatesToEnum(config.getPotionStates());
         }
 
-        player.sendMessage(ChatColor.GREEN + "Configuration " + ChatColor.GOLD + configName + ChatColor.GREEN + " chargée!");
+        player.sendMessage(ChatColor.GREEN + "✓ Configuration " + ChatColor.GOLD + config.getName() + ChatColor.GREEN + " chargée!");
         String scenariosStr = String.join(", ", config.getEnabledScenarios());
         player.sendMessage(ChatColor.YELLOW + "Scénarios: " + ChatColor.WHITE + scenariosStr);
 
@@ -185,27 +224,65 @@ public class ConfigCMD extends Command {
     }
 
     private void deleteConfig(Player player, UUID playerUUID, String configName) {
-        boolean deleted = Main.getDatabaseManager().deleteUHCConfig(playerUUID, configName);
+        player.sendMessage(ChatColor.YELLOW + "⏳ Suppression de la configuration " + ChatColor.GOLD + configName + ChatColor.YELLOW + "...");
 
-        if (deleted) {
-            player.sendMessage(ChatColor.GREEN + "Configuration " + ChatColor.GOLD + configName + ChatColor.GREEN + " supprimée avec succès!");
-        } else {
-            player.sendMessage(ChatColor.RED + "Aucune configuration trouvée avec le nom " + ChatColor.GOLD + configName);
-        }
+        // ✅ Async avec thenAccept
+        Main.getDatabaseManager().deleteUHCConfig(playerUUID, configName)
+                .thenAccept(deleted -> {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (deleted) {
+                                player.sendMessage(ChatColor.GREEN + "✓ Configuration " + ChatColor.GOLD + configName + ChatColor.GREEN + " supprimée avec succès!");
+                            } else {
+                                player.sendMessage(ChatColor.RED + "✗ Aucune configuration trouvée avec le nom " + ChatColor.GOLD + configName);
+                            }
+                        }
+                    }.runTask(Main.get());
+                })
+                .exceptionally(ex -> {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            player.sendMessage(ChatColor.RED + "✗ Erreur lors de la suppression: " + ex.getMessage());
+                            ex.printStackTrace();
+                        }
+                    }.runTask(Main.get());
+                    return null;
+                });
     }
 
     private void listConfigs(Player player, UUID playerUUID) {
-        List<String> configNames = Main.getDatabaseManager().getPlayerUHCConfigNames(playerUUID);
+        player.sendMessage(ChatColor.YELLOW + "⏳ Récupération de vos configurations...");
 
-        if (configNames.isEmpty()) {
-            player.sendMessage(ChatColor.YELLOW + "Vous n'avez aucune configuration sauvegardée.");
-            return;
-        }
+        // ✅ Async avec thenAccept
+        Main.getDatabaseManager().getPlayerUHCConfigNames(playerUUID)
+                .thenAccept(configNames -> {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (configNames == null || configNames.isEmpty()) {
+                                player.sendMessage(ChatColor.YELLOW + "Vous n'avez aucune configuration sauvegardée.");
+                                return;
+                            }
 
-        player.sendMessage(ChatColor.GOLD + "=== Vos configurations UHC ===");
-        for (String name : configNames) {
-            player.sendMessage(ChatColor.YELLOW + "- " + ChatColor.WHITE + name);
-        }
+                            player.sendMessage(ChatColor.GOLD + "=== Vos configurations UHC (" + configNames.size() + ") ===");
+                            for (String name : configNames) {
+                                player.sendMessage(ChatColor.YELLOW + " • " + ChatColor.WHITE + name);
+                            }
+                        }
+                    }.runTask(Main.get());
+                })
+                .exceptionally(ex -> {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            player.sendMessage(ChatColor.RED + "✗ Erreur lors de la récupération: " + ex.getMessage());
+                            ex.printStackTrace();
+                        }
+                    }.runTask(Main.get());
+                    return null;
+                });
     }
 
     @Override

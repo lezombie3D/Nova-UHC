@@ -11,75 +11,128 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class PreconfigUi extends CustomInventory {
 
-    List<String> configNames = listConfigs(getPlayer().getUniqueId());
+    private List<String> configNames = new ArrayList<>();
     private final CustomInventory parent;
-    private final int index = 0;
+    private boolean configsLoaded = false;
 
     public PreconfigUi(Player player, CustomInventory parent) {
         super(player);
         this.parent = parent;
+        loadConfigsAsync();
+    }
+
+    private void loadConfigsAsync() {
+        Main.getDatabaseManager()
+                .getPlayerUHCConfigNames(getPlayer().getUniqueId())
+                .thenAccept(configs -> {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (configs != null) {
+                                configNames = configs;
+                            }
+                            configsLoaded = true;
+                        }
+                    }.runTask(Main.get());
+                })
+                .exceptionally(ex -> {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            getPlayer().sendMessage("§c❌ Erreur chargement configs: " + ex.getMessage());
+                            ex.printStackTrace();
+                            configsLoaded = true;
+
+                        }
+                    }.runTask(Main.get());
+                    return null;
+                });
     }
 
     @Override
     public void setup() {
         fillCorner(getConfig().getInt("menu.preconfig.corner"));
-        ItemCreator nothing = new ItemCreator(Material.BARRIER).setName(ChatColor.RED + "Aucune configuration");
         addReturn(45, new DefaultUi(getPlayer()));
-        int configperpage = 24;
-        if (configNames != null) {
-            int totalCategories = (int) Math.ceil((double) configNames.size() / configperpage);
 
-            if (totalCategories > 1) {
-                addPage(4);
-            }
-
-            for (int i = 0; i < configNames.size(); i++) {
-                String configName = configNames.get(i);
-                int category = (i / configperpage) + 1;
-                int slot = calculateSlot(i % configperpage);
-
-                ItemCreator item = new ItemCreator(Material.PAPER)
-                        .setName("§8┃ §f" + configName)
-                        .addLore("")
-                        .addLore(" §8» §fAccès §f: §6§lHost")
-                        .addLore("")
-                        .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§lCharger")
-                        .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§lSupprimer")
-                        .addLore("");
-
-                addItem(new ActionItem(category, slot, item) {
-                    @Override
-                    public void onClick(InventoryClickEvent e) {
-                        if (e.isRightClick()) {
-                            new ConfirmMenu(getPlayer(),
-                                    "Êtes-vous sûr de vouloir supprimer la configuration " + configName + " ?",
-                                    () -> {
-                                        getPlayer().performCommand("config delete " + configName);
-                                    },
-                                    () -> {
-                                    }, new PreconfigUi(getPlayer(), parent)).open();
-                        } else {
-                            new ConfirmMenu(getPlayer(),
-                                    "Êtes-vous sûr de vouloir charger la configuration " + configName + " ?", () -> {
-                                getPlayer().performCommand("config load " + configName);
-
-                            }, () -> {
-
-                            }, new PreconfigUi(getPlayer(), parent)).open();
-                        }
-
-                    }
-                });
-            }
-        } else {
-            addItem(new StaticItem(22, nothing));
+        if (!configsLoaded) {
+            ItemCreator loading = new ItemCreator(Material.WATCH)
+                    .setName("§e§l⏳ Chargement...")
+                    .addLore("")
+                    .addLore("§7Récupération de vos configurations...")
+                    .addLore("§7Veuillez patienter...");
+            addItem(new StaticItem(22, loading));
+            return;
         }
+
+        if (configNames == null || configNames.isEmpty()) {
+            ItemCreator nothing = new ItemCreator(Material.BARRIER)
+                    .setName(ChatColor.RED + "Aucune configuration")
+                    .addLore("")
+                    .addLore("§7Vous n'avez pas encore de configuration.")
+                    .addLore("§7Cliquez sur le papier en bas pour en créer une !");
+            addItem(new StaticItem(22, nothing));
+            setupAddConfigButton();
+            return;
+        }
+
+        int configperpage = 24;
+        int totalCategories = (int) Math.ceil((double) configNames.size() / configperpage);
+
+        if (totalCategories > 1) {
+            addPage(4);
+        }
+
+        for (int i = 0; i < configNames.size(); i++) {
+            String configName = configNames.get(i);
+            int category = (i / configperpage) + 1;
+            int slot = calculateSlot(i % configperpage);
+
+            ItemCreator item = new ItemCreator(Material.PAPER)
+                    .setName("§8┃ §f" + configName)
+                    .addLore("")
+                    .addLore(" §8» §fAccès §f: §6§lHost")
+                    .addLore("")
+                    .addLore(CommonString.CLICK_GAUCHE.getMessage() + "§8» §a§lCharger")
+                    .addLore(CommonString.CLICK_DROITE.getMessage() + "§8» §c§lSupprimer")
+                    .addLore("");
+
+            addItem(new ActionItem(category, slot, item) {
+                @Override
+                public void onClick(InventoryClickEvent e) {
+                    if (e.isRightClick()) {
+                        new ConfirmMenu(getPlayer(),
+                                "Êtes-vous sûr de vouloir supprimer la configuration " + configName + " ?",
+                                () -> {
+                                    getPlayer().performCommand("config delete " + configName);
+                                },
+                                () -> {},
+                                new PreconfigUi(getPlayer(), parent)
+                        ).open();
+                    } else {
+                        new ConfirmMenu(getPlayer(),
+                                "Êtes-vous sûr de vouloir charger la configuration " + configName + " ?",
+                                () -> {
+                                    getPlayer().performCommand("config load " + configName);
+                                },
+                                () -> {},
+                                new PreconfigUi(getPlayer(), parent)
+                        ).open();
+                    }
+                }
+            });
+        }
+
+        setupAddConfigButton();
+    }
+
+    private void setupAddConfigButton() {
         addItem(new ActionItem(0, new ItemCreator(Material.PAPER)
                 .setName("§8┃ §fAjoutez une §e§lconfiguration")
                 .addLore("")
@@ -114,7 +167,7 @@ public class PreconfigUi extends CustomInventory {
 
     @Override
     public boolean isRefreshAuto() {
-        return true;
+        return false;
     }
 
     private int calculateSlot(int position) {
@@ -125,19 +178,10 @@ public class PreconfigUi extends CustomInventory {
 
     @Override
     public int getCategories() {
-        int totalConfigs = configNames.size();
-        int configsPerPage = 24;
-        return (int) Math.ceil((double) totalConfigs / configsPerPage);
-    }
-
-    private List<String> listConfigs(UUID playerUUID) {
-        List<String> configNames = Main.getDatabaseManager().getPlayerUHCConfigNames(playerUUID);
-
-        if (configNames.isEmpty()) {
-
-            return null;
+        if (configNames == null || configNames.isEmpty()) {
+            return 1;
         }
-        return configNames;
+        int configsPerPage = 24;
+        return (int) Math.ceil((double) configNames.size() / configsPerPage);
     }
-
 }

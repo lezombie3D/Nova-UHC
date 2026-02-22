@@ -13,6 +13,9 @@ serverinfo:
     "§cSERVER"
   helpop:
     "§f[§6HELP§f] "
+api:
+  url: "http://91.134.136.202:3000"
+  key: "mc_lezombie3d.9b315f9c006aacbdaa1637f2f60cba0a221252ea461c273a5a5d449b8e59c168"
 mumble:
   port: ""
   ip: ""
