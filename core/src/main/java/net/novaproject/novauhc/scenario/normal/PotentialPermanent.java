@@ -25,9 +25,7 @@ public class PotentialPermanent extends Scenario {
     private final Map<UUID, Double> permanentHealth = new HashMap<>();
     private final Map<UUID, Double> absorptionHealth = new HashMap<>();
 
-    /* =========================
-       SCENARIO VARIABLES
-       ========================= */
+    
 
     @ScenarioVariable(lang = ScenarioVarLang.class, nameKey = "POTENTIALPERMANENT_VAR_STARTING_PERMANENT_HEALTH_NAME", descKey = "POTENTIALPERMANENT_VAR_STARTING_PERMANENT_HEALTH_DESC", type = VariableType.DOUBLE)
     private final double startingPermanentHealth = 20.0;
@@ -44,9 +42,7 @@ public class PotentialPermanent extends Scenario {
     @ScenarioVariable(lang = ScenarioVarLang.class, nameKey = "POTENTIALPERMANENT_VAR_MAX_ABSORPTION_HEALTH_NAME", descKey = "POTENTIALPERMANENT_VAR_MAX_ABSORPTION_HEALTH_DESC", type = VariableType.DOUBLE)
     private final double maxAbsorptionHealth = 40.0;
 
-    /* =========================
-       META
-       ========================= */
+    
 
     @Override
     public String getName() {

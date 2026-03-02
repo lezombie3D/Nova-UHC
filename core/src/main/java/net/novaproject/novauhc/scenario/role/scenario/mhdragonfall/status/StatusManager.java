@@ -46,9 +46,7 @@ public class StatusManager {
         effect.start();
     }
 
-    /**
-     * Tick tous les effets actifs
-     */
+    
     private void tickAll() {
         for (Iterator<Map.Entry<UUID, List<StatusEffect>>> playerIt = activeEffects.entrySet().iterator(); playerIt.hasNext();) {
             Map.Entry<UUID, List<StatusEffect>> entry = playerIt.next();
@@ -74,9 +72,7 @@ public class StatusManager {
         }
     }
 
-    /**
-     * Supprime tous les effets d'un joueur
-     */
+    
     public void clearEffects(Player player) {
         List<StatusEffect> list = activeEffects.remove(player.getUniqueId());
         if (list != null) {
@@ -84,9 +80,7 @@ public class StatusManager {
         }
     }
 
-    /**
-     * Récupère les effets actifs d’un joueur
-     */
+    
     public List<StatusEffect> getEffects(Player player) {
         List<StatusEffect> list = activeEffects.get(player.getUniqueId());
         return list == null ? Collections.emptyList() : new ArrayList<>(list);

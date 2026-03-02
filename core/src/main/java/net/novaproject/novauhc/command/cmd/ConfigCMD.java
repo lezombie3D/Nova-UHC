@@ -167,9 +167,7 @@ public class ConfigCMD extends Command {
                 });
     }
 
-    /**
-     * Applique la configuration chargée (doit être appelé sur le thread principal)
-     */
+    
     private void applyConfig(Player player, UHCGameConfiguration config) {
         UHCManager uhc = UHCManager.get();
 

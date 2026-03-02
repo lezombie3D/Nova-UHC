@@ -65,12 +65,12 @@ public abstract class CustomInventory {
         return uhcPlayer;
     }
 
-    /** Traduit une clé dans la langue du joueur qui ouvre ce menu. */
+    
     public String t(Lang key) {
         return LangManager.get().get(key, player);
     }
 
-    /** Traduit avec placeholders extra. */
+    
     public String t(Lang key, Map<String, Object> extra) {
         return LangManager.get().get(key, player, extra);
     }

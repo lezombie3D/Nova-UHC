@@ -69,22 +69,7 @@ public class FireForceUHC extends ScenarioRole<FireForceRole> {
         player.sendMessage(ChatColor.RED + "vos allier : " + list);
     }
 
-    /*@Override
-    public void onFfCMD(Player player, String subCommand, String[] args) {
-        super.onFfCMD(player, subCommand, args);
-        UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
-        switch (subCommand) {
-            case "desc":
-                Role roles = getRoleByUHCPlayer(uhcPlayer);
-                player.sendMessage(roles.getDescription());
-                if (getPlayersByCamps("homme").contains(uhcPlayer)) {
-                    sendListByCamps("homme", player);
-                }
-                break;
-            default:
-                break;
-        }
-    }*/
+    
 
     @Override
     public boolean hascustomDeathMessage() {

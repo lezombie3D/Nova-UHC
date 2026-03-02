@@ -23,11 +23,11 @@ import java.util.*;
 
 public abstract class ScenarioRole<T extends Role> extends Scenario {
 
-    /** CONFIG **/
+    
     private final Map<Class<? extends T>, Integer> default_roles = new HashMap<>();
     private final Map<Class<? extends T>, T> roleConfigs = new HashMap<>();
 
-    /** GAME **/
+    
     private final Map<UHCPlayer, T> players_roles = new HashMap<>();
     private boolean isgived = false;
 

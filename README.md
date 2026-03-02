@@ -69,7 +69,7 @@ A set of comprehensive menus allows hosts to configure the game in real-time:
     *   **Main Config**: Edit `core/src/main/resources/config.yml` to set up your MongoDB connection:
         ```yaml
         mongodb:
-          connectionString: "mongodb://username:password@host:port/?authSource=admin"
+          connectionString: "mongodb:
           name: "novauhc"
         ```
     *   **Advanced Configs**: Explore `core/src/main/resources/api/` for detailed settings:
