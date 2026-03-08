@@ -48,7 +48,8 @@ public class SlaveMarket extends Scenario {
 
     private final Random random = new Random();
     private final HashMap<UHCPlayer, Integer> diams = new HashMap<>();
-    private final List<UHCPlayer> owners = new ArrayList<>();
+    private final Map<UHCTeam, UHCPlayer> owners = new LinkedHashMap<>();
+    private final Map<UHCTeam, Integer> teamDiamonds = new LinkedHashMap<>();
     private boolean isFinish = false;
     private Location center;
     private List<TeamPlace> team_place = new ArrayList<>();
@@ -108,17 +109,15 @@ public class SlaveMarket extends Scenario {
         for (String teamIndex : teamPlaceSection.getKeys(false)) {
             String basePath = "team_place." + teamIndex;
             Location captainLocation = ConfigUtils.getLocation(config, basePath + ".captain");
-            Location slaveLocation = ConfigUtils.getLocation(config, basePath + ".slave");
+            Location slaveLocation   = ConfigUtils.getLocation(config, basePath + ".slave");
 
             if (captainLocation != null && slaveLocation != null) {
                 teamPlaces.add(new TeamPlace(captainLocation, slaveLocation));
-                Bukkit.getLogger().info("Équipe " + teamIndex + " chargée avec succès pour SlaveMarket");
             } else {
                 Bukkit.getLogger().warning("Équipe " + teamIndex + " ignorée - positions captain ou slave manquantes");
             }
         }
 
-        Bukkit.getLogger().info("SlaveMarket: " + teamPlaces.size() + " équipes chargées depuis la configuration");
         return teamPlaces;
     }
 
@@ -160,21 +159,19 @@ public class SlaveMarket extends Scenario {
             if (team_place.isEmpty()) {
                 Bukkit.getLogger().warning("Aucune équipe configurée pour SlaveMarket! Utilisation de 8 équipes par défaut.");
             }
-
+            UHCTeamManager.get().deleteTeams();
             List<UHCTeam> existingTeams = UHCTeamManager.get().getTeams().stream().filter(UHCTeam::isCustom).toList();
             int toCreate = Math.max(0, totalSlots - existingTeams.size());
-
             for (int i = 0; i < toCreate; i++) {
                 UHCTeamManager.get().createTeam(UHCManager.get().getSlot());
             }
-
-            Bukkit.getLogger().info("SlaveMarket: " + toCreate + " équipes créées (" + existingTeams.size() + " existantes)");
         } else {
             if (auctionTask != null) {
                 auctionTask.cancel();
                 auctionTask = null;
             }
             owners.clear();
+            teamDiamonds.clear();
             diams.clear();
             beingBuy = false;
             lastBuyer = null;
@@ -187,30 +184,42 @@ public class SlaveMarket extends Scenario {
         UHCManager.get().setTeam_size(1);
     }
 
-    public boolean addOwner(UHCPlayer player) {
-        if (owners.contains(player)) return false;
-        owners.add(player);
+    public boolean assignOwner(UHCTeam team, UHCPlayer player) {
+        if (owners.containsValue(player)) return false;
+        owners.put(team, player);
         Bukkit.broadcastMessage(LangManager.get().get(SlaveMarketLang.OWNER_ADDED,
                 Map.of("%player%", player.getPlayer().getName())));
         return true;
     }
 
-    public boolean removeOwner(UHCPlayer player) {
-        if (!owners.contains(player)) return false;
-        owners.remove(player);
+    public boolean removeOwner(UHCTeam team) {
+        UHCPlayer player = owners.remove(team);
+        if (player == null) return false;
         Bukkit.broadcastMessage(LangManager.get().get(SlaveMarketLang.OWNER_REMOVED,
                 Map.of("%player%", player.getPlayer().getName())));
         return true;
     }
 
-    public List<UHCPlayer> getOwners() {
+    public Map<UHCTeam, UHCPlayer> getOwners() {
         return owners;
+    }
+
+    public boolean isOwner(UHCPlayer player) {
+        return owners.containsValue(player);
+    }
+
+    public int getDiamondsForTeam(UHCTeam team) {
+        return teamDiamonds.getOrDefault(team, nbDiamond);
+    }
+
+    public void setDiamondsForTeam(UHCTeam team, int amount) {
+        teamDiamonds.put(team, amount);
     }
 
     @Override
     public void onStart(Player player) {
         UHCPlayer p = UHCPlayerManager.get().getPlayer(player);
-        if (owners.contains(p)) {
+        if (isOwner(p)) {
             int remaining = diams.getOrDefault(p, 0);
             if (remaining > 0) {
                 player.getInventory().addItem(new ItemStack(Material.DIAMOND, remaining));
@@ -259,13 +268,20 @@ public class SlaveMarket extends Scenario {
             players.add(p);
         }
 
-        int i = 0;
-        for (UHCPlayer p : owners) {
-            if (i >= captainLocations.size() || i >= UHCTeamManager.get().getTeams().size()) break;
+        List<UHCTeam> allTeams = UHCTeamManager.get().getTeams();
 
-            diams.put(p, nbDiamond);
+        for (Map.Entry<UHCTeam, UHCPlayer> entry : owners.entrySet()) {
+            UHCTeam team = entry.getKey();
+            UHCPlayer p  = entry.getValue();
+
+            int teamIdx = allTeams.indexOf(team);
+            if (teamIdx < 0 || teamIdx >= captainLocations.size()) continue;
+
+            int diamonds = getDiamondsForTeam(team);
+            diams.put(p, diamonds);
+
             p.getPlayer().getInventory().setItem(4, new ItemCreator(Material.DIAMOND)
-                    .setName(ChatColor.AQUA + "Diamants: " + nbDiamond)
+                    .setName(ChatColor.AQUA + "Diamants: " + diamonds)
                     .getItemstack());
             p.getPlayer().getInventory().setItem(0, new ItemCreator(Material.EMERALD)
                     .setName(ChatColor.GREEN + "Enchérir +" + bidSmallAmount)
@@ -274,10 +290,9 @@ public class SlaveMarket extends Scenario {
                     .setName(ChatColor.GREEN + "Enchérir +" + bidLargeAmount)
                     .getItemstack());
 
-            p.setTeam(Optional.ofNullable(UHCTeamManager.get().getTeams().get(i)));
-            p.getPlayer().teleport(captainLocations.get(i));
+            p.setTeam(Optional.of(team));
+            p.getPlayer().teleport(captainLocations.get(teamIdx));
             players.remove(p);
-            i++;
         }
 
         beingBuy = false;
@@ -337,7 +352,8 @@ public class SlaveMarket extends Scenario {
                                     "%bid%", String.valueOf(bid)
                             )));
                         } else {
-                            UHCPlayer randomOwner = owners.get(random.nextInt(owners.size()));
+                            List<UHCPlayer> ownerList = new ArrayList<>(owners.values());
+                            UHCPlayer randomOwner = ownerList.get(random.nextInt(ownerList.size()));
                             choosen.forceSetTeam(Optional.of(randomOwner.getTeam().get()));
                             Bukkit.broadcastMessage(LangManager.get().get(SlaveMarketLang.AUCTION_NOT_SOLD, Map.of(
                                     "%player%", choosen.getPlayer().getName(),
@@ -379,7 +395,7 @@ public class SlaveMarket extends Scenario {
     }
 
     public void placeBid(UHCPlayer bidder, int amount) {
-        if (!beingBuy || !canBuy || !owners.contains(bidder)) return;
+        if (!beingBuy || !canBuy || !isOwner(bidder)) return;
 
         int currentDiamonds = diams.getOrDefault(bidder, 0);
         int newBid = bid + amount;
@@ -413,7 +429,7 @@ public class SlaveMarket extends Scenario {
         if (item == null) return;
 
         UHCPlayer uhcPlayer = UHCPlayerManager.get().getPlayer(player);
-        if (!owners.contains(uhcPlayer)) return;
+        if (!isOwner(uhcPlayer)) return;
 
         if (item.getType() == Material.EMERALD) {
             event.setCancelled(true);
@@ -442,5 +458,10 @@ public class SlaveMarket extends Scenario {
     @Override
     public CustomInventory getMenu(Player player) {
         return new SlaveMarketUi(player);
+    }
+
+    @Override
+    public boolean canOpenInGameTeamUi() {
+        return false;
     }
 }

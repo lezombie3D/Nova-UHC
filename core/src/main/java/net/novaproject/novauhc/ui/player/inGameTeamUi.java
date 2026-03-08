@@ -2,8 +2,10 @@ package net.novaproject.novauhc.ui.player;
 
 import net.novaproject.novauhc.lang.lang.CommonLang;
 import net.novaproject.novauhc.lang.LangManager;
+import net.novaproject.novauhc.lang.special.SlaveMarketLang;
 import net.novaproject.novauhc.lang.ui.UiTitleLang;
 import net.novaproject.novauhc.listener.player.PlayerConnectionEvent;
+import net.novaproject.novauhc.scenario.ScenarioManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.utils.ItemCreator;
@@ -86,6 +88,10 @@ public class inGameTeamUi extends CustomInventory {
 
     @Override
     public void open() {
+        if (ScenarioManager.get().getActiveScenarios().stream().anyMatch(s -> !s.canOpenInGameTeamUi())) {
+            LangManager.get().send(CommonLang.DISABLE_ACTION, getPlayer());
+            return;
+        }
         if (UHCTeamManager.get().getTeams().isEmpty()) {
             LangManager.get().send(CommonLang.DISABLE_ACTION, getPlayer());
             return;

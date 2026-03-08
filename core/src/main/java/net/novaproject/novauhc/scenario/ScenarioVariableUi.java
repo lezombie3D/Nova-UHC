@@ -1,5 +1,6 @@
 package net.novaproject.novauhc.scenario;
 
+import net.novaproject.novauhc.lang.lang.CommonLang;
 import net.novaproject.novauhc.lang.LangManager;
 import net.novaproject.novauhc.lang.LangResolver;
 import net.novaproject.novauhc.lang.ui.ScenarioVariableUiLang;
@@ -14,12 +15,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ScenarioVariableUi extends CustomInventory {
 
     private final Scenario scenario;
     private final CustomInventory parent;
+    private static final int VARS_PER_PAGE = 28;
+    private static final int SLOT_PREV     = 46;
+    private static final int SLOT_NEXT     = 52;
+    private static final String NEXT     = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGJmOGI2Mjc3Y2QzNjI2NjI4M2NiNWE5ZTY5NDM5NTNjNzgzZTZmZjdkNmEyZDU5ZDE1YWQwNjk3ZTkxZDQzYyJ9fX0=";
+    private static final String PREVIOUS = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjc2MjMwYTBhYzUyYWYxMWU0YmM4NDAwOWM2ODkwYTQwMjk0NzJmMzk0N2I0ZjQ2NWI1YjU3MjI4ODFhYWNjNyJ9fX0=";
 
     public ScenarioVariableUi(Player player, Scenario scenario, CustomInventory parent) {
         super(player);
@@ -30,6 +38,7 @@ public class ScenarioVariableUi extends CustomInventory {
     private String t(ScenarioVariableUiLang key) {
         return LangManager.get().get(key, getPlayer());
     }
+
     private String t(ScenarioVariableUiLang key, Map<String, Object> p) {
         return LangManager.get().get(key, getPlayer(), p);
     }
@@ -37,32 +46,54 @@ public class ScenarioVariableUi extends CustomInventory {
     @Override
     public void setup() {
         fillCadre(7);
-        int slot = 10;
+        addReturn(49, parent);
 
-        for (Field field : scenario.getClass().getDeclaredFields()) {
-            if (!field.isAnnotationPresent(ScenarioVariable.class)) continue;
+        ItemCreator prevButton = UHCUtils.createCustomButon(PREVIOUS, LangManager.get().get(CommonLang.PAGE_PREVIOUS, getPlayer()), null);
+        ItemCreator nextButton = UHCUtils.createCustomButon(NEXT,     LangManager.get().get(CommonLang.PAGE_NEXT,     getPlayer()), null);
+
+        if (getCategories() > 1) {
+            for (int page = 1; page <= getCategories(); page++) {
+                if (page > 1) {
+                    addItem(new ActionItem(page, SLOT_PREV, prevButton) {
+                        @Override public void onClick(InventoryClickEvent e) { previousCategory(); refresh(); }
+                    });
+                }
+                if (page < getCategories()) {
+                    addItem(new ActionItem(page, SLOT_NEXT, nextButton) {
+                        @Override public void onClick(InventoryClickEvent e) { nextCategory(); refresh(); }
+                    });
+                }
+            }
+        }
+
+        List<Field> variableFields = getVariableFields();
+        for (int i = 0; i < variableFields.size(); i++) {
+            Field field   = variableFields.get(i);
+            int page      = i / VARS_PER_PAGE + 1;
+            int posInPage = i % VARS_PER_PAGE;
+            int pageSize  = Math.min(VARS_PER_PAGE, variableFields.size() - (page - 1) * VARS_PER_PAGE);
+            int slot      = computeVariableSlots(pageSize)[posInPage];
 
             ScenarioVariable annotation = field.getAnnotation(ScenarioVariable.class);
             field.setAccessible(true);
 
             try {
-                Object rawValue = field.get(scenario);
+                Object rawValue     = field.get(scenario);
                 Object displayValue = rawValue;
 
                 switch (annotation.type()) {
                     case TIME -> {
-                        if (rawValue instanceof Integer i)
-                            displayValue = UHCUtils.getFormattedTime(i);
+                        if (rawValue instanceof Integer iv)
+                            displayValue = UHCUtils.getFormattedTime(iv);
                     }
                     case PERCENTAGE -> {
                         if (rawValue instanceof Double d)
                             displayValue = String.format("%.2f%%", d * 100);
-                        else if (rawValue instanceof Integer i)
-                            displayValue = i + "%";
+                        else if (rawValue instanceof Integer iv)
+                            displayValue = iv + "%";
                     }
                 }
 
-                
                 String varName = LangResolver.resolve(annotation.lang(), annotation.nameKey(), getPlayer());
                 String varDesc = LangResolver.resolve(annotation.lang(), annotation.descKey(), getPlayer());
 
@@ -75,7 +106,7 @@ public class ScenarioVariableUi extends CustomInventory {
                         .addLore(t(ScenarioVariableUiLang.CLICK_CHANGE));
 
                 if (rawValue instanceof Boolean) {
-                    addItem(new ActionItem(slot, icon) {
+                    addItem(new ActionItem(page, slot, icon) {
                         @Override
                         public void onClick(InventoryClickEvent e) {
                             try {
@@ -88,7 +119,7 @@ public class ScenarioVariableUi extends CustomInventory {
                     });
 
                 } else if (rawValue instanceof String) {
-                    addItem(new ActionItem(slot, icon) {
+                    addItem(new ActionItem(page, slot, icon) {
                         @Override
                         public void onClick(InventoryClickEvent e) {
                             new AnvilUi(getPlayer(), event -> {
@@ -105,7 +136,7 @@ public class ScenarioVariableUi extends CustomInventory {
                     });
 
                 } else if (rawValue instanceof Number number) {
-                    addMenu(slot, icon,
+                    addMenu(page, slot, icon,
                             new ConfigVarUi(getPlayer(), 10, 5, 1, 10, 5, 1, number, 0, 0, ScenarioVariableUi.this) {
                                 @Override
                                 public void onChange(Number newValue) {
@@ -126,16 +157,36 @@ public class ScenarioVariableUi extends CustomInventory {
                             });
                 }
 
-                slot++;
-                if ((slot + 1) % 9 == 0) slot += 2;
-                if (slot >= 44) break;
-
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
+    }
 
-        addReturn(49, parent);
+    private List<Field> getVariableFields() {
+        List<Field> fields = new ArrayList<>();
+        for (Field field : scenario.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(ScenarioVariable.class))
+                fields.add(field);
+        }
+        return fields;
+    }
+
+    private int[] computeVariableSlots(int count) {
+        int total = Math.min(count, VARS_PER_PAGE);
+        int[] slots = new int[total];
+        int idx = 0;
+        for (int row = 1; row <= 4 && idx < total; row++) {
+            int inRow    = Math.min(7, total - idx);
+            int startCol = 1 + (7 - inRow) / 2;
+            for (int j = 0; j < inRow; j++) slots[idx++] = row * 9 + startCol + j;
+        }
+        return slots;
+    }
+
+    @Override
+    public int getCategories() {
+        return Math.max(1, (int) Math.ceil((double) getVariableFields().size() / VARS_PER_PAGE));
     }
 
     @Override

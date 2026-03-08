@@ -1,5 +1,8 @@
 package net.novaproject.novauhc.listener.player;
 
+import net.minecraft.server.v1_8_R3.EntityPlayer;
+import net.minecraft.server.v1_8_R3.MinecraftServer;
+import net.minecraft.server.v1_8_R3.NetworkManager;
 import net.novaproject.novauhc.lang.LangManager;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
@@ -8,6 +11,7 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.utils.TeamsTagsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -105,7 +109,22 @@ public class PlayerConnectionEvent implements Listener {
             event.disallow(PlayerLoginEvent.Result.KICK_FULL, LangManager.get().get(CommonLang.KICK_FULL));
         }
     }
+    // @author (Guillaume-BH)
+    @EventHandler
+    private void onJoin(PlayerJoinEvent event) {
+        final Player player = event.getPlayer();
+        final var cp = (CraftPlayer) player;
+        final EntityPlayer ep = cp.getHandle();
 
+        final MinecraftServer server = ep.server;
+        final NetworkManager networkManager = ep.playerConnection.networkManager;
+
+        final FixedPlayerBucketConnection connection =
+                new FixedPlayerBucketConnection(server, networkManager, ep);
+
+        ep.playerConnection = connection;
+        networkManager.a(connection);
+    }
 
 
 

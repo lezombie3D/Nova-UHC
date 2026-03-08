@@ -11,6 +11,12 @@ public enum SlaveMarketLang implements Lang {
             "Auction system where players can be bought by other teams."
     ),
 
+    UI_TEAM_CONFIG_TITLE("Configuration de l'équipe %team%", "Team %team% configuration"),
+    UI_DIAMONDS_LABEL("Diamants : ", "Diamonds: "),
+    UI_OWNER_LABEL("Owner : ", "Owner: "),
+    UI_NO_OWNER("Aucun owner assigné", "No owner assigned"),
+    UI_CLICK_CONFIGURE("Clic pour configurer", "Click to configure"),
+
     OWNER_ADDED(
             "§a%player% §7a été ajouté comme propriétaire.",
             "§a%player% §7has been added as an owner."
@@ -93,8 +99,15 @@ public enum SlaveMarketLang implements Lang {
     VAR_BID_SMALL_DESC("Montant de l'enchère avec l'émeraude simple.", "Bid amount with the simple emerald."),
 
     VAR_BID_LARGE_NAME("Enchère grande", "Large Bid"),
-    VAR_BID_LARGE_DESC("Montant de l'enchère avec le bloc d'émeraude.", "Bid amount with the emerald block.");
-
+    VAR_BID_LARGE_DESC("Montant de l'enchère avec le bloc d'émeraude.", "Bid amount with the emerald block."),
+    UI_CLICK_REMOVE_OWNER(
+        "Clic pour retirer l'owner de cette équipe.",
+                "Click to remove the owner from this team."
+    ),
+    UI_CLICK_ASSIGN_OWNER(
+        "Clic pour assigner un owner à cette équipe.",
+                "Click to assign an owner to this team."
+    );
     private final String fr;
     private final String en;
 

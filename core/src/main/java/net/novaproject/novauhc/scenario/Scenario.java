@@ -93,6 +93,9 @@ public abstract class Scenario {
         return null;
     }
 
+    public boolean canOpenInGameTeamUi() {
+        return true;
+    }
 
     public void toggleActive() {
         active = !active;

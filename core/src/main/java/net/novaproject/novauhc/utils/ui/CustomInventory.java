@@ -228,6 +228,15 @@ public abstract class CustomInventory {
         });
     }
 
+    public void addMenu(int page, int slot, ItemCreator itemCreator, CustomInventory customInventory){
+        addItem(new ActionItem(page, slot, itemCreator) {
+            @Override
+            public void onClick(InventoryClickEvent e) {
+                customInventory.open();
+            }
+        });
+    }
+
     public void addReturn(int slot, CustomInventory customInventory){
         addMenu(slot, new ItemCreator(Material.ARROW).setName(ChatColor.GRAY + "Retour"), customInventory);
     }

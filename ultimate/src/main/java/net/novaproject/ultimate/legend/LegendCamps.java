@@ -1,6 +1,7 @@
 package net.novaproject.ultimate.legend;
 
 import net.novaproject.novauhc.scenario.role.camps.Camps;
+import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -29,7 +30,7 @@ public enum LegendCamps implements Camps {
 
     @Override
     public ItemStack getItem() {
-        return new ItemStack(Material.NETHER_STAR);
+        return new ItemCreator(Material.NETHER_STAR).setName(color+name).getItemstack();
     }
 
     @Override

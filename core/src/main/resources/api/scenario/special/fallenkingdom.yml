@@ -1,6 +1,6 @@
 zone_size: 30
 capture_time: 30
-fk_temlate: "falen"
+fk_template: "falen"
 nether_portals:
   0:
     world: "arena"

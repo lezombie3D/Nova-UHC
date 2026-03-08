@@ -7,7 +7,6 @@ dependencies {
 
     implementation project(':core')
     implementation group: 'com.github.azbh111', name: 'spigot-1.8.8', version: 'R'
-
     compileOnly 'org.projectlombok:lombok:1.18.42'
     annotationProcessor 'org.projectlombok:lombok:1.18.42'
 }

@@ -14,6 +14,9 @@ import net.novaproject.novauhc.utils.ui.item.ActionItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ScenariosUi extends CustomInventory {
 
     private final boolean special;
@@ -35,48 +38,50 @@ public class ScenariosUi extends CustomInventory {
 
     @Override
     public void setup() {
-        ItemCreator prevButton = UHCUtils.createCustomButon(PREVIOUS, LangManager.get().get(CommonLang.PAGE_PREVIOUS, getPlayer()), null);
-        ItemCreator nextButton = UHCUtils.createCustomButon(NEXT,     LangManager.get().get(CommonLang.PAGE_NEXT,     getPlayer()), null);
-
         int color;
-        int slotprev = 39;
-        int slotnext = 41;
+        int slotPrev;
+        int slotNext;
         if (special) {
-            color = getConfig().getInt("menu.scenario.special.color");
+            color    = getConfig().getInt("menu.scenario.special.color");
+            slotPrev = 39;
+            slotNext = 41;
         } else {
-            color = getConfig().getInt("menu.scenario.color");
-            slotnext = 50;
-            slotprev = 48;
+            color    = getConfig().getInt("menu.scenario.color");
+            slotPrev = 48;
+            slotNext = 50;
         }
         fillCadre(color);
 
         if (getLines() == 6) addReturn(45, new DefaultUi(getPlayer()));
         else                  addReturn(36, new DefaultUi(getPlayer()));
 
+        ItemCreator prevButton = UHCUtils.createCustomButon(PREVIOUS, LangManager.get().get(CommonLang.PAGE_PREVIOUS, getPlayer()), null);
+        ItemCreator nextButton = UHCUtils.createCustomButon(NEXT,     LangManager.get().get(CommonLang.PAGE_NEXT,     getPlayer()), null);
+
         if (getCategories() > 1) {
             for (int page = 1; page <= getCategories(); page++) {
                 if (page > 1) {
-                    addItem(new ActionItem(page, slotprev, prevButton) {
+                    addItem(new ActionItem(page, slotPrev, prevButton) {
                         @Override public void onClick(InventoryClickEvent e) { previousCategory(); refresh(); }
                     });
                 }
                 if (page < getCategories()) {
-                    addItem(new ActionItem(page, slotnext, nextButton) {
+                    addItem(new ActionItem(page, slotNext, nextButton) {
                         @Override public void onClick(InventoryClickEvent e) { nextCategory(); refresh(); }
                     });
                 }
             }
         }
 
-        int scenariosPerPage = 28;
-        int currentScenario = 0;
-        for (Scenario scenario : ScenarioManager.get().getScenarios()) {
-            if (scenario.isSpecial() != special) continue;
+        List<Scenario> scenarios = getFilteredScenarios();
+        int scenariosPerPage     = 28;
 
-            currentScenario++;
-            int categoryForThisItem = (int) Math.ceil((double) currentScenario / scenariosPerPage);
-            int positionInCategory  = (currentScenario - 1) % scenariosPerPage;
-            int slot = calculateSlot(positionInCategory);
+        for (int i = 0; i < scenarios.size(); i++) {
+            Scenario scenario = scenarios.get(i);
+            int page          = i / scenariosPerPage + 1;
+            int posInPage     = i % scenariosPerPage;
+            int pageSize      = Math.min(scenariosPerPage, scenarios.size() - (page - 1) * scenariosPerPage);
+            int slot          = computeScenarioSlots(pageSize)[posInPage];
 
             String status = scenario.isActive() ? t(ScenariosUiLang.SCENARIO_ACTIVE) : t(ScenariosUiLang.SCENARIO_DISABLED);
 
@@ -87,12 +92,10 @@ public class ScenariosUi extends CustomInventory {
                     .addLore("")
                     .addLore(LangManager.get().get(CommonLang.CLICK_HERE_TO_TOGGLE, getPlayer()));
 
-            if (scenario.isSpecial()) {
-                item.addLore(t(ScenariosUiLang.OPEN_CONFIG_LORE));
-            }
+            if (scenario.isSpecial()) item.addLore(t(ScenariosUiLang.OPEN_CONFIG_LORE));
             item.addLore("").setAmount(scenario.isActive() ? 1 : 0);
 
-            addItem(new ActionItem(categoryForThisItem, slot, item) {
+            addItem(new ActionItem(page, slot, item) {
                 @Override
                 public void onClick(InventoryClickEvent e) {
                     CustomInventory inv = scenario.getMenu(getPlayer());
@@ -108,19 +111,29 @@ public class ScenariosUi extends CustomInventory {
         }
     }
 
-    private int calculateSlot(int position) {
-        int row = position / 7;
-        int col = position % 7;
-        return 10 + col + (row * 9);
+    private int[] computeScenarioSlots(int count) {
+        int total    = Math.min(count, 28);
+        int[] slots  = new int[total];
+        int idx      = 0;
+        for (int row = 1; row <= 4 && idx < total; row++) {
+            int inRow    = Math.min(7, total - idx);
+            int startCol = 1 + (7 - inRow) / 2;
+            for (int j = 0; j < inRow; j++) slots[idx++] = row * 9 + startCol + j;
+        }
+        return slots;
+    }
+
+    private List<Scenario> getFilteredScenarios() {
+        List<Scenario> list = new ArrayList<>();
+        for (Scenario s : ScenarioManager.get().getScenarios()) {
+            if (s.isSpecial() == special) list.add(s);
+        }
+        return list;
     }
 
     @Override
     public int getCategories() {
-        int totalScenarios = 0;
-        for (Scenario scenario : ScenarioManager.get().getScenarios()) {
-            if (scenario.isSpecial() == special) totalScenarios++;
-        }
-        return (int) Math.ceil((double) totalScenarios / 27);
+        return Math.max(1, (int) Math.ceil((double) getFilteredScenarios().size() / 28));
     }
 
     @Override

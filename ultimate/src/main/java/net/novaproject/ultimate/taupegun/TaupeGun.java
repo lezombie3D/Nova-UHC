@@ -140,11 +140,6 @@ public class TaupeGun extends Scenario {
         CommandManager.get().register("taupegun", new TaupeCMD(), "tg");
     }
 
-    @Override
-    public CustomInventory getMenu(Player player) {
-        return new TaupeGunUI(player);
-    }
-
     private void ShuffleMultiTaupe(int mole, int size) {
         List<UHCTeam> picked = new ArrayList<>();
         Random random = new Random();

@@ -151,11 +151,17 @@ public class FallenKingdom extends Scenario {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    LoadingChunkTask.create(Common.get().getArena(), Common.get().getNether(), 1000);
+                    if(LobbyCreator.worldsBeingTasked.isEmpty()){
+                        cancel();
+                        LoadingChunkTask.create(Common.get().getArena(), Common.get().getNether(), 1000);
+                        UHCManager.get().setTimerpvp(7200);
+                        setupTeamZones();
+                        Common.get().getArena().getWorldBorder().setSize(1000);
+                        UHCManager.get().setTimerborder(-2);
+                    }
                 }
-            }.runTaskLater(Main.get(), 20 * 5);
-            UHCManager.get().setTimerpvp(7200);
-            setupTeamZones();
+            }.runTaskTimer(Main.get(),0,20);
+
         } else {
             cancelAllCaptureTasks();
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -163,6 +169,7 @@ public class FallenKingdom extends Scenario {
             }
             teamZones.clear();
             new WorldGenerator(Main.get(), Common.get().getArenaName());
+            UHCManager.get().setTimerborder(1200);
         }
     }
 
@@ -179,9 +186,6 @@ public class FallenKingdom extends Scenario {
         cancelAllCaptureTasks();
     }
 
-    
-    
-    
 
     @Override
     public void onTeamUpdate() {
