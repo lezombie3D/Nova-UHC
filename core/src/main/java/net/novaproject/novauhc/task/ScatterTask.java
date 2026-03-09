@@ -2,7 +2,6 @@ package net.novaproject.novauhc.task;
 
 import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.lang.LangManager;
-
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.lang.lang.CommonLang;
@@ -26,12 +25,13 @@ public class ScatterTask extends BukkitRunnable {
     private final List<UHCPlayer> uhcPlayers;
     private final List<Location> locations = new ArrayList<>();
     private final HashMap<UHCTeam, Location> teamloc = new HashMap<>();
+
     public ScatterTask() {
         this.uhcPlayers = new ArrayList<>(UHCPlayerManager.get().getPlayingOnlineUHCPlayers());
     }
 
     public static void giveStartInv(Player player, Map<String, ItemStack[]> savedInventory) {
-        if (savedInventory == null) return;
+        if (savedInventory == null || player == null) return;
 
         PlayerInventory inv = player.getInventory();
 
@@ -59,23 +59,30 @@ public class ScatterTask extends BukkitRunnable {
         cancel();
 
         Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
-            onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.FIREWORK_TWINKLE, 1, 1);
+            if (onlinePlayer != null && onlinePlayer.isOnline()) {
+                onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.FIREWORK_TWINKLE, 1, 1);
+            }
         });
 
         UHCManager.get().setGameState(UHCManager.GameState.INGAME);
 
         Bukkit.broadcastMessage(LangManager.get().get(TaskLang.GAME_START, null, Map.of("%servertag%", Common.get().getServertag())));
 
-
-        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(player -> {
-            if (!UHCManager.get().start.isEmpty()) {
-                giveStartInv(player.getPlayer(), UHCManager.get().start);
+        UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(uhcPlayer -> {
+            Player player = uhcPlayer.getPlayer();
+            if (player != null && player.isOnline()) {
+                if (!UHCManager.get().start.isEmpty()) {
+                    giveStartInv(player, UHCManager.get().start);
+                }
             }
         });
 
         ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
             UHCPlayerManager.get().getPlayingOnlineUHCPlayers().forEach(uhcPlayer -> {
-                scenario.onStart(uhcPlayer.getPlayer());
+                Player player = uhcPlayer.getPlayer();
+                if (player != null && player.isOnline()) {
+                    scenario.onStart(player);
+                }
             });
         });
 
@@ -86,7 +93,7 @@ public class ScatterTask extends BukkitRunnable {
 
     private void onScatter(UHCPlayer uhcPlayer) {
         Player player = uhcPlayer.getPlayer();
-        if (player == null) {
+        if (player == null || !player.isOnline()) {
             uhcPlayer.setPlaying(false);
             return;
         }
@@ -106,16 +113,17 @@ public class ScatterTask extends BukkitRunnable {
 
         Location location = new Location(world, x, y, z);
 
-
         uhcPlayer.getTeam().ifPresent(team -> {
             if (!locations.contains(location) && !teamloc.containsKey(team)) {
                 locations.add(location);
                 teamloc.put(team, location);
             }
         });
+
         ScenarioManager.get().getActiveScenarios().forEach(scenario -> {
             scenario.scatter(uhcPlayer, location, teamloc);
         });
+
         if (ScenarioManager.get().getActiveSpecialScenarios().isEmpty()) {
             if (UHCManager.get().getTeam_size() != 1) {
                 UHCTeamManager.get().scatterTeam(uhcPlayer, teamloc);
@@ -124,13 +132,15 @@ public class ScatterTask extends BukkitRunnable {
             }
         }
 
-
         player.setGameMode(GameMode.SURVIVAL);
         player.getInventory().clear();
 
         LangManager.get().sendAll(CommonLang.TP_MESSAGE, Map.of("%player%", player.getName()));
-        Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.NOTE_STICKS, 1, 1));
 
+        Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
+            if (onlinePlayer != null && onlinePlayer.isOnline()) {
+                onlinePlayer.playSound(onlinePlayer.getLocation(), Sound.NOTE_STICKS, 1, 1);
+            }
+        });
     }
-
 }

@@ -27,19 +27,14 @@ public class UHCPlayerManager {
     private final Map<UUID, FastBoard> boards = new HashMap<>();
 
     public List<UHCPlayer> getOnlineUHCPlayers() {
-        List<UHCPlayer> result = new ArrayList<>();
-        for (UHCPlayer player : players.values()) {
-            if (player.isOnline()) result.add(player);
-        }
-        return result;
+        return players.values().stream().filter(UHCPlayer::isOnline).collect(Collectors.toList());
     }
 
     public List<UHCPlayer> getPlayingOnlineUHCPlayers() {
-        List<UHCPlayer> result = new ArrayList<>();
-        for (UHCPlayer player : getOnlineUHCPlayers()) {
-            if (player.isPlaying()) result.add(player);
-        }
-        return result;
+        return players.values().stream()
+                .filter(UHCPlayer::isPlaying)
+                .filter(UHCPlayer::isOnline)
+                .collect(Collectors.toList());
     }
 
     public UHCPlayer getPlayer(Player player) {

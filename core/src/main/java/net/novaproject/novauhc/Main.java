@@ -14,6 +14,7 @@ import net.novaproject.novauhc.lang.special.*;
 import net.novaproject.novauhc.lang.ui.*;
 import net.novaproject.novauhc.lang.ui.ScenarioVariableUiLang;
 import net.novaproject.novauhc.utils.ConfigUtils;
+import net.novaproject.novauhc.utils.ReconnectionManager;
 import net.novaproject.novauhc.utils.nms.NMSPatcher;
 import net.novaproject.novauhc.world.generation.BiomeReplacer;
 import org.bukkit.Bukkit;
@@ -155,7 +156,7 @@ public class Main extends JavaPlugin {
         commandManager = new CommandManager(this);
         common.setup();
         uhcManager.setup();
-
+        new ReconnectionManager();
         if (Bukkit.getPluginManager().getPlugin("CloudNet-Bridge") != null) {
             cloudNet = new CloudNet();
         }

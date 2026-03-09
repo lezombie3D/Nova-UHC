@@ -86,9 +86,7 @@ public class BeatTheSanta extends Scenario {
         super.toggleActive();
 
         if (isActive()) {
-            santa = new UHCTeam(DyeColor.RED, "§c§lSANTA §c", "santa", patern, team_size, true);
-            UHCTeamManager.get().addTeams(santa);
-            UHCTeamManager.get().deleteTeams();
+            createSantaTeam();
         } else {
             UHCTeamManager.get().removeTeam(santa);
             UHCTeamManager.get().deleteTeams();
@@ -111,7 +109,7 @@ public class BeatTheSanta extends Scenario {
             LangManager.get().send(BeatTheSantaLang.WARNING_SANTA,player);
             return;
         }
-        TeamsTagsManager.setNameTag(player, "lutin", "§a§lLUTIN §a", "");
+        TeamsTagsManager.setNameTag(player, "Lutin", "§a§lLUTIN §a", "");
         LangManager.get().send(BeatTheSantaLang.WARNING_LUTIN, player);
     }
 
@@ -131,6 +129,15 @@ public class BeatTheSanta extends Scenario {
 
     }
 
+    public void createSantaTeam(){
+        if(santa != null){
+            UHCTeamManager.get().removeTeam(santa);
+        }
+        santa = new UHCTeam(DyeColor.RED, "§c§lSANTA §c", "Santa", patern, team_size, true);
+        UHCTeamManager.get().addTeams(santa);
+        UHCTeamManager.get().deleteTeams();
+    }
+
     @Override
     public void onSec(Player p) {
         UHCPlayer player = UHCPlayerManager.get().getPlayer(p);
@@ -145,5 +152,10 @@ public class BeatTheSanta extends Scenario {
             return UHCPlayerManager.get().getPlayingOnlineUHCPlayers().size() == 1;
         }
         return false;
+    }
+
+    @Override
+    public void onTeamUpdate() {
+        createSantaTeam();
     }
 }

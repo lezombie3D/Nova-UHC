@@ -18,10 +18,7 @@ import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import net.novaproject.novauhc.uhcteam.UHCTeam;
 import net.novaproject.novauhc.uhcteam.UHCTeamManager;
 import net.novaproject.novauhc.ui.config.Enchants;
-import net.novaproject.novauhc.utils.ConfigUtils;
-import net.novaproject.novauhc.utils.GameStatsTracker;
-import net.novaproject.novauhc.utils.Titles;
-import net.novaproject.novauhc.utils.UHCUtils;
+import net.novaproject.novauhc.utils.*;
 import net.novaproject.novauhc.world.utils.SimpleBorder;
 import org.bson.Document;
 import org.bukkit.*;
@@ -96,10 +93,7 @@ public class UHCManager {
 
     public void onStart() {
         gameState = GameState.SCATTERING;
-
-        if (team_size != 1) {
-            uhcTeamManager.fillTeams();
-        }
+        uhcTeamManager.fillTeams();
 
         new BukkitRunnable() {
             private int countdown = ConfigUtils.getGeneralConfig().getInt("timer.timer_before_start");
@@ -335,6 +329,7 @@ public class UHCManager {
         for (UHCPlayer loser : UHCPlayerManager.get().getOnlineUHCPlayers()) {
             loser.getPlayer().teleport(Common.get().getLobbySpawn());
         }
+        ReconnectionManager.get().cleanup();
 
         new BukkitRunnable() {
             @Override

@@ -20,54 +20,39 @@ import java.util.logging.Level;
 
 public class LangManager {
 
-    
     private static LangManager instance;
 
     public static LangManager get() {
         return instance;
     }
 
-    
     private final File langFolder;
     private final String serverDefaultLocale;
-
-
     private final Map<String, Map<String, String>> translations = new HashMap<>();
-
-
     private final List<Lang> registered = new ArrayList<>();
 
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
-    
     public LangManager(File dataFolder, String serverDefaultLocale) {
         this.langFolder = new File(dataFolder, "lang");
         this.serverDefaultLocale = serverDefaultLocale;
         instance = this;
     }
 
-    
-
-
     public void register(Lang[] values) {
         registered.addAll(Arrays.asList(values));
     }
 
-    
-
-
     public void generateAndLoad() {
         if (!langFolder.exists()) langFolder.mkdirs();
 
-        
         Set<String> locales = new LinkedHashSet<>();
         locales.add(serverDefaultLocale);
         for (Lang lang : registered) {
             locales.addAll(lang.getTranslations().keySet());
         }
 
-        
         for (String locale : locales) {
             File file = new File(langFolder, locale + ".yml");
             YamlConfiguration yaml = file.exists()
@@ -78,7 +63,6 @@ public class LangManager {
             for (Lang lang : registered) {
                 String key = lang.getKey();
                 if (!yaml.contains(key)) {
-                    
                     String msg = lang.getTranslations().getOrDefault(locale, lang.getFallback());
                     yaml.set(key, msg);
                     dirty = true;
@@ -93,7 +77,6 @@ public class LangManager {
                 }
             }
 
-            
             Map<String, String> map = new HashMap<>();
             for (String key : yaml.getKeys(true)) {
                 if (!yaml.isConfigurationSection(key)) {
@@ -107,15 +90,11 @@ public class LangManager {
         Bukkit.getLogger().info("[LangManager] Chargé. Locales : " + locales + " | Clés : " + registered.size());
     }
 
-    
-
-
     public String getRaw(Lang key, String locale) {
         Map<String, String> map = translations.get(locale);
         if (map != null && map.containsKey(key.getKey())) {
             return map.get(key.getKey());
         }
-        
         Map<String, String> def = translations.get(serverDefaultLocale);
         if (def != null && def.containsKey(key.getKey())) {
             return def.get(key.getKey());
@@ -123,69 +102,63 @@ public class LangManager {
         return key.getFallback();
     }
 
-
     public String get(Lang key, Player player, Map<String, Object> extra) {
+        if (player == null || !player.isOnline()) {
+            String msg = getRaw(key, serverDefaultLocale);
+            return applyPlaceholders(msg, buildPlaceholders(null, extra));
+        }
+
         UHCPlayer uhc = UHCPlayerManager.get() != null ? UHCPlayerManager.get().getPlayer(player) : null;
         String locale = (uhc != null) ? uhc.getLocale() : serverDefaultLocale;
         String msg = getRaw(key, locale);
         return applyPlaceholders(msg, buildPlaceholders(uhc, extra));
     }
 
-
     public String get(Lang key, Player player) {
         return get(key, player, null);
     }
-
 
     public String get(Lang key, Map<String, Object> extra) {
         String msg = getRaw(key, serverDefaultLocale);
         return applyPlaceholders(msg, buildPlaceholders(null, extra));
     }
 
-
     public String get(Lang key) {
         return get(key, (Map<String, Object>) null);
     }
 
-    
-
-
     public void send(Lang key, Player player) {
-        player.sendMessage(get(key, player));
+        if (player != null && player.isOnline()) {
+            player.sendMessage(get(key, player));
+        }
     }
-
 
     public void send(Lang key, Player player, Map<String, Object> extra) {
-        player.sendMessage(get(key, player, extra));
+        if (player != null && player.isOnline()) {
+            player.sendMessage(get(key, player, extra));
+        }
     }
-
 
     public void sendAll(Lang key) {
         sendAll(key, null);
     }
 
-
     public void sendAll(Lang key, Map<String, Object> extra) {
         if (UHCPlayerManager.get() == null) return;
         for (UHCPlayer uhcPlayer : UHCPlayerManager.get().getOnlineUHCPlayers()) {
             Player p = uhcPlayer.getPlayer();
-            if (p != null) {
+            if (p != null && p.isOnline()) {
                 p.sendMessage(get(key, p, extra));
             }
         }
     }
 
-    
-
-
     public Map<String, Object> buildPlaceholders(UHCPlayer uhcPlayer, Map<String, Object> extra) {
         Map<String, Object> ph = new HashMap<>();
 
-        
         ph.put("%time%", TIME_FORMAT.format(new Date()));
         ph.put("%date%", DATE_FORMAT.format(new Date()));
 
-        
         try {
             if (Common.get() != null && Common.get().getArena() != null) {
                 ph.put("%border%", String.valueOf((int) Common.get().getArena().getWorldBorder().getSize()));
@@ -193,7 +166,6 @@ public class LangManager {
         } catch (Exception ignored) {}
         ph.putIfAbsent("%border%", "N/A");
 
-        
         try {
             if (UHCManager.get() != null) {
                 ph.put("%timer%", UHCManager.get().getTimerFormatted());
@@ -207,7 +179,6 @@ public class LangManager {
         ph.putIfAbsent("%slot%", "0");
         ph.putIfAbsent("%diamond_limite%", "0");
 
-        
         try {
             if (Common.get() != null) {
                 ph.put("%main_color%", Common.get().getMainColor() != null ? Common.get().getMainColor() : "§e§l");
@@ -223,7 +194,6 @@ public class LangManager {
         ph.putIfAbsent("%servername%", "NovaUHC");
         ph.putIfAbsent("%serveurname%", "NovaUHC");
 
-        
         try {
             if (UHCPlayerManager.get() != null) {
                 ph.put("%players%", String.valueOf(UHCPlayerManager.get().getPlayingOnlineUHCPlayers().size()));
@@ -231,7 +201,6 @@ public class LangManager {
         } catch (Exception ignored) {}
         ph.putIfAbsent("%players%", "0");
 
-        
         try {
             ph.put("%host%", PlayerConnectionEvent.getHost() != null
                     ? PlayerConnectionEvent.getHost().getName() : "N/A");
@@ -239,7 +208,6 @@ public class LangManager {
             ph.put("%host%", "N/A");
         }
 
-        
         if (uhcPlayer != null && uhcPlayer.getPlayer() != null) {
             ph.put("%player%", uhcPlayer.getPlayer().getName());
             ph.put("%kills%", String.valueOf(uhcPlayer.getKill()));
@@ -289,7 +257,6 @@ public class LangManager {
             ph.putIfAbsent("%distance%", "N/A");
         }
 
-        
         if (extra != null) {
             extra.forEach((k, v) -> ph.put(k, v));
         }
@@ -297,12 +264,9 @@ public class LangManager {
         return ph;
     }
 
-
     public Map<String, Object> buildPlaceholders(Map<String, Object> extra) {
         return buildPlaceholders(null, extra);
     }
-
-    
 
     public String getServerDefaultLocale() {
         return serverDefaultLocale;

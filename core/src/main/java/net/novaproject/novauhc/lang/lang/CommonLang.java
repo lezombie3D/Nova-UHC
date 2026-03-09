@@ -77,8 +77,34 @@ public enum CommonLang implements Lang {
     SUCCESSFUL_ACTIVATION("§a✓ Activation effectuée avec succès !", "§a✓ Successfully activated!"),
     SUCCESSFUL_DESACTIVATION("§c✓ Désactivation effectuée avec succès !", "§c✓ Successfully deactivated!"),
     SUCCESSFUL_MODIFICATION("§6✓ Modification effectuée avec succès !", "§6✓ Successfully modified!"),
+    RECONNECT_SUCCESS(
+            "§a§lReconnexion réussie ! §7Vous avez été replacé dans la partie.",
+            "§a§lReconnected! §7You have been placed back in the game."
+    ),
+    PLAYER_DISCONNECTED_TIMER(
+            "§e%player% §7s'est déconnecté ! Il a §c%time% minutes §7pour se reconnecter.",
+            "§e%player% §7disconnected! They have §c%time% minutes §7to reconnect."
+    ),
 
-    
+    PLAYER_RECONNECTED_TIMER(
+            "§e%player% §7s'est reconnecté avec §a%time% minutes §7restantes !",
+            "§e%player% §7reconnected with §a%time% minutes §7remaining!"
+    ),
+
+    PLAYER_TIMEOUT_DEATH(
+            "§c☠ %player% §7est mort (délai de reconnexion expiré)",
+            "§c☠ %player% §7died (reconnection timeout)"
+    ),
+
+    PLAYER_RECONNECTED(
+            "§e%player% §7s'est reconnecté !",
+            "§e%player% §7reconnected!"
+    ),
+
+    CONNECTION_GAME(
+            "§e%player% §7s'est connecté pendant la partie !",
+            "§e%player% §7connected during the game!"
+    ),
     KICKED("§cVous avez été exclu de la partie par l'host", "§cYou have been kicked from the game by the host"),
     KICKED_MESSAGE("§c» Le joueur §f%player% §ca été exclu de la partie par l'host !", "§c» Player §f%player% §cwas kicked by the host!"),
     WELCOME("§a§lBienvenue §fsur la partie de §6%host%§f !", "§a§lWelcome §fto §6%host%§f's game!"),
@@ -120,7 +146,6 @@ public enum CommonLang implements Lang {
     TP_MESSAGE("§a» §f%player% §aa été téléporté !", "§a» §f%player% §ahas been teleported!"),
     DECONNECTION_LOBBY("§c» §f%player% §cse déconnecte du lobby", "§c» §f%player% §cdisconnected from lobby"),
     DECONNECTION_GAME("§c» §f%player% §cse déconnecte de la partie", "§c» §f%player% §cdisconnected from game"),
-    CONNECTION_GAME("§a» §f%player% §ase connecte à la partie", "§a» §f%player% §aconnected to game"),
     DEATH_MESSAGE("§c☠ §f%player% §ca été éliminé par §f%killer%§c !", "§c☠ §f%player% §cwas eliminated by §f%killer%§c!"),
     DEATH_MESSAGE_TEAM("§c☠ §7[§6%team%§7] §f%player% §ca été éliminé", "§c☠ §7[§6%team%§7] §f%player% §cwas eliminated"),
     JOIN_TEAM_MESSAGE("§aVous avez rejoint l'équipe §6%team%§a !", "§aYou joined team §6%team%§a!"),

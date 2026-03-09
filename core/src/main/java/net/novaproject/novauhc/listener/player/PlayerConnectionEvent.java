@@ -39,8 +39,6 @@ public class PlayerConnectionEvent implements Listener {
         PermissionAttachment attachment = player.addAttachment(Main.get());
         attachment.setPermission("novauhc.host", true);
         hosts.add(player.getUniqueId());
-        TeamsTagsManager.setNameTag(player, "HOST", "§f[§5Host§f] ", "");
-
         hostPlayer = Bukkit.getOfflinePlayer(player.getUniqueId());
     }
 

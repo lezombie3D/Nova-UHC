@@ -131,6 +131,7 @@ public class UHCTeamManager {
     }
 
     public void fillTeams() {
+        if(teams.isEmpty()) return;
         List<UHCTeam> fillableTeams = new ArrayList<>();
         for (UHCTeam team : teams) {
             if (team.getPlayers().size() < team.teamSize()) {
