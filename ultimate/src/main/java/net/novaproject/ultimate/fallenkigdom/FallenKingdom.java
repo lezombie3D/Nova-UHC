@@ -103,12 +103,6 @@ public class FallenKingdom extends Scenario {
     public void setup() {
         super.setup();
         instance = this;
-        teamZoneLocations.clear();
-        ConfigUtils.getLocations(getConfig(), "team_zone_locations").forEach(loc -> {
-            if (loc.getWorld() != null) {
-                teamZoneLocations.add(loc);
-            }
-        });
     }
 
     @Override
@@ -140,11 +134,24 @@ public class FallenKingdom extends Scenario {
     public void toggleActive() {
         super.toggleActive();
         if (isActive()) {
+            teamZoneLocations.clear();
+            ConfigUtils.getLocations(getConfig(), "team_zone_location").forEach(loc -> {
+                if (loc.getWorld() != null) {
+                    teamZoneLocations.add(loc);
+                    Bukkit.getLogger().info("[FK] Zone location chargée: " + loc.getWorld().getName() + " x=" + loc.getBlockX() + " z=" + loc.getBlockZ());
+                } else {
+                    Bukkit.getLogger().warning("[FK] Zone location ignorée (world null): " + loc);
+                }
+            });
+            Bukkit.getLogger().info("[FK] setup() - Total zones chargées: " + teamZoneLocations.size());
             UHCManager.get().setTeam_size(2);
+            Bukkit.getLogger().info("[FK] toggleActive() - teamZoneLocations.size()=" + teamZoneLocations.size());
+            UHCTeamManager.get().deleteTeams();
             for (int i = 0; i < teamZoneLocations.size(); i++) {
-                UHCTeamManager.get().deleteTeams();
                 UHCTeamManager.get().createTeam(UHCManager.get().getTeam_size());
+                Bukkit.getLogger().info("[FK] Equipe créée #" + (i+1));
             }
+            Bukkit.getLogger().info("[FK] Total equipes après création: " + UHCTeamManager.get().getTeams().size());
             resetState();
             LobbyCreator.deleteWorld(Common.get().getArenaName(), Common.get().getLobbySpawn());
             LobbyCreator.cloneWorld(getConfig().getString("fk_template"), Common.get().getArenaName());
@@ -193,8 +200,8 @@ public class FallenKingdom extends Scenario {
             UHCManager.get().setTeam_size(2);
             LangManager.get().sendAll(CommonLang.TEAM_REDFINIED_AUTO);
         }
+        UHCTeamManager.get().deleteTeams();
         for (int i = 0; i < teamZoneLocations.size(); i++) {
-            UHCTeamManager.get().deleteTeams();
             UHCTeamManager.get().createTeam(UHCManager.get().getTeam_size());
         }
         setupTeamZones();
@@ -203,20 +210,19 @@ public class FallenKingdom extends Scenario {
     private void setupTeamZones() {
         teamZones.clear();
         List<UHCTeam> teams = UHCTeamManager.get().getTeams();
+        Bukkit.getLogger().info("[FK] setupTeamZones() - teams=" + teams.size() + " zones=" + teamZoneLocations.size());
+
         int teamCount = Math.min(teams.size(), teamZoneLocations.size());
+        Bukkit.getLogger().info("[FK] setupTeamZones() - teamCount effectif=" + teamCount);
 
         for (int i = 0; i < teamCount; i++) {
             UHCTeam team = teams.get(i);
             Location location = teamZoneLocations.get(i);
-            TeamZone zone = new TeamZone(
-                    team,
-                    location.getBlockX(),
-                    location.getBlockZ(),
-                    zoneSize, 
-                    Common.get().getArenaName()
-            );
+            Bukkit.getLogger().info("[FK] Assignation zone #" + i + " -> team=" + team.name() + " x=" + location.getBlockX() + " z=" + location.getBlockZ());
+            TeamZone zone = new TeamZone(team, location.getBlockX(), location.getBlockZ(), zoneSize, Common.get().getArenaName());
             teamZones.put(team, zone);
         }
+        Bukkit.getLogger().info("[FK] setupTeamZones() terminé - " + teamZones.size() + " zones assignées");
     }
 
     public TeamZone getTeamZone(UHCTeam team) {
@@ -243,20 +249,28 @@ public class FallenKingdom extends Scenario {
 
     @Override
     public void scatter(UHCPlayer uhcPlayer, Location location, HashMap<UHCTeam, Location> teamloc) {
+        Bukkit.getLogger().info("[FK] scatter() appelé - teamZones.size()=" + teamZones.size());
+
         for (UHCPlayer p : UHCPlayerManager.get().getPlayingOnlineUHCPlayers()) {
             Player player = p.getPlayer();
-            if (player == null) continue;
+            if (player == null) { Bukkit.getLogger().warning("[FK] scatter() player null pour " + p); continue; }
 
             if (p.getTeam().isPresent()) {
-                TeamZone zone = getTeamZone(p.getTeam().get());
+                UHCTeam team = p.getTeam().get();
+                TeamZone zone = getTeamZone(team);
+                Bukkit.getLogger().info("[FK] scatter() " + player.getName() + " team=" + team.name() + " zone=" + (zone == null ? "NULL !" : "OK"));
+
                 if (zone == null) continue;
 
                 Location spawn = zone.getSpawn();
                 World world = spawn.getWorld();
-                if (world == null) continue;
+                if (world == null) { Bukkit.getLogger().warning("[FK] scatter() world null pour team " + team.name()); continue; }
 
                 int highY = world.getHighestBlockYAt(spawn.getBlockX(), spawn.getBlockZ()) + 2;
                 player.teleport(new Location(world, spawn.getX(), highY, spawn.getZ()));
+                Bukkit.getLogger().info("[FK] scatter() " + player.getName() + " téléporté en x=" + spawn.getBlockX() + " y=" + highY + " z=" + spawn.getBlockZ());
+            } else {
+                Bukkit.getLogger().warning("[FK] scatter() " + player.getName() + " n'a PAS de team !");
             }
         }
 

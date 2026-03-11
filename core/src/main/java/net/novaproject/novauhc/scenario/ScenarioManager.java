@@ -26,7 +26,7 @@ public class ScenarioManager {
         addScenario(new FIreLess());
         addScenario(new BloodDiamonds());
         addScenario(new NoFall());
-
+        addScenario(new TpMeetup());
         addScenario(new WooltoString());
         addScenario(new BetaZombie());
         addScenario(new CatEye());

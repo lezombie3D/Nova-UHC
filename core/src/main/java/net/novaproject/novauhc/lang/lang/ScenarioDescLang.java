@@ -326,6 +326,8 @@ public enum ScenarioDescLang implements Lang {
         "Les membres d'une équipe partagent leurs inventaires.",
         "Team members share their inventories."
     ),
+    TPMEETUP("Teleporte tout les joueur au centre de la carte apres un temps donné",
+            "All players teleport to the center of the map after a given time"),
     TIMBER(
         "Casse les arbres tel un bûcheron - un seul bloc cassé fait tomber tout l'arbre.",
         "Chop trees like a lumberjack - breaking one block fells the whole tree."

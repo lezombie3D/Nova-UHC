@@ -107,24 +107,6 @@ public class PlayerConnectionEvent implements Listener {
             event.disallow(PlayerLoginEvent.Result.KICK_FULL, LangManager.get().get(CommonLang.KICK_FULL));
         }
     }
-    // @author (Guillaume-BH)
-    @EventHandler
-    private void onJoin(PlayerJoinEvent event) {
-        final Player player = event.getPlayer();
-        final var cp = (CraftPlayer) player;
-        final EntityPlayer ep = cp.getHandle();
-
-        final MinecraftServer server = ep.server;
-        final NetworkManager networkManager = ep.playerConnection.networkManager;
-
-        final FixedPlayerBucketConnection connection =
-                new FixedPlayerBucketConnection(server, networkManager, ep);
-
-        ep.playerConnection = connection;
-        networkManager.a(connection);
-    }
-
-
 
 
 }
