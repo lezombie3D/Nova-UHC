@@ -32,8 +32,8 @@ public abstract class LegendRole extends Role {
 
 
     @Override
-    public String getDescription() {
-        return LangManager.get().get(getDescriptionLang());
+    public void sendDescription(Player player) {
+        LangManager.get().get(getDescriptionLang());
     }
 
     @Override

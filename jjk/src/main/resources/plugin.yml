@@ -1,0 +1,8 @@
+name: Ultimate
+main: net.novaproject.jjk.Main
+version: 1.0
+authors:
+  - Lezombie3D
+  - Sithey
+dependencies:
+  - NovaUHC

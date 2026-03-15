@@ -86,14 +86,6 @@ public class ChooseUi extends CustomInventory {
                 .setName("§6" + role.getName());
 
 
-        String desc = role.getDescription();
-        if (desc.length() > 50) {
-            icon.addLore("§7" + desc.substring(0, 50) + "...");
-        } else {
-            icon.addLore("§7" + desc);
-        }
-        icon.addLore("");
-
         UHCPlayer uhcPlayer = getUHCPlayer();
         if (uhcPlayer != null && uhcPlayer.getTeam().isPresent()) {
             if (legend.getRoleByUHCPlayer(uhcPlayer) != null) {

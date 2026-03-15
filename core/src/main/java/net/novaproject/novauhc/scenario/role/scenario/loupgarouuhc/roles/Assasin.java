@@ -4,6 +4,7 @@ import net.novaproject.novauhc.scenario.role.scenario.loupgarouuhc.LGCamps;
 import net.novaproject.novauhc.scenario.role.scenario.loupgarouuhc.LoupGarouRole;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -18,8 +19,7 @@ public class Assasin extends LoupGarouRole {
     }
 
     @Override
-    public String getDescription() {
-        return "";
+    public void sendDescription(Player player) {
     }
 
 

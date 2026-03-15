@@ -9,6 +9,7 @@
         </processorPath>
         <module name="UHC.ultimate.main" />
         <module name="UHC.core.main" />
+        <module name="UHC.jjk.main" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="25" />

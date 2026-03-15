@@ -5,6 +5,7 @@ import net.novaproject.novauhc.scenario.role.scenario.loupgarouuhc.LoupGarouRole
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -25,7 +26,7 @@ public class Renard extends LoupGarouRole {
     }
 
     @Override
-    public String getDescription() {
+    public void sendDescription(Player player) {
         String message = "§8§m---------" + ChatColor.GREEN + "Renard§8§m----------§r\n" +
                 "§fVotre Objectif : " + ChatColor.GREEN + "Gagnez avec le Village\n" +
                 "§fVos Pouvoir : " + ChatColor.BLUE + "Vous possedez le pouvoir de flairer, et l'effet Speed 1 de nuit.\n" +
@@ -36,7 +37,6 @@ public class Renard extends LoupGarouRole {
                 "-Vous devez rester proche de la cible 5min\n" +
                 " -Vos flaire vous permettent de connaitre si le jouer appartient au camps des " + ChatColor.RED + "LoupGarou§r." +
                 "§8§m--------------------------";
-        return message;
     }
 
 

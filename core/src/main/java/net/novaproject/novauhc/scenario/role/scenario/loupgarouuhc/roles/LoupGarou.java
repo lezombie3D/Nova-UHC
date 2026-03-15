@@ -5,6 +5,7 @@ import net.novaproject.novauhc.scenario.role.scenario.loupgarouuhc.LoupGarouRole
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -22,13 +23,12 @@ public class LoupGarou extends LoupGarouRole {
 
 
     @Override
-    public String getDescription() {
+    public void sendDescription(Player player) {
         String message = "§8§m---------" + ChatColor.RED + "Loup-Garouf§8§m----------§r\n" +
                 "§fVotre Objectif : " + ChatColor.RED + "Gagnez avec les Loup-Garou\n" +
                 "§fVos Pouvoir : " + ChatColor.BLUE + "Vous possédez Force 1 de nuit.\n" +
                 "§fDescription du roles : " + ChatColor.DARK_PURPLE + "Vous possédez la liste de vos coéquipier.\n" +
                 "§8§m--------------------------";
-        return message;
     }
 
 

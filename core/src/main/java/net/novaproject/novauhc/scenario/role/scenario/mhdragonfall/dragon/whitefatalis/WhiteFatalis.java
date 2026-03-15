@@ -5,6 +5,7 @@ import net.novaproject.novauhc.scenario.role.scenario.mhdragonfall.ElementType;
 import net.novaproject.novauhc.scenario.role.scenario.mhdragonfall.Tiers;
 import net.novaproject.novauhc.utils.ItemCreator;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 public class WhiteFatalis extends DragonRole {
 
@@ -19,8 +20,7 @@ public class WhiteFatalis extends DragonRole {
     }
 
     @Override
-    public String getDescription() {
-        return "Ancien dragon divin, maître de la foudre et du chaos draconique.";
+    public void sendDescription(Player player) {
     }
 
     @Override

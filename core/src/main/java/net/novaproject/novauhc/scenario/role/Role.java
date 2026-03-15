@@ -3,7 +3,6 @@ package net.novaproject.novauhc.scenario.role;
 import lombok.Getter;
 import lombok.Setter;
 import net.novaproject.novauhc.ability.Ability;
-import net.novaproject.novauhc.scenario.RoleVariableProcessor;
 import net.novaproject.novauhc.scenario.role.camps.Camps;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
@@ -19,9 +18,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -30,7 +27,7 @@ public abstract class Role implements Cloneable {
     private Set<Ability> abilities = new HashSet<>();
 
     public abstract String getName();
-    public abstract String getDescription();
+    public abstract void sendDescription(Player player);
 
     private Camps camp;
 
@@ -44,7 +41,7 @@ public abstract class Role implements Cloneable {
 
         Player player = uhcPlayer.getPlayer();
 
-        player.sendMessage(getDescription());
+        sendDescription(player);
 
         if(!getAbilities().isEmpty()) getAbilities().forEach(ability -> ability.onGive(uhcPlayer));
     }

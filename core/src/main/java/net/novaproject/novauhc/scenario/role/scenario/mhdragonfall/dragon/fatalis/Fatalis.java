@@ -10,6 +10,7 @@ import net.novaproject.novauhc.utils.ItemCreator;
 import net.novaproject.novauhc.utils.VariableType;
 import org.bukkit.Material;
 import net.novaproject.novauhc.lang.lang.ScenarioVarLang;
+import org.bukkit.entity.Player;
 
 public class Fatalis extends DragonRole {
     @RoleVariable(lang = ScenarioVarLang.class, nameKey = "FATALIS_VAR_MAX_HP_NAME", descKey = "FATALIS_VAR_MAX_HP_DESC", type = VariableType.INTEGER)
@@ -53,8 +54,7 @@ public class Fatalis extends DragonRole {
     }
 
     @Override
-    public String getDescription() {
-        return "Le dragon légendaire du feu, maître du Black Flame.";
+    public void sendDescription(Player player) {
     }
 
     @Override

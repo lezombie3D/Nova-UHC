@@ -30,5 +30,6 @@ jar {
     }
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    destinationDirectory.set(file("F:/plugin/serv/plugins"))
+    destinationDirectory.set(file("C:\\Users\\darkm\\Downloads\\Nouveau dossier\\plugins") )
+
 }

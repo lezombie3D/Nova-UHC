@@ -3,7 +3,6 @@ package net.novaproject.novauhc.scenario.role.scenario.fireforceuhc.role;
 import net.novaproject.novauhc.scenario.role.scenario.fireforceuhc.FireForceRole;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.utils.ItemCreator;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -27,8 +26,7 @@ public class Sho extends FireForceRole {
     }
 
     @Override
-    public String getDescription() {
-        return "test\n" + ChatColor.AQUA + getForceLevel() + ChatColor.GRAY + "\n" + ChatColor.AQUA + getTransLevel() + ChatColor.GRAY + "\n" + ChatColor.AQUA + getCamp();
+    public void sendDescription(Player player) {
     }
 
 

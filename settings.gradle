@@ -1,2 +1,2 @@
 rootProject.name = 'UHC'
-include 'core' , 'ultimate'
+include 'core' , 'ultimate', 'jjk'

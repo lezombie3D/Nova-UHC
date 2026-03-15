@@ -43,7 +43,7 @@ public class LdCMD extends Command {
             case "info":
                 LegendRole role = legend.getRoleByUHCPlayer(uhcPlayer);
                 if (role != null) {
-                    player.sendMessage(role.getDescription());
+                    role.sendDescription(player);
                 } else {
                     LangManager.get().send(LegendLang.CMD_NO_POWER, player);
                 }
