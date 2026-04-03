@@ -2,6 +2,8 @@ package net.novaproject.novauhc.listener;
 
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.listener.effect.ArmorDurabilityNerfEvent;
+import net.novaproject.novauhc.listener.player.LunarApolloListener;
+import net.novaproject.novauhc.lunar.LunarApolloManager;
 import net.novaproject.novauhc.listener.effect.AttackNerfEvent;
 import net.novaproject.novauhc.listener.effect.ResistanceNerfEvent;
 import net.novaproject.novauhc.listener.entity.EntityBowEvent;
@@ -37,5 +39,9 @@ public class ListenerManager {
 
         pm.registerEvents(new CustomInventoryEvent(),  plugin);
         pm.registerEvents(new ChunkUnloadListener(),   plugin);
+
+        if (LunarApolloManager.get().isAvailable()) {
+            pm.registerEvents(new LunarApolloListener(), plugin);
+        }
     }
 }

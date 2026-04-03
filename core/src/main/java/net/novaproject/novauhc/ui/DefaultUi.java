@@ -5,7 +5,9 @@ import net.novaproject.novauhc.UHCManager;
 import net.novaproject.novauhc.lang.lang.CommonLang;
 import net.novaproject.novauhc.lang.LangManager;
 import net.novaproject.novauhc.lang.ui.DefaultUiLang;
+import net.novaproject.novauhc.lang.ui.LunarApolloLang;
 import net.novaproject.novauhc.lang.ui.UiTitleLang;
+import net.novaproject.novauhc.lunar.LunarApolloManager;
 import net.novaproject.novauhc.ui.config.ScenariosUi;
 import net.novaproject.novauhc.ui.config.TeamConfigUi;
 import net.novaproject.novauhc.ui.world.BorderConfig;
@@ -143,6 +145,35 @@ public class DefaultUi extends CustomInventory {
                         t(DefaultUiLang.SLOT_ITEM_DESC2),
                         ""
                 ));
+
+        boolean lunarAvailable = LunarApolloManager.get().isAvailable();
+        boolean lunarEnabled = UHCManager.get().isLunarApollo();
+        String lunarStatus = lunarEnabled
+                ? LangManager.get().get(LunarApolloLang.ITEM_ENABLED, getPlayer())
+                : LangManager.get().get(LunarApolloLang.ITEM_DISABLED, getPlayer());
+
+        ItemCreator lunar = new ItemCreator(Material.EMERALD)
+                .setName(LangManager.get().get(LunarApolloLang.ITEM_NAME, getPlayer()))
+                .addLore("").addLore(accessHost)
+                .addLore(LangManager.get().get(LunarApolloLang.ITEM_STATUS, getPlayer()) + lunarStatus)
+                .addLore("")
+                .addLore(LangManager.get().get(LunarApolloLang.ITEM_DESC, getPlayer()));
+
+        if (!lunarAvailable) {
+            lunar.addLore("").addLore(LangManager.get().get(LunarApolloLang.ITEM_NOT_AVAILABLE, getPlayer()));
+        } else {
+            lunar.addLore("").addLore(clickToggle);
+        }
+        lunar.addLore("");
+
+        addItem(new ActionItem(4, lunar) {
+            @Override
+            public void onClick(InventoryClickEvent e) {
+                if (!LunarApolloManager.get().isAvailable()) return;
+                UHCManager.get().setLunarApollo(!UHCManager.get().isLunarApollo());
+                openAll();
+            }
+        });
 
         addMenu(16, world, new WorldUi(getPlayer()));
         addItem(new ActionItem(6, regles) {

@@ -3,6 +3,7 @@ package net.novaproject.novauhc.ability;
 import lombok.Getter;
 import lombok.Setter;
 import net.novaproject.novauhc.ability.utils.AbilityVariable;
+import net.novaproject.novauhc.lunar.LunarApolloManager;
 import net.novaproject.novauhc.lang.lang.ScenarioVarLang;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
@@ -92,6 +93,7 @@ public abstract class Ability implements Cloneable {
                 return true;
             }
             ShortCooldownManager.put(player, getName() + "Cooldown", cd * 1000L);
+            LunarApolloManager.get().displayCooldown(player, getName(), cd, getMaterial() != null ? getMaterial() : Material.NETHER_STAR);
             return true;
         }
 
@@ -105,6 +107,7 @@ public abstract class Ability implements Cloneable {
             return true;
         }
         ShortCooldownManager.put(player, getName() + "Cooldown", cd * 1000L);
+        LunarApolloManager.get().displayCooldown(player, getName(), cd, getMaterial() != null ? getMaterial() : Material.NETHER_STAR);
         return true;
     }
 

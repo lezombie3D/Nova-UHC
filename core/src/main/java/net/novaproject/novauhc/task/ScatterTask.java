@@ -4,6 +4,7 @@ import net.novaproject.novauhc.Common;
 import net.novaproject.novauhc.lang.LangManager;
 import net.novaproject.novauhc.Main;
 import net.novaproject.novauhc.UHCManager;
+import net.novaproject.novauhc.lunar.LunarApolloManager;
 import net.novaproject.novauhc.lang.lang.CommonLang;
 import net.novaproject.novauhc.lang.lang.TaskLang;
 import net.novaproject.novauhc.scenario.Scenario;
@@ -87,6 +88,8 @@ public class ScatterTask extends BukkitRunnable {
         });
 
         ScenarioManager.get().getActiveScenarios().forEach(Scenario::onGameStart);
+
+        LunarApolloManager.get().updateAllTeamArrows();
 
         new GameTask().runTaskTimer(Main.get(), 0, 20L);
     }

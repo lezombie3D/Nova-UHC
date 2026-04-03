@@ -1,6 +1,7 @@
 package net.novaproject.novauhc.listener.player;
 
 import net.novaproject.novauhc.UHCManager;
+import net.novaproject.novauhc.lunar.LunarApolloManager;
 import net.novaproject.novauhc.uhcplayer.UHCPlayer;
 import net.novaproject.novauhc.uhcplayer.UHCPlayerManager;
 import org.bukkit.event.EventHandler;
@@ -21,6 +22,8 @@ public class PlayerDeathEvent implements Listener {
         } else {
             uhcKiller = null;
         }
+
+        LunarApolloManager.get().onPlayerDeath(event.getEntity());
 
         uhcPlayer.onDeath(uhcKiller, event);
 

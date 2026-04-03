@@ -2,6 +2,8 @@ package net.novaproject.novauhc;
 
 import lombok.Getter;
 import net.novaproject.novauhc.cloudnet.CloudNet;
+import net.novaproject.novauhc.lang.ui.LunarApolloLang;
+import net.novaproject.novauhc.lunar.LunarApolloManager;
 import net.novaproject.novauhc.command.CommandManager;
 import net.novaproject.novauhc.api.ApiManager;
 import net.novaproject.novauhc.api.DatabaseManager;
@@ -95,6 +97,7 @@ public class Main extends JavaPlugin {
         langManager.register(LimiteStuffUiLang.values());
         langManager.register(ScenarioVariableUiLang.values());
         langManager.register(UiTitleLang.values());
+        langManager.register(LunarApolloLang.values());
 
         
         langManager.register(CommandLang.values());
@@ -155,6 +158,7 @@ public class Main extends JavaPlugin {
 
         commandManager = new CommandManager(this);
         common.setup();
+        new LunarApolloManager().setup();
         uhcManager.setup();
         new ReconnectionManager();
         if (Bukkit.getPluginManager().getPlugin("CloudNet-Bridge") != null) {

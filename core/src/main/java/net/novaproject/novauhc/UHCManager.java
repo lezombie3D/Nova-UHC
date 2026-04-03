@@ -69,6 +69,7 @@ public class UHCManager {
     private boolean started = false;
     private boolean chatdisbale = false;
     private boolean canceled = false;
+    private boolean lunarApollo = false;
 
     public void setup() {
         uhcPlayerManager = new UHCPlayerManager();
