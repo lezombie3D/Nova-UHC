@@ -1,0 +1,74 @@
+zone_size: 15
+capture_time: 30
+fk_template: "falen"
+nether_portals:
+  pos1:
+    0:
+      world: "arena"
+      x: -1
+      y: 139
+      z: -1
+      yaw: 0
+      pitch: 0
+  pos2:
+    0:
+      world: "arena"
+      x: 1
+      y: 142
+      z: 1
+      yaw: 0
+      pitch: 0
+
+end_portals:
+  pos1:
+    0:
+      world: "arena"
+      x: -1
+      y: 155
+      z: -1
+      yaw: 0
+      pitch: 0
+  pos2:
+    0:
+      world: "arena"
+      x: 1
+      y: 156
+      z: 1
+      yaw: 0
+      pitch: 0
+team_zone_location:
+  0:
+    world: "arena"
+    x: 348.5
+    y: 96
+    z: -112.5
+    pitch: 0
+    yaw: 0
+  1:
+    world: "arena"
+    x: 216.5
+    y: 97
+    z: 296.5
+    pitch: 0
+    yaw: 0
+  2:
+    world: "arena"
+    x: 0.5
+    y: 96
+    z: -366.5
+    pitch: 0
+    yaw: 0
+  3:
+    world: "arena"
+    x: -215.5
+    y: 96
+    z: 296.5
+    pitch: 0
+    yaw: 0
+  4:
+    world: "arena"
+    x: -347.5
+    y: 98
+    z: -112.5
+    pitch: 0
+    yaw: 0

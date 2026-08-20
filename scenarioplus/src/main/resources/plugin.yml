@@ -1,0 +1,7 @@
+name: ScenarioPlus
+main: net.novaproject.scenarioplus.Main
+version: 1.0
+authors:
+  - Lezombie3D
+depend:
+  - NovaUHC

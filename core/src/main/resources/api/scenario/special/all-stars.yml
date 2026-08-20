@@ -1,0 +1,94 @@
+# All Stars UHC — Configuration
+#
+# Toutes les durations/CD/dégâts/rayons gameplay se règlent via l'UI host
+# (ScenariosUi) grâce aux annotations @ScenarioVariable / @RoleVariable / @AbilityVariable.
+# Ce fichier ne contient QUE les positions/locations externes (zones fixes,
+# spawn-anchors, mondes dédiés) qu'on ne peut pas exprimer en variables UI.
+#
+# Source spec : https://akira.gitbook.io/all-stars-uhc
+#
+
+# ── Zeref Immortality — arène duel mains nues ────────────────────────────────
+# Quand Zeref meurt, lui et son killer sont TP dans cette arène isolée.
+# But : 10 hits bare-hand pour gagner ; Zeref-win = respawn 100b autour de sa mort -2❤ ;
+# opponent-win = mort permanente Zeref ; opponent rentre toujours à sa position d'origine.
+zeref_arena:
+  world: world          # nom du monde où se trouve l'arène (par défaut le main world)
+  center: { x: 0, y: 200, z: 0 }   # centre arène (proxy 200y up par défaut, override possible)
+  size: 20              # cuboïde 20×20 autour du centre
+  # Les 2 spawn-points internes (Zeref et opponent côté opposé)
+  spawn_zeref:    { x: -5, y: 200, z: 0 }
+  spawn_opponent: { x: 5,  y: 200, z: 0 }
+
+# ── Emiya UBW Dimension — TP zone séparée ────────────────────────────────────
+# Active par /as ubw : tous joueurs <30b TP dans la dimension UBW pour 45s.
+# 50 swords plantées (5 types) que joueurs peuvent ramasser + utiliser.
+emiya_ubw:
+  world: world
+  center: { x: 0, y: 250, z: 0 }
+  radius: 50             # zone UBW dans laquelle les swords sont droppées
+  sword_count: 50
+  # Les 5 types de swords UBW (matériaux Bukkit, 1 chacun = effet différent)
+  sword_types: [ WOOD_SWORD, STONE_SWORD, IRON_SWORD, GOLD_SWORD, DIAMOND_SWORD ]
+
+# ── Universal Rift — zone arène winners B.5 ──────────────────────────────────
+# Au déclenchement (40min spec), tous les contendants sont TP à riftCenterDistance
+# du spawn. Ces positions servent de centres alternatifs si plusieurs rifts en série.
+universal_rift:
+  anchor_positions:
+    0: { x: 10000,  y: 100, z: 0 }
+    1: { x: -10000, y: 100, z: 0 }
+    2: { x: 0,      y: 100, z: 10000 }
+    3: { x: 0,      y: 100, z: -10000 }
+
+# ── Starfall — config de drop B.4 ────────────────────────────────────────────
+# Les drops apparaissent aléatoirement dans le rayon [starfallRadiusMin..Max] autour
+# du spawn. Ce fichier permet de pin des positions favorites (optional).
+starfall:
+  preferred_drop_locations: []   # vide = tirage purement aléatoire
+
+# ── Makima Brainwashing — respawn zone ───────────────────────────────────────
+# Le joueur brainwashé respawn dans un rayon autour de Makima. Optionnel : restrict
+# à des zones safe en listant des positions ; vide = TP random highestBlockYAt.
+makima_brainwash:
+  safe_respawn_positions: []     # vide = highest-block aléatoire dans le rayon
+
+# ── Pain Chibaku Tensei — height offset ──────────────────────────────────────
+# La sphère de Chibaku Tensei est placée au-dessus du sol. Ce paramètre n'est
+# normalement pas configurable côté YML (déjà @AbilityVariable), mais permet d'override.
+pain_chibaku:
+  height_override: -1            # -1 = utiliser @AbilityVariable (chibakuHeight = 50)
+
+# ── Jinwoo Monarch's Domain — zone defaults ──────────────────────────────────
+# Le Domaine du Monarque s'instancie autour de Jinwoo. Ce fichier permet de
+# pré-définir un anchor fixe si voulu (optional, sinon = position de Jinwoo).
+jinwoo_domain:
+  use_player_location: true      # true = centré sur Jinwoo (default), false = anchor fixe
+  anchor: { x: 0, y: 70, z: 0 }
+
+# ── Aizen Spiritual Pressure — config particles ──────────────────────────────
+# Le field pousse les joueurs entrants. Position relative au joueur.
+aizen_spiritual_pressure:
+  particles_per_tick: 16
+
+# ── Riboku Annexed Zones — banners pre-placed (optional) ─────────────────────
+# Si le host veut que Riboku démarre avec des zones pré-capturées, lister ici.
+# Sinon vide = Riboku reçoit 2 banners à placer manuellement (default spec).
+riboku_zones:
+  preplaced: []
+
+# ── Mondes dédiés (dimensions séparées si activées) ──────────────────────────
+# Pour les rôles qui spec demandent une "separate dimension", on peut soit
+# utiliser le proxy +200y dans le main world (default), soit pointer un world
+# Bukkit dédié si le host en a créé un.
+dimensions:
+  zeref_arena_world:  null    # null = proxy main world +200y
+  emiya_ubw_world:    null
+  jinwoo_domain_world: null
+
+# ── Notes ────────────────────────────────────────────────────────────────────
+# - Si le module ne lit pas une clé, le default @ScenarioVariable / @AbilityVariable
+#   prévaut (cf. ScenariosUi host).
+# - Aucune valeur gameplay (durations/CD/dégâts/rayons combat) n'est ici — TOUT
+#   passe par les variables UI pour cohérence multi-modules.
+# - Les positions sont en world coords absolus (pas relatives).

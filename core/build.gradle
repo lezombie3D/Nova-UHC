@@ -1,0 +1,54 @@
+evaluationDependsOn(':api')
+
+configurations {
+    extraLibs
+    implementation.extendsFrom(extraLibs)
+}
+
+dependencies {
+
+    api project(':api')
+
+    api group: 'com.github.azbh111', name: 'spigot-1.8.8', version: 'R'
+
+    api platform('eu.cloudnetservice.cloudnet:bom:4.0.0-RC15')
+    api 'eu.cloudnetservice.cloudnet:driver-api'
+    api 'eu.cloudnetservice.cloudnet:wrapper-jvm-impl'
+    api 'eu.cloudnetservice.cloudnet:bridge-api'
+    api 'eu.cloudnetservice.cloudnet:platform-inject-api'
+
+    api 'dev.derklaro.aerogel:aerogel:2.0.0-SNAPSHOT'
+
+    extraLibs 'org.mongodb:mongo-java-driver:3.12.11'
+    extraLibs 'xyz.xenondevs:particle:1.8.1'
+
+    compileOnly 'org.projectlombok:lombok:1.18.42'
+    annotationProcessor 'org.projectlombok:lombok:1.18.42'
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    compileOnly 'com.github.retrooper:packetevents-spigot:2.13.0'
+    compileOnly 'com.lunarclient:apollo-api:1.2.8'
+    compileOnly fileTree(dir: rootProject.file('libs'), include: ['citi*.jar'])
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+
+configurations.testRuntimeClasspath {
+    exclude group: 'io.netty'
+    exclude group: 'eu.cloudnetservice.cloudnet'
+    exclude group: 'dev.derklaro.aerogel'
+}
+
+
+jar {
+    archiveFileName.set("API.jar")
+    from project(':api').sourceSets.main.output
+    from {
+        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+}
+

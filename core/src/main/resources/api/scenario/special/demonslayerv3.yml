@@ -1,0 +1,91 @@
+# Configuration runtime Demon Slayer V3
+# Tous les sous-systèmes (Caverne, Train, Château) vivent dans le MÊME monde —
+# chaque élément a sa propre location configurable.
+
+# ── Caverne de Daki ──────────────────────────────────────────────────────────
+caverne:
+  prisoner_arrival:        # point d'arrivée des prisonniers
+    world: "world"
+    x: 0
+    y: 50
+    z: 0
+  daki_spawn:              # point de spawn de Daki dans la Caverne
+    world: "world"
+    x: 0
+    y: 50
+    z: 5
+
+# ── Train de l'Infini ────────────────────────────────────────────────────────
+train:
+  arrival:                 # TP d'arrivée des joueurs (commande /ds wagon, etc.)
+    world: "world"
+    x: 100
+    y: 70
+    z: 100
+  coeur:                   # location du Coeur d'Enmu (clic gauche pour rage)
+    world: "world"
+    x: 100
+    y: 70
+    z: 105
+  enmu_spawn:              # spawn/respawn d'Enmu
+    world: "world"
+    x: 100
+    y: 70
+    z: 110
+  demon_spawn:             # spawn des Démons Simples qui rejoignent le Train
+    world: "world"
+    x: 100
+    y: 70
+    z: 115
+  # wagons 1-5 (TP /ds wagon <n> par Enmu) — extensible si besoin
+  wagon1:
+    world: "world"
+    x: 100
+    y: 70
+    z: 100
+  wagon2:
+    world: "world"
+    x: 100
+    y: 70
+    z: 110
+  wagon3:
+    world: "world"
+    x: 100
+    y: 70
+    z: 120
+  wagon4:
+    world: "world"
+    x: 100
+    y: 70
+    z: 130
+  wagon5:
+    world: "world"
+    x: 100
+    y: 70
+    z: 140
+
+# ── Cage de Nakime / Château de l'Infini ─────────────────────────────────────
+# Liste indexée de locations possibles : chaque convocation (Nakime ou Château
+# final) tire UNE location aléatoire dans cette liste, et téléporte tous les
+# joueurs concernés à cet endroit. Format compatible ConfigUtils.getLocations.
+cage_locations:
+  0:
+    world: "world"
+    x: 200
+    y: 80
+    z: 200
+  1:
+    world: "world"
+    x: 200
+    y: 80
+    z: 250
+  2:
+    world: "world"
+    x: 250
+    y: 80
+    z: 200
+  3:
+    world: "world"
+    x: 250
+    y: 80
+    z: 250

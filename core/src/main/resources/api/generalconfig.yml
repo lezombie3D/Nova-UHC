@@ -1,0 +1,41 @@
+﻿message:
+  tab:
+    show: true
+timer:
+  timer_before_start: 15
+  combat: 30
+commands:
+  block-vanilla: true
+  staff-bypass: true
+  whitelist: []
+  blacklist: []
+combat-log:
+  enabled: true
+announcements:
+  pvp-warnings:
+    - 300
+    - 60
+  meetup-warnings:
+    - 6000
+    - 60
+auto-start:
+  enabled: false
+  min-players: 20
+alerts:
+  found-diamond: true
+chat:
+  lobby-cooldown-ms: 0
+stats:
+  assist-window: 30
+final-heals: []
+start-platforms:
+  height: 30
+  size: 3
+  glass-color: 14
+spectator:
+  auto-tp-killer: true
+vote:
+  duration: 30
+ability-items:
+  block-drop: true
+  hide-from-others: true

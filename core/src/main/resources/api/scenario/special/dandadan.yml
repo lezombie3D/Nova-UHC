@@ -1,0 +1,119 @@
+# DanDaDan UHC - Configuration des zones
+#
+# zones: Liste de TOUTES les positions de teleportation dans le monde DanDaDan.
+#        Au debut de la partie, chaque Yokai actif se voit assigner une zone.
+#        Les zones excedentes deviennent des zones ALEATOIRES.
+#
+#        Ajoutez autant de zones que vous voulez !
+#        Plus il y a de zones, plus les joueurs ont de choix.
+#
+# trial_locations: Position d'epreuve propre a chaque Yokai (ou le joueur est TP pour accepter/refuser)
+#
+
+zones:
+  0:  { x: 50,   y: 70, z: 50 }
+  1:  { x: -30,  y: 70, z: 80 }
+  2:  { x: 100,  y: 70, z: -20 }
+  3:  { x: -80,  y: 70, z: 40 }
+  4:  { x: 60,   y: 70, z: -90 }
+  5:  { x: -50,  y: 70, z: -60 }
+  6:  { x: 120,  y: 70, z: 30 }
+  7:  { x: -100, y: 70, z: 100 }
+  8:  { x: 70,   y: 70, z: 120 }
+  9:  { x: -40,  y: 70, z: -120 }
+  10: { x: 90,   y: 70, z: -50 }
+  11: { x: -70,  y: 70, z: 60 }
+  12: { x: 40,   y: 70, z: -80 }
+  13: { x: -90,  y: 70, z: -30 }
+  14: { x: 110,  y: 70, z: 80 }
+  15: { x: -120, y: 70, z: 50 }
+  16: { x: 80,   y: 70, z: 110 }
+  17: { x: -60,  y: 70, z: -100 }
+  18: { x: 30,   y: 70, z: 130 }
+  19: { x: -110, y: 70, z: -70 }
+  20: { x: 130,  y: 70, z: -40 }
+  21: { x: -130, y: 70, z: 120 }
+  # Zones supplementaires → deviennent aleatoires si plus de Yokai actifs
+  22: { x: 20,   y: 70, z: 20 }
+  23: { x: -20,  y: 70, z: -20 }
+  24: { x: 75,   y: 70, z: 75 }
+  25: { x: -75,  y: 70, z: 75 }
+  26: { x: 45,   y: 70, z: -45 }
+  27: { x: -45,  y: 70, z: 45 }
+  28: { x: 100,  y: 70, z: 100 }
+  29: { x: -100, y: 70, z: -100 }
+
+# Position d'epreuve de chaque Yokai (ou le joueur est TP pour choisir)
+trial_locations:
+  OKARUN:     { x: 500,  y: 100, z: 500 }
+  MOMO:       { x: 550,  y: 100, z: 500 }
+  BAMORA:     { x: 600,  y: 100, z: 500 }
+  SEIKO:      { x: 650,  y: 100, z: 500 }
+  KINTA:      { x: 700,  y: 100, z: 500 }
+  KASHIMOTO:  { x: 750,  y: 100, z: 500 }
+  ENENRA:     { x: 800,  y: 100, z: 500 }
+  PAYASE:     { x: 850,  y: 100, z: 500 }
+  ROKURO:     { x: 900,  y: 100, z: 500 }
+  MANTIS:     { x: 950,  y: 100, z: 500 }
+  JIANGSHI:   { x: 1000, y: 100, z: 500 }
+  TSUCHINOKO: { x: 1050, y: 100, z: 500 }
+  OEIL:       { x: 1100, y: 100, z: 500 }
+  JIJI:       { x: 1150, y: 100, z: 500 }
+  FLATWOODS:  { x: 1200, y: 100, z: 500 }
+  REIKO:      { x: 1250, y: 100, z: 500 }
+  JETBOOSTER: { x: 1300, y: 100, z: 500 }
+  ACROBATIQUE:{ x: 1350, y: 100, z: 500 }
+  NESSIE:     { x: 1400, y: 100, z: 500 }
+  MINOTAURE:  { x: 1450, y: 100, z: 500 }
+  UMBRELLA:   { x: 1500, y: 100, z: 500 }
+  DEVILMAN:   { x: 1550, y: 100, z: 500 }
+  CSG:        { x: 2000, y: 100, z: 500 }
+  CAESAR:     { x: 2050, y: 100, z: 500 }
+  JOSEPH:     { x: 2100, y: 100, z: 500 }
+  DOOMSLAYER: { x: 2150, y: 100, z: 500 }
+  DENJI:      { x: 2200, y: 100, z: 500 }
+  REZE:       { x: 2250, y: 100, z: 500 }
+  JOTARO:     { x: 2300, y: 100, z: 500 }
+  DIO:        { x: 2350, y: 100, z: 500 }
+  KIRA:       { x: 2400, y: 100, z: 500 }
+  POLNAREFF:  { x: 2450, y: 100, z: 500 }
+  ROHAN:      { x: 2500, y: 100, z: 500 }
+
+# Course (Okarun ability /ddd course)
+# start: Position de depart des 2 joueurs
+# end: Ligne d'arrivee
+# checkpoints: Points de passage obligatoires (dans l'ordre)
+# return: Position de retour apres la course
+# duration: Duree max de la course en secondes
+course:
+  start:
+    x: 300
+    y: 100
+    z: 300
+  end:
+    x: 370
+    y: 100
+    z: 300
+  checkpoints:
+    0:
+      x: 310
+      y: 100
+      z: 305
+    1:
+      x: 325
+      y: 105
+      z: 310
+    2:
+      x: 340
+      y: 100
+      z: 305
+    3:
+      x: 355
+      y: 100
+      z: 300
+  return:
+    x: 0
+    y: 70
+    z: 0
+  duration: 30
+

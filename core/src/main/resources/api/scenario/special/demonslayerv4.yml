@@ -1,0 +1,26 @@
+# Configuration runtime Demon Slayer V4
+# Les locations (Caverne, Train, Château, Forge, Arbres) sont calculées et sauvegardées ici.
+
+caverne:
+  worldName: "world"
+  x: 0
+  y: 50
+  z: 0
+train:
+  worldName: "world"
+  x: 0
+  y: 70
+  z: 0
+chateau:
+  worldName: "world"
+  x: 0
+  y: 70
+  z: 0
+forge:
+  worldName: "world"
+  x: 0
+  y: 70
+  z: 0
+arbres:
+  worldName: "world"
+  locations: []

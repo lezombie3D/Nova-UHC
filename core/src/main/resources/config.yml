@@ -1,0 +1,35 @@
+serverinfo:
+  servertag:
+    "§6● §6§lSERV §8• §7"
+  info:
+    "§6● §6§lINFO §8• §7"
+  ip:
+    "play.novauhc.fr"
+  servername:
+    "§cSERVER"
+  helpop:
+    "§2● §2§lHELPOP §8• §7"
+## Langue par défaut du serveur (fallback si un joueur n'a pas choisi la sienne via /lang)
+## fr_FR est la langue de référence. Pour ajouter une langue : déposer un <code>.yml (ex. de_DE.yml, pt_BR.yml)
+## dans plugins/NovaUHC/lang/ (à côté de fr_FR.yml) ; elle apparaît automatiquement dans /lang. Les clés
+## absentes d'un fichier de langue retombent sur le fr_FR.
+language: fr_FR
+## Mode développement : true = pas de régénération de l'arène (la map existante est chargée telle quelle,
+## aucune prégénération) + bordure à 1000 blocs + /dev accessible sans permission host
+dev: false
+api:
+  url: "https://api.nova-code.fr"
+  key: "TA CLEF API ICI"
+  server-name: "Nova-UHC"
+
+
+mumble:
+  enabled: false
+  access-key: "CLEF MUMBLE"
+  link-base: "https://nova-code.fr/voice"
+doc: ""
+discord: "https://discord.gg/TGMM7bPwTb"
+staff:
+  - "89daecd6-f9a7-4a2e-a8bf-a7d9294f074f"
+## PlaceHolder utilisable :
+

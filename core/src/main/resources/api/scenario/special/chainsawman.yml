@@ -1,0 +1,135 @@
+# Chainsaw Man UHC — Configuration
+#
+# Toutes les positions sont configurables ici.
+# Les valeurs HP/Sang/Cooldown des pacts se règlent via l'UI host (ScenariosUi),
+# pas dans ce fichier.
+
+# ── Autels Overworld (1 par démon Overworld, posé dans le monde arena) ──
+altars:
+  overworld:
+    FOUET:       { x: 100,  y: 70, z: 100 }
+    LANCEFLAMME: { x: 200,  y: 70, z: 200 }
+    LONGSWORD:   { x: -100, y: 70, z: 100 }
+    MUSCLE:      { x: -200, y: 70, z: 200 }
+    PIERRE:      { x: 100,  y: 70, z: -100 }
+    POISSON:     { x: 200,  y: 70, z: -200 }
+    POULPE:      { x: -100, y: 70, z: -100 }
+    RENARD:      { x: -200, y: 70, z: -200 }
+    SERPENT:     { x: 300,  y: 70, z: 0 }
+    TYPHON:      { x: -300, y: 70, z: 0 }
+
+  # ── Autels Enfer ──
+  # Système à 2 listes :
+  #  - plates  : positions des plaques de pression (zone centrale Enfer où arrivent les joueurs)
+  #              shuffle-mappées aux démons à chaque partie ; surplus de plaques = "wild" (TP démon random)
+  #  - demons  : positions FIXES des NPC démons par nom (Ange toujours à ses coords, etc.)
+  enfer:
+    plates:
+      0:  { x: 50,   y: 70, z: 0 }
+      1:  { x: -50,  y: 70, z: 0 }
+      2:  { x: 0,    y: 70, z: 50 }
+      3:  { x: 0,    y: 70, z: -50 }
+      4:  { x: 100,  y: 70, z: 100 }
+      5:  { x: -100, y: 70, z: 100 }
+      6:  { x: 100,  y: 70, z: -100 }
+      7:  { x: -100, y: 70, z: -100 }
+      8:  { x: 150,  y: 70, z: 0 }
+      9:  { x: -150, y: 70, z: 0 }
+      10: { x: 0,    y: 70, z: 150 }
+      11: { x: 0,    y: 70, z: -150 }
+      12: { x: 30,   y: 70, z: 30 }
+      13: { x: -30,  y: 70, z: 30 }
+      14: { x: 30,   y: 70, z: -30 }
+      15: { x: -30,  y: 70, z: -30 }
+      16: { x: 70,   y: 70, z: 0 }
+      17: { x: -70,  y: 70, z: 0 }
+      18: { x: 0,    y: 70, z: 70 }
+      19: { x: 0,    y: 70, z: -70 }
+      20: { x: 120,  y: 70, z: 50 }
+      21: { x: -120, y: 70, z: 50 }
+      22: { x: 120,  y: 70, z: -50 }
+      23: { x: -120, y: 70, z: -50 }
+      24: { x: 50,   y: 70, z: 120 }
+      25: { x: -50,  y: 70, z: 120 }
+      26: { x: 50,   y: 70, z: -120 }
+      27: { x: -50,  y: 70, z: -120 }
+      28: { x: 200,  y: 70, z: 0 }
+      29: { x: -200, y: 70, z: 0 }
+      30: { x: 0,    y: 70, z: 200 }
+      31: { x: -0,   y: 70, z: -200 }
+      32: { x: 80,   y: 70, z: 80 }
+      33: { x: -80,  y: 70, z: 80 }
+      34: { x: 80,   y: 70, z: -80 }
+      35: { x: -80,  y: 70, z: -80 }
+      36: { x: 25,   y: 70, z: 60 }
+      37: { x: -25,  y: 70, z: 60 }
+      38: { x: 25,   y: 70, z: -60 }
+      39: { x: -25,  y: 70, z: -60 }
+    demons:
+      ANGE:         { x: 1000, y: 100, z: 100 }
+      ARAIGNEE:     { x: 1100, y: 100, z: 100 }
+      ARMES:        { x: 1200, y: 100, z: 100 }
+      AVENIR:       { x: 1300, y: 100, z: 100 }
+      BOMBE:        { x: 1400, y: 100, z: 100 }
+      CHAUVESOURIS: { x: 1500, y: 100, z: 100 }
+      COSMOS:       { x: 1000, y: 100, z: 200 }
+      CROSSBOW:     { x: 1100, y: 100, z: 200 }
+      ELECTRIQUE:   { x: 1200, y: 100, z: 200 }
+      ENFER:        { x: 1300, y: 100, z: 200 }
+      FANTOME:      { x: 1400, y: 100, z: 200 }
+      FROID:        { x: 1500, y: 100, z: 200 }
+      GORILLE:      { x: 1000, y: 100, z: 300 }
+      KATANA:       { x: 1100, y: 100, z: 300 }
+      MALEDICTION:  { x: 1200, y: 100, z: 300 }
+      MIME:         { x: 1300, y: 100, z: 300 }
+      MORT:         { x: 1400, y: 100, z: 300 }
+      PANTINS:      { x: 1500, y: 100, z: 300 }
+      PORTAIL:      { x: 1000, y: 100, z: 400 }
+      REQUIN:       { x: 1100, y: 100, z: 400 }
+      SANG:         { x: 1200, y: 100, z: 400 }
+      TENEBRES:     { x: 1300, y: 100, z: 400 }
+      VAMPIRE:      { x: 1400, y: 100, z: 400 }
+      VIOLENCE:     { x: 1500, y: 100, z: 400 }
+      ZOMBIE:       { x: 1000, y: 100, z: 500 }
+
+# ── Faille violette UNIQUE au centre du Nether (passage Enfer) ──
+# Le joueur avec une Chair de Démon en main qui marche dans cette zone est TP à l'un des
+# `enfer_spawns` aléatoirement. À la sortie d'Enfer, il revient au CENTRE de cette faille.
+faille_enfer: { x: 0, y: 70, z: 0 }
+
+# ── Points d'arrivée en Enfer (4 par défaut, choix aléatoire à chaque entrée) ──
+enfer_spawns:
+  0: { x: 100,  y: 70, z: 100 }
+  1: { x: 100,  y: 70, z: -100 }
+  2: { x: -100, y: 70, z: 100 }
+  3: { x: -100, y: 70, z: -100 }
+
+# ── Pochita : spawn en Enfer entre 20-45 min ──
+pochita:
+  spawn: { x: 100, y: 70, z: 100 }
+
+# ── Makima : dimension dédiée + tirage aléatoire du villageois ──
+makima:
+  dimension_world: chainsawman_makima
+  spawn: { x: 0, y: 70, z: 0 }
+  # Le villageois Makima spawn aléatoirement parmi ces positions à l'annonce (45-55 min).
+  villager_locations:
+    0: { x: 10,  y: 70, z: 0 }
+    1: { x: -10, y: 70, z: 0 }
+    2: { x: 0,   y: 70, z: 10 }
+    3: { x: 0,   y: 70, z: -10 }
+    4: { x: 20,  y: 70, z: 20 }
+    5: { x: -20, y: 70, z: -20 }
+
+# ── Meetup : barrières débloquées dynamiquement (Cimetière à 8 alive, Ville à 4 alive) ──
+# Chaque entrée = un cuboïde min/max dont les blocs seront mis en AIR au déblocage.
+meetup:
+  barriers:
+    cimetiere:
+      0:
+        min: { x: -10, y: 60, z: 30 }
+        max: { x:  10, y: 80, z: 30 }
+    ville:
+      0:
+        min: { x: -10, y: 60, z: 60 }
+        max: { x:  10, y: 80, z: 60 }
